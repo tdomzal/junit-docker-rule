@@ -44,9 +44,12 @@ public class DockerRule extends ExternalResource {
     private final DockerClient dockerClient;
     private ContainerCreation container;
 
+    private final DockerRuleBuiler builder;
     private Map<String, List<PortBinding>> containerPorts;
 
     public DockerRule(DockerRuleBuiler builder) {
+
+        this.builder = builder;
 
         HostConfig hostConfig = HostConfig.builder()//
                 .portBindings(hostPortBindings(builder.getExposedPorts()))//
@@ -62,7 +65,6 @@ public class DockerRule extends ExternalResource {
 
         try {
 
-            //dockerClient = new DefaultDockerClient(DOCKER_SERVICE_URL);
             dockerClient = DefaultDockerClient.fromEnv().build();
 
             //TODO check if image is available (based of flag in builder ?)
@@ -81,7 +83,7 @@ public class DockerRule extends ExternalResource {
         private String[] cmd;
         private String[] exposedPorts;
         private String[] extraHosts;
-        private String waitFor;
+        private String waitForMessage;
 
         private DockerRuleBuiler(){}
 
@@ -145,12 +147,12 @@ public class DockerRule extends ExternalResource {
         /**
          * Make rule to wait for specified text in log on container start.
          */
-        public DockerRuleBuiler setWaitFor(String waitFor) {
-            this.waitFor = waitFor;
+        public DockerRuleBuiler setWaitForMessage(String waitForMessage) {
+            this.waitForMessage = waitForMessage;
             return this;
         }
-        public String getWaitFor() {
-            return waitFor;
+        public String getWaitForMessage() {
+            return waitForMessage;
         }
     }
 
@@ -181,8 +183,26 @@ public class DockerRule extends ExternalResource {
         ContainerInfo inspectContainer = dockerClient.inspectContainer(container.id());
         log.debug("{} inspect", container.id());
         containerPorts = inspectContainer.networkSettings().ports();
-
+        if (builder.getWaitForMessage()!=null) {
+            waitForMessage();
+        }
         logMappings(dockerClient);
+    }
+
+    private void waitForMessage() throws TimeoutException, InterruptedException {
+        final String waitForMessage = builder.getWaitForMessage();
+        log.debug("{} waiting for log message '{}'", container.id(), waitForMessage);
+        new WaitForUnit(TimeUnit.SECONDS, 30, new WaitForCondition(){
+            @Override
+            public boolean isConditionMet() {
+                return fullLogContent().contains(waitForMessage);
+            }
+            @Override
+            public String timeoutMessage() {
+                return String.format("Timeout waiting for '%s'", waitForMessage);
+            }
+        }).startWaiting();
+        log.debug("{} message '{}' found", container.id(), waitForMessage);
     }
 
     @Override
@@ -233,7 +253,7 @@ public class DockerRule extends ExternalResource {
     private void logMappings(DockerClient dockerClient) throws DockerException, InterruptedException {
         ContainerInfo inspectContainer = dockerClient.inspectContainer(container.id());
         NetworkSettings networkSettings = inspectContainer.networkSettings();
-        log.info("exposed ports: {}", networkSettings.ports());
+        log.info("{} exposed ports: {}", container.id(), networkSettings.ports());
     }
 
     public void waitFor(final String searchString, int waitTime) throws TimeoutException, InterruptedException {

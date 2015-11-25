@@ -7,7 +7,6 @@ import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -29,10 +28,9 @@ public class DockerRuleWaitForTest {
     public DockerRule testee = DockerRule.builder()//
             .setImageName("busybox")//
             .setCmd("sh", "-c", "for i in 01 02 03 04 05 06 07 08 09 10; do (echo $i; sleep 1); done")//
-            .setWaitFor("05")
+            .setWaitForMessage("05")
             .build();
 
-    @Ignore("TODO")
     @Test
     public void shouldWaitForLogMessage() throws InterruptedException, TimeoutException, DockerException {
 
