@@ -1,10 +1,15 @@
 package pl.domzal.junit.docker.rule;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 
 public class DockerRuleBuiler {
 
     private String imageName;
+    private List<String> binds = new ArrayList<>();;
     private String[] cmd;
     private String[] extraHosts;
     private String waitForMessage;
@@ -89,5 +94,35 @@ public class DockerRuleBuiler {
     }
     public boolean imageAlwaysPull() {
         return imageAlwaysPull;
+    }
+
+    /**
+     * Host directory to be mounted into container.<br/>
+     * Please note that in boot2docker environments (OSX or Windows)
+     * only locations inside $HOME can work (/Users or /c/Users respectively).<br/>
+     * On Windows it is safer to use {@link #mountFrom(File)} instead.
+     *
+     * @param hostPath Directory to be mounted - must be specified Unix style.
+     */
+    public DockerRuleMountBuilderTo mountFrom(String hostPath) throws InvalidVolumeFrom {
+        return new DockerRuleMountBuilder(this, hostPath);
+    }
+    /**
+     * Host directory to be mounted into container.<br/>
+     * Please note that in boot2docker environments (OSX or Windows)
+     * only locations inside $HOME can work (/Users or /c/Users respectively).
+     *
+     * @param hostDir Directory to be mounted.
+     */
+    public DockerRuleMountBuilderTo mountFrom(File hostDir) throws InvalidVolumeFrom {
+        String hostDirUnixPath = DockerRuleMountBuilder.toUnixStylePath(hostDir.getAbsolutePath());
+        return new DockerRuleMountBuilder(this, hostDirUnixPath);
+    }
+    DockerRuleBuiler addBind(String bindString) {
+        binds.add(bindString);
+        return this;
+    }
+    public List<String> binds() {
+        return binds;
     }
 }

@@ -1,38 +1,30 @@
-package pl.domzal.junit.docker.rule;
+package pl.domzal.junit.docker.rule.examples;
 
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pl.domzal.junit.docker.rule.DockerRule;
-import pl.domzal.junit.docker.rule.examples.AssertHtml;
 
-public class DockerRuleExposePortTest {
+public class ExampleNginxExposedPortTest {
 
-    private static Logger log = LoggerFactory.getLogger(DockerRuleExposePortTest.class);
+    private static Logger log = LoggerFactory.getLogger(ExampleNginxExposedPortTest.class);
 
     @ClassRule
     public static DockerRule testee = DockerRule.builder()//
             .imageName("nginx")//
             .build();
 
-    private String nginxHome;
-
-    @Before
-    public void setupHomepage() {
-        nginxHome = "http://"+testee.getDockerHost()+":"+testee.getExposedContainerPort("80")+"/";
-        log.info("homepage: {}", nginxHome);
-    }
 
     @Test
     public void shouldExposeNginxHttpPort() throws InterruptedException, IOException {
-        Thread.sleep(1000);
+        String nginxHome = "http://"+testee.getDockerHost()+":"+testee.getExposedContainerPort("80")+"/";
+        log.info("homepage: {}", nginxHome);
         assertTrue(AssertHtml.pageContainsString(nginxHome, "Welcome to nginx!"));
     }
 

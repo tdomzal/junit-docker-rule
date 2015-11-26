@@ -56,6 +56,7 @@ public class DockerRule extends ExternalResource {
 
         HostConfig hostConfig = HostConfig.builder()//
                 .publishAllPorts(true)//
+                .binds(builder.binds())
                 .extraHosts(builder.extraHosts())//
                 .build();
 
@@ -64,6 +65,9 @@ public class DockerRule extends ExternalResource {
                 .image(builder.imageName())//
                 .networkDisabled(false)//
                 //.hostname("bleble:127.0.0.1")
+                //.volumes("/c/Users/tdomzal/wc://junit")
+
+                .volumes("/junit:/c/Users/tdomzal/wc")
                 .cmd(builder.cmd()).build();
 
         try {
@@ -170,7 +174,7 @@ public class DockerRule extends ExternalResource {
     }
 
     /**
-     * Get host port conteiner internal port was mapped to.
+     * Get host dynamic port given container port was mapped to.
      *
      * @param containerPort Container port. Typically it matches Dockerfile EXPOSE directive.
      * @return Host port conteiner port is exposed on.
