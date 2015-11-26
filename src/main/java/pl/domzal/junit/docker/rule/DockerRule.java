@@ -41,6 +41,8 @@ public class DockerRule extends ExternalResource {
 
     private static Logger log = LoggerFactory.getLogger(DockerRule.class);
 
+    private static final int STOP_TIMEOUT = 5;
+
     private final DockerClient dockerClient;
     private ContainerCreation container;
 
@@ -135,14 +137,12 @@ public class DockerRule extends ExternalResource {
             ContainerState state = dockerClient.inspectContainer(container.id()).state();
             log.debug("container state: {}", state);
             if (state.running()) {
-                dockerClient.killContainer(container.id());
-                log.debug("{} killed", container.id());
+                dockerClient.stopContainer(container.id(), STOP_TIMEOUT);
+                log.info("{} stopped", container.id());
             }
             if (!builder.getKeepContainer()) {
                 dockerClient.removeContainer(container.id(), true);
-                log.debug("{} removed", container.id());
-            } else {
-                log.debug("{} leaved", container.id());
+                log.info("{} deleted", container.id());
             }
         } catch (DockerException e) {
             throw new IllegalStateException(e);
