@@ -1,3 +1,6 @@
 # junit-docker-rule
 Simple docker cotainer starter as JUnit Rule
-Work in progress...
+
+Please note this is work in progress.
+
+If you want know what it can do right now take a look at test cases.
