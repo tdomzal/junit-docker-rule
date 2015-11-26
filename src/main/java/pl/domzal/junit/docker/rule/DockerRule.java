@@ -60,7 +60,7 @@ public class DockerRule extends ExternalResource {
                 .hostConfig(hostConfig)//
                 .image(builder.getImageName())//
                 .networkDisabled(false)//
-                .hostname("bleble:127.0.0.1")//
+                //.hostname("bleble:127.0.0.1")
                 .cmd(builder.getCmd()).build();
 
         try {
@@ -224,7 +224,7 @@ public class DockerRule extends ExternalResource {
         }
     }
 
-    protected final String getDockerHost() {
+    public final String getDockerHost() {
         return dockerClient.getHost();
     }
 
@@ -234,7 +234,7 @@ public class DockerRule extends ExternalResource {
      * @param containerPort Container port. Typically it matches Dockerfile EXPOSE directive.
      * @return Host port conteiner port is exposed on.
      */
-    protected final String getExposedContainerPort(String containerPort) {
+    public final String getExposedContainerPort(String containerPort) {
         String key = containerPort + "/tcp";
         List<PortBinding> list = containerPorts.get(key);
         if (list == null || list.size() == 0) {
