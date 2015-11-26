@@ -72,87 +72,10 @@ public class DockerRule extends ExternalResource {
 
             container = dockerClient.createContainer(containerConfig);
 
+            log.info("container {} started, id {}", builder.getImageName(), container.id());
+
         } catch (DockerException | InterruptedException | DockerCertificateException e) {
             throw new IllegalStateException(e);
-        }
-    }
-
-    public static class DockerRuleBuiler {
-
-        private String imageName;
-        private String[] cmd;
-        private String[] exposedPorts;
-        private String[] extraHosts;
-        private String waitForMessage;
-
-        private DockerRuleBuiler(){}
-
-        public DockerRule build() {
-            return new DockerRule(this);
-        }
-
-        private static String[] nullToEmpty(String[] value) {
-            return value==null ? new String[0] : value;
-        }
-
-        /**
-         * Command to execute on container.
-         */
-        public DockerRuleBuiler setCmd(String... cmd) {
-            this.cmd = cmd;
-            return this;
-        }
-        public String[] getCmd() {
-            return nullToEmpty(cmd);
-        }
-
-        /**
-         * Image name to be used (required).
-         */
-        public DockerRuleBuiler setImageName(String imageName) {
-            this.imageName = imageName;
-            return this;
-        }
-        public String getImageName() {
-            if (StringUtils.isEmpty(imageName)) {
-                throw new IllegalStateException("imageName cannot be empty");
-            }
-            return imageName;
-        }
-
-        /**
-         * Container ports to expose on host.
-         * Port specific container port was mapped to can be later retreived with {@link DockerRule#getExposedContainerPort(String)}.
-         */
-        public DockerRuleBuiler setExposedPorts(String... exposedPorts) {
-            this.exposedPorts = exposedPorts;
-            return this;
-        }
-        public String[] getExposedPorts() {
-            return nullToEmpty(exposedPorts);
-        }
-
-        /**
-         * Add extra host definitions into containers <code>/etc/hosts</code>.
-         * @param extraHosts List of host matching format "hostname:address" (like desribed for 'docker run --add-host').
-         */
-        public DockerRuleBuiler setExtraHosts(String... extraHosts) {
-            this.extraHosts = extraHosts;
-            return this;
-        }
-        public String[] getExtraHosts() {
-            return nullToEmpty(extraHosts);
-        }
-
-        /**
-         * Make rule to wait for specified text in log on container start.
-         */
-        public DockerRuleBuiler setWaitForMessage(String waitForMessage) {
-            this.waitForMessage = waitForMessage;
-            return this;
-        }
-        public String getWaitForMessage() {
-            return waitForMessage;
         }
     }
 
@@ -191,7 +114,7 @@ public class DockerRule extends ExternalResource {
 
     private void waitForMessage() throws TimeoutException, InterruptedException {
         final String waitForMessage = builder.getWaitForMessage();
-        log.debug("{} waiting for log message '{}'", container.id(), waitForMessage);
+        log.info("{} waiting for log message '{}'", container.id(), waitForMessage);
         new WaitForUnit(TimeUnit.SECONDS, 30, new WaitForCondition(){
             @Override
             public boolean isConditionMet() {
@@ -215,8 +138,12 @@ public class DockerRule extends ExternalResource {
                 dockerClient.killContainer(container.id());
                 log.debug("{} killed", container.id());
             }
-            dockerClient.removeContainer(container.id(), true);
-            log.debug("{} removed", container.id());
+            if (!builder.getKeepContainer()) {
+                dockerClient.removeContainer(container.id(), true);
+                log.debug("{} removed", container.id());
+            } else {
+                log.debug("{} leaved", container.id());
+            }
         } catch (DockerException e) {
             throw new IllegalStateException(e);
         } catch (InterruptedException e) {
