@@ -13,6 +13,9 @@ import com.spotify.docker.client.DockerClient.ListImagesParam;
 import com.spotify.docker.client.DockerException;
 import com.spotify.docker.client.messages.Image;
 
+/**
+ * TODO Convert to builder options test case.
+ */
 public class AssertImagePullTest {
 
     @ClassRule
