@@ -19,14 +19,17 @@ import org.slf4j.LoggerFactory;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerCertificateException;
 import com.spotify.docker.client.DockerClient;
+import com.spotify.docker.client.DockerClient.ListImagesParam;
 import com.spotify.docker.client.DockerClient.LogsParam;
 import com.spotify.docker.client.DockerException;
+import com.spotify.docker.client.ImageNotFoundException;
 import com.spotify.docker.client.LogStream;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.ContainerInfo;
 import com.spotify.docker.client.messages.ContainerState;
 import com.spotify.docker.client.messages.HostConfig;
+import com.spotify.docker.client.messages.Image;
 import com.spotify.docker.client.messages.NetworkSettings;
 import com.spotify.docker.client.messages.PortBinding;
 
@@ -69,13 +72,15 @@ public class DockerRule extends ExternalResource {
 
             dockerClient = DefaultDockerClient.fromEnv().build();
 
-            //TODO check if image is available (based of flag in builder ?)
-            //dockerClient.pull(imageName);
+            if (builder.getImageAlwaysPull() || ! imageAvaliable(dockerClient, builder.getImageName())) {
+                dockerClient.pull(builder.getImageName());
+            }
 
             container = dockerClient.createContainer(containerConfig);
 
             log.info("container {} started, id {}", builder.getImageName(), container.id());
-
+        } catch (ImageNotFoundException e) {
+            throw new IllegalStateException(String.format("Image '%s' not found", builder.getImageName()), e);
         } catch (DockerException | InterruptedException | DockerCertificateException e) {
             throw new IllegalStateException(e);
         }
@@ -112,6 +117,16 @@ public class DockerRule extends ExternalResource {
             waitForMessage();
         }
         logMappings(dockerClient);
+    }
+
+    private boolean imageAvaliable(DockerClient dockerClient, String imageNameAndTag) throws DockerException, InterruptedException {
+        List<Image> listImages = dockerClient.listImages(ListImagesParam.danglingImages(false));
+        for (Image image : listImages) {
+            if (image.repoTags().contains(imageNameAndTag)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void waitForMessage() throws TimeoutException, InterruptedException {

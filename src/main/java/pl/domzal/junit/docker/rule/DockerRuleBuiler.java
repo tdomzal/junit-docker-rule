@@ -10,6 +10,7 @@ public class DockerRuleBuiler {
     private String[] extraHosts;
     private String waitForMessage;
     private boolean keepContainer = false;
+    private boolean imageAlwaysPull = false;
 
     DockerRuleBuiler(){}
 
@@ -90,5 +91,16 @@ public class DockerRuleBuiler {
     }
     public boolean getKeepContainer() {
         return keepContainer;
+    }
+
+    /**
+     * Force image pull even when image is already present.
+     */
+    public DockerRuleBuiler setImageAlwaysPull(boolean alwaysPull) {
+        this.imageAlwaysPull = alwaysPull;
+        return this;
+    }
+    public boolean getImageAlwaysPull() {
+        return imageAlwaysPull;
     }
 }
