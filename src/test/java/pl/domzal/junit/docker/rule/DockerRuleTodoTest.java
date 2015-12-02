@@ -19,12 +19,7 @@ public class DockerRuleTodoTest {
         fail("Not yet implemented");
     }
 
-    // image pull
-    @Test
-    public void shouldFailPullMissingImageIfNoPullOptionEnforced() {
-        fail("Not yet implemented");
-    }
-
+    // wait for url
     @Test
     public void shouldWaitForUrlAvailable() {
         fail("Not yet implemented");
