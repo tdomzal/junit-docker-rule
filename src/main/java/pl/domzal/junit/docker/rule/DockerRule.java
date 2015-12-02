@@ -1,7 +1,5 @@
 package pl.domzal.junit.docker.rule;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -57,7 +55,7 @@ public class DockerRule extends ExternalResource {
         this.builder = builder;
 
         HostConfig hostConfig = HostConfig.builder()//
-                .portBindings(hostPortBindings(builder.getExposedPorts()))//
+                .publishAllPorts(true)//
                 .extraHosts(builder.getExtraHosts())//
                 .build();
 
@@ -88,16 +86,6 @@ public class DockerRule extends ExternalResource {
 
     public static DockerRuleBuiler builder() {
         return new DockerRuleBuiler();
-    }
-
-    private static Map<String, List<PortBinding>> hostPortBindings(String[] exposedContainerPorts) {
-        final Map<String, List<PortBinding>> hostPortBindings = new HashMap<String, List<PortBinding>>();
-        for (String port : exposedContainerPorts) {
-            List<PortBinding> hostPorts = new ArrayList<PortBinding>();
-            hostPorts.add(PortBinding.of("0.0.0.0", port + "/tcp"));
-            hostPortBindings.put(port + "/tcp", hostPorts);
-        }
-        return hostPortBindings;
     }
 
     @Override

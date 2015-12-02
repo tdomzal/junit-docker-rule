@@ -19,7 +19,6 @@ public class DockerRuleExposePortTest {
     @ClassRule
     public static DockerRule testee = DockerRule.builder()//
             .setImageName("nginx")//
-            .setExposedPorts("80")//
             .build();
 
     private String nginxHome;

@@ -6,7 +6,6 @@ public class DockerRuleBuiler {
 
     private String imageName;
     private String[] cmd;
-    private String[] exposedPorts;
     private String[] extraHosts;
     private String waitForMessage;
     private boolean keepContainer = false;
@@ -45,18 +44,6 @@ public class DockerRuleBuiler {
             throw new IllegalStateException("imageName cannot be empty");
         }
         return imageName;
-    }
-
-    /**
-     * Container ports to expose on host.
-     * Port specific container port was mapped to can be later retreived with {@link DockerRule#getExposedContainerPort(String)}.
-     */
-    public DockerRuleBuiler setExposedPorts(String... exposedPorts) {
-        this.exposedPorts = exposedPorts;
-        return this;
-    }
-    public String[] getExposedPorts() {
-        return nullToEmpty(exposedPorts);
     }
 
     /**
