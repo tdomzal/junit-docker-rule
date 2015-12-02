@@ -80,7 +80,7 @@ public class DockerRule extends ExternalResource {
 
             log.info("container {} started, id {}", builder.getImageName(), container.id());
         } catch (ImageNotFoundException e) {
-            throw new IllegalStateException(String.format("Image '%s' not found", builder.getImageName()), e);
+            throw new ImagePullException(String.format("Image '%s' not found", builder.getImageName()), e);
         } catch (DockerException | InterruptedException | DockerCertificateException e) {
             throw new IllegalStateException(e);
         }
