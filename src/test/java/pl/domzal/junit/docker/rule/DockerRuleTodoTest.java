@@ -8,18 +8,25 @@ import org.junit.Test;
 @Ignore
 public class DockerRuleTodoTest {
 
+    // mounts
     @Test
     public void shouldMountLocalVolume() {
         fail("Not yet implemented");
     }
 
     @Test
-    public void shouldWaitForUrlAvailable() {
+    public void shouldFailMountLocalVolumeOnRemoteDockerHost() {
+        fail("Not yet implemented");
+    }
+
+    // image pull
+    @Test
+    public void shouldFailPullMissingImageIfNoPullOptionEnforced() {
         fail("Not yet implemented");
     }
 
     @Test
-    public void shouldAddHost() {
+    public void shouldWaitForUrlAvailable() {
         fail("Not yet implemented");
     }
 
