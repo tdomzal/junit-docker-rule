@@ -119,14 +119,25 @@ public class DockerRule extends ExternalResource {
         logMappings(dockerClient);
     }
 
-    private boolean imageAvaliable(DockerClient dockerClient, String imageNameAndTag) throws DockerException, InterruptedException {
+    private boolean imageAvaliable(DockerClient dockerClient, String imageName) throws DockerException, InterruptedException {
+        String imageNameWithTag = imageNameWithTag(imageName);
         List<Image> listImages = dockerClient.listImages(ListImagesParam.danglingImages(false));
         for (Image image : listImages) {
-            if (image.repoTags().contains(imageNameAndTag)) {
+            if (image.repoTags().contains(imageNameWithTag)) {
+                log.debug("image '{}' found", imageNameWithTag);
                 return true;
             }
         }
+        log.debug("image '{}' not found", imageNameWithTag);
         return false;
+    }
+
+    private String imageNameWithTag(String imageName) {
+        if (! StringUtils.contains(imageName, ':')) {
+            return imageName + ":latest";
+        } else {
+            return imageName;
+        }
     }
 
     private void waitForMessage() throws TimeoutException, InterruptedException {
