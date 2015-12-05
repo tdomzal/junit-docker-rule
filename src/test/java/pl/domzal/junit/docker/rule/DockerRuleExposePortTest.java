@@ -18,7 +18,7 @@ public class DockerRuleExposePortTest {
 
     @ClassRule
     public static DockerRule testee = DockerRule.builder()//
-            .setImageName("nginx")//
+            .imageName("nginx")//
             .build();
 
     private String nginxHome;

@@ -13,8 +13,8 @@ public class DockerRuleWaitForLogMessageTest {
 
     @Rule
     public DockerRule testee = DockerRule.builder()//
-            .setImageName("busybox")//
-            .setCmd("sh", "-c", "for i in 01 02 03 04 05 06 07 08 09 10; do (echo $i; sleep 1); done")//
+            .imageName("busybox")//
+            .cmd("sh", "-c", "for i in 01 02 03 04 05 06 07 08 09 10; do (echo $i; sleep 1); done")//
             .build();
 
     @Test(expected = TimeoutException.class)

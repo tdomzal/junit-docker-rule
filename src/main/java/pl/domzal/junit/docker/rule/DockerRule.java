@@ -56,29 +56,29 @@ public class DockerRule extends ExternalResource {
 
         HostConfig hostConfig = HostConfig.builder()//
                 .publishAllPorts(true)//
-                .extraHosts(builder.getExtraHosts())//
+                .extraHosts(builder.extraHosts())//
                 .build();
 
         ContainerConfig containerConfig = ContainerConfig.builder()//
                 .hostConfig(hostConfig)//
-                .image(builder.getImageName())//
+                .image(builder.imageName())//
                 .networkDisabled(false)//
                 //.hostname("bleble:127.0.0.1")
-                .cmd(builder.getCmd()).build();
+                .cmd(builder.cmd()).build();
 
         try {
 
             dockerClient = DefaultDockerClient.fromEnv().build();
 
-            if (builder.getImageAlwaysPull() || ! imageAvaliable(dockerClient, builder.getImageName())) {
-                dockerClient.pull(builder.getImageName());
+            if (builder.imageAlwaysPull() || ! imageAvaliable(dockerClient, builder.imageName())) {
+                dockerClient.pull(builder.imageName());
             }
 
             container = dockerClient.createContainer(containerConfig);
 
-            log.info("container {} started, id {}", builder.getImageName(), container.id());
+            log.info("container {} started, id {}", builder.imageName(), container.id());
         } catch (ImageNotFoundException e) {
-            throw new ImagePullException(String.format("Image '%s' not found", builder.getImageName()), e);
+            throw new ImagePullException(String.format("Image '%s' not found", builder.imageName()), e);
         } catch (DockerException | InterruptedException | DockerCertificateException e) {
             throw new IllegalStateException(e);
         }
@@ -101,7 +101,7 @@ public class DockerRule extends ExternalResource {
         ContainerInfo inspectContainer = dockerClient.inspectContainer(container.id());
         log.debug("{} inspect", container.id());
         containerPorts = inspectContainer.networkSettings().ports();
-        if (builder.getWaitForMessage()!=null) {
+        if (builder.waitForMessage()!=null) {
             waitForMessage();
         }
         logMappings(dockerClient);
@@ -129,7 +129,7 @@ public class DockerRule extends ExternalResource {
     }
 
     private void waitForMessage() throws TimeoutException, InterruptedException {
-        final String waitForMessage = builder.getWaitForMessage();
+        final String waitForMessage = builder.waitForMessage();
         log.info("{} waiting for log message '{}'", container.id(), waitForMessage);
         new WaitForUnit(TimeUnit.SECONDS, 30, new WaitForCondition(){
             @Override
@@ -154,7 +154,7 @@ public class DockerRule extends ExternalResource {
                 dockerClient.stopContainer(container.id(), STOP_TIMEOUT);
                 log.info("{} stopped", container.id());
             }
-            if (!builder.getKeepContainer()) {
+            if (!builder.keepContainer()) {
                 dockerClient.removeContainer(container.id(), true);
                 log.info("{} deleted", container.id());
             }

@@ -24,14 +24,14 @@ public class DockerRuleImagePullTest {
 
     @ClassRule
     public static DockerRule helperRule = DockerRule.builder()//
-            .setImageName("busybox")//
+            .imageName("busybox")//
             .build();
 
     private static DockerClient helperClient = helperRule.getDockerClient();
 
     @Test(expected = ImagePullException.class)
     public void shouldFailOnNonExistingImage() {
-        DockerRule.builder().setImageName("nonexistingimage").build();
+        DockerRule.builder().imageName("nonexistingimage").build();
     }
 
     @Test
@@ -39,7 +39,7 @@ public class DockerRuleImagePullTest {
         removeContainers(helperClient, "hello-world:latest");
         removeImage(helperClient, "hello-world:latest");
 
-        DockerRule testee = DockerRule.builder().setImageName("hello-world:latest").build();
+        DockerRule testee = DockerRule.builder().imageName("hello-world:latest").build();
         helperClient.removeContainer(testee.getContainerId());
         assertTrue(imageAvaliable(helperClient, "hello-world:latest"));
     }

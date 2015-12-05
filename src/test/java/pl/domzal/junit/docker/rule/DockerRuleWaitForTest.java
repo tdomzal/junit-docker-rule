@@ -26,9 +26,9 @@ public class DockerRuleWaitForTest {
 
     @Rule
     public DockerRule testee = DockerRule.builder()//
-            .setImageName("busybox")//
-            .setCmd("sh", "-c", "for i in 01 02 03 04 05 06 07 08 09 10; do (echo $i; sleep 1); done")//
-            .setWaitForMessage("05")
+            .imageName("busybox")//
+            .cmd("sh", "-c", "for i in 01 02 03 04 05 06 07 08 09 10; do (echo $i; sleep 1); done")//
+            .waitForMessage("05")
             .build();
 
     @Test

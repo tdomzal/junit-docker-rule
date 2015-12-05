@@ -24,22 +24,22 @@ public class DockerRuleBuiler {
     /**
      * Command to execute on container.
      */
-    public DockerRuleBuiler setCmd(String... cmd) {
+    public DockerRuleBuiler cmd(String... cmd) {
         this.cmd = cmd;
         return this;
     }
-    public String[] getCmd() {
+    public String[] cmd() {
         return nullToEmpty(cmd);
     }
 
     /**
      * Image name to be used (required).
      */
-    public DockerRuleBuiler setImageName(String imageName) {
+    public DockerRuleBuiler imageName(String imageName) {
         this.imageName = imageName;
         return this;
     }
-    public String getImageName() {
+    public String imageName() {
         if (StringUtils.isEmpty(imageName)) {
             throw new IllegalStateException("imageName cannot be empty");
         }
@@ -50,44 +50,44 @@ public class DockerRuleBuiler {
      * Add extra host definitions into containers <code>/etc/hosts</code>.
      * @param extraHosts List of host matching format "hostname:address" (like desribed for 'docker run --add-host').
      */
-    public DockerRuleBuiler setExtraHosts(String... extraHosts) {
+    public DockerRuleBuiler extraHosts(String... extraHosts) {
         this.extraHosts = extraHosts;
         return this;
     }
-    public String[] getExtraHosts() {
+    public String[] extraHosts() {
         return nullToEmpty(extraHosts);
     }
 
     /**
      * Make rule to wait for specified text in log on container start.
      */
-    public DockerRuleBuiler setWaitForMessage(String waitForMessage) {
+    public DockerRuleBuiler waitForMessage(String waitForMessage) {
         this.waitForMessage = waitForMessage;
         return this;
     }
-    public String getWaitForMessage() {
+    public String waitForMessage() {
         return waitForMessage;
     }
 
     /**
      * Keep stopped container after test.
      */
-    public DockerRuleBuiler setKeepContainer(boolean keepContainer) {
+    public DockerRuleBuiler keepContainer(boolean keepContainer) {
         this.keepContainer = keepContainer;
         return this;
     }
-    public boolean getKeepContainer() {
+    public boolean keepContainer() {
         return keepContainer;
     }
 
     /**
      * Force image pull even when image is already present.
      */
-    public DockerRuleBuiler setImageAlwaysPull(boolean alwaysPull) {
+    public DockerRuleBuiler imageAlwaysPull(boolean alwaysPull) {
         this.imageAlwaysPull = alwaysPull;
         return this;
     }
-    public boolean getImageAlwaysPull() {
+    public boolean imageAlwaysPull() {
         return imageAlwaysPull;
     }
 }
