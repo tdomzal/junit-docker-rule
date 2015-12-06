@@ -33,7 +33,7 @@ public class DockerRuleVolumeMountTest {
     public TemporaryFolder tempFolder = new TemporaryFolder();
 
     private File testDir;
-    private String volumeFromPath;
+    private String testDirPath;
     private File testFile;
     private String testFilename;
     private String testFileContent = "1234567890";
@@ -48,14 +48,9 @@ public class DockerRuleVolumeMountTest {
             IOUtils.write(testFileContent, out);
         }
         testDir = tempFolder.getRoot();
-        String testDirPath = testDir.getAbsolutePath();
-
-        String userHome = System.getProperty("user.home");
-        log.debug("USER_HOME: {}", userHome);
-        assertTrue(String.format("TEMP '%s' folder is not subfolder of USER_HOME '%s'", testDirPath, userHome), testDirPath.startsWith(userHome));
-
-        volumeFromPath = DockerRuleMountBuilder.toUnixStylePath(testDirPath);
-        log.debug("volumeFrom: {}", volumeFromPath);
+        log.debug("testDir: {}", testDir.getAbsolutePath());
+        testDirPath = DockerRuleMountBuilder.toUnixStylePath(testDir.getAbsolutePath());
+        log.debug("testDirPath: {}", testDirPath);
     }
 
     private DockerRule testee;
@@ -87,7 +82,7 @@ public class DockerRuleVolumeMountTest {
     public void shouldReadMountFromUnixStyle() throws Throwable {
         testee = DockerRule.builder()//
                 .imageName("busybox")//
-                .mountFrom(volumeFromPath).to("/somedir", "ro")//
+                .mountFrom(testDirPath).to("/somedir", "ro")//
                 .cmd("sh", "-c", "cat /somedir/"+testFilename)//
                 .build();
         testee.before();
@@ -123,7 +118,7 @@ public class DockerRuleVolumeMountTest {
     public void shouldWriteRwMountedFile() throws Throwable {
         testee = DockerRule.builder()//
                 .imageName("busybox")//
-                .mountFrom(volumeFromPath).to("/somedir")//
+                .mountFrom(testDirPath).to("/somedir")//
                 .cmd("sh", "-c", "echo "+testFileContentChanged+" > /somedir/"+testFilename)//
                 .build();
         testee.before();
@@ -144,7 +139,7 @@ public class DockerRuleVolumeMountTest {
     public void shouldNotWriteRoMountedFile() throws Throwable {
         testee = DockerRule.builder()//
                 .imageName("busybox")//
-                .mountFrom(volumeFromPath).to("/somedir", "ro")//
+                .mountFrom(testDirPath).to("/somedir", "ro")//
                 .cmd("sh", "-c", "echo "+testFileContentChanged+" > /somedir/"+testFilename)//
                 .build();
         testee.before();
