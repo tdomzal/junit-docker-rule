@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pl.domzal.junit.docker.rule.DockerRule;
-import pl.domzal.junit.docker.rule.examples.AssertHtml;
 
 public class DockerRuleExposePortTest {
 

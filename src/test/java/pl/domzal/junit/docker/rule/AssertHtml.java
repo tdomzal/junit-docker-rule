@@ -1,4 +1,4 @@
-package pl.domzal.junit.docker.rule.examples;
+package pl.domzal.junit.docker.rule;
 
 import java.io.IOException;
 
