@@ -9,37 +9,25 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pl.domzal.junit.docker.rule.DockerRule;
 
 public class ExampleVolumeMountTest {
 
-    private static Logger log = LoggerFactory.getLogger(ExampleVolumeMountTest.class);
-
     @ClassRule
     public static TemporaryFolder tempFolder = new TemporaryFolder();
 
-    private static File testFile;
-    private static String testFilename;
-    private static File testDir;
-
     @BeforeClass
     public static void setup() throws IOException {
-
-        testFile = tempFolder.newFile();
-        testFilename = testFile.getName();
+        File testFile = tempFolder.newFile("somefile");
         FileUtils.write(testFile, "1234567890");
-        testDir = tempFolder.getRoot();
-        log.debug("testDir: {}", testDir.getAbsolutePath());
     }
 
     @Rule
     public DockerRule testee = DockerRule.builder()//
             .imageName("busybox")//
-            .mountFrom(testDir).to("/somedir", "ro")//
-            .cmd("sh", "-c", "cat /somedir/"+testFilename)//
+            .mountFrom(tempFolder.getRoot()).to("/somedir", "ro")//
+            .cmd("sh", "-c", "cat /somedir/somefile")//
             .build();
 
     @Test(timeout = 10000)
