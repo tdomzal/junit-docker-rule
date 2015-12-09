@@ -241,7 +241,7 @@ public class DockerRule extends ExternalResource {
     /**
      * Container log.
      */
-    String getLog() {
+    public String getLog() {
         try (LogStream stream = dockerClient.logs(container.id(), LogsParam.stdout(), LogsParam.stderr());) {
             String fullLog = stream.readFully();
             if (log.isTraceEnabled()) {
