@@ -1,5 +1,5 @@
 # junit-docker-rule
-Simple docker cotainer starter as JUnit Rule
+Simple docker container starter as JUnit Rule
 
 Please note this is work in progress.
 
