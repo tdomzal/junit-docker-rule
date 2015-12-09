@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import pl.domzal.junit.docker.rule.DockerRule;
 
-public class ExampleNginxExposedPortTest {
+public class ExampleExposeContainerPortTest {
 
-    private static Logger log = LoggerFactory.getLogger(ExampleNginxExposedPortTest.class);
+    private static Logger log = LoggerFactory.getLogger(ExampleExposeContainerPortTest.class);
 
     @ClassRule
     public static DockerRule testee = DockerRule.builder()//
@@ -27,6 +27,5 @@ public class ExampleNginxExposedPortTest {
         log.info("homepage: {}", nginxHome);
         assertTrue(AssertHtml.pageContainsString(nginxHome, "Welcome to nginx!"));
     }
-
 
 }

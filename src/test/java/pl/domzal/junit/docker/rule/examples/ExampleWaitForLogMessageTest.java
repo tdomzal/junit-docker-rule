@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import pl.domzal.junit.docker.rule.DockerRule;
 
-public class ExampleWaitForMessageTest {
+public class ExampleWaitForLogMessageTest {
 
     @Rule
     public DockerRule testee = DockerRule.builder()//
