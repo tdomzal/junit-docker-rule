@@ -54,6 +54,8 @@ public class DockerRule extends ExternalResource {
 
         this.builder = builder;
 
+        String imageNameWithTag = imageNameWithTag(builder.imageName());
+
         HostConfig hostConfig = HostConfig.builder()//
                 .publishAllPorts(true)//
                 .binds(builder.binds())
@@ -62,7 +64,7 @@ public class DockerRule extends ExternalResource {
 
         ContainerConfig containerConfig = ContainerConfig.builder()//
                 .hostConfig(hostConfig)//
-                .image(builder.imageName())//
+                .image(imageNameWithTag)//
                 .networkDisabled(false)//
                 .cmd(builder.cmd()).build();
 
@@ -70,15 +72,15 @@ public class DockerRule extends ExternalResource {
 
             dockerClient = DefaultDockerClient.fromEnv().build();
 
-            if (builder.imageAlwaysPull() || ! imageAvaliable(dockerClient, builder.imageName())) {
-                dockerClient.pull(builder.imageName());
+            if (builder.imageAlwaysPull() || ! imageAvaliable(dockerClient, imageNameWithTag)) {
+                dockerClient.pull(imageNameWithTag);
             }
 
             container = dockerClient.createContainer(containerConfig);
 
-            log.info("container {} started, id {}", builder.imageName(), container.id());
+            log.info("container {} started, id {}", imageNameWithTag, container.id());
         } catch (ImageNotFoundException e) {
-            throw new ImagePullException(String.format("Image '%s' not found", builder.imageName()), e);
+            throw new ImagePullException(String.format("Image '%s' not found", imageNameWithTag), e);
         } catch (DockerException | InterruptedException | DockerCertificateException e) {
             throw new IllegalStateException(e);
         }
@@ -86,11 +88,6 @@ public class DockerRule extends ExternalResource {
 
     public static DockerRuleBuiler builder() {
         return new DockerRuleBuiler();
-    }
-
-    @Override
-    public Statement apply(Statement base, Description description) {
-        return super.apply(base, description);
     }
 
     @Override
