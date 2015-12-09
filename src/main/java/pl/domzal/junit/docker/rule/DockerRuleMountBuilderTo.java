@@ -1,6 +1,6 @@
 package pl.domzal.junit.docker.rule;
 
-interface DockerRuleMountBuilderTo {
+public interface DockerRuleMountBuilderTo {
     /**
      * Mount to point.
      *
