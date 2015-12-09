@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/tdomzal/junit-docker-rule.svg?branch=master)](https://travis-ci.org/tdomzal/junit-docker-rule)
 # junit-docker-rule
 Simple docker container starter as JUnit Rule
 
