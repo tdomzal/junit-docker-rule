@@ -64,10 +64,6 @@ public class DockerRule extends ExternalResource {
                 .hostConfig(hostConfig)//
                 .image(builder.imageName())//
                 .networkDisabled(false)//
-                //.hostname("bleble:127.0.0.1")
-                //.volumes("/c/Users/tdomzal/wc://junit")
-
-                .volumes("/junit:/c/Users/tdomzal/wc")
                 .cmd(builder.cmd()).build();
 
         try {
