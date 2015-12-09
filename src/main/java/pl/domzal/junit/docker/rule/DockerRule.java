@@ -9,8 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.junit.Rule;
 import org.junit.rules.ExternalResource;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
