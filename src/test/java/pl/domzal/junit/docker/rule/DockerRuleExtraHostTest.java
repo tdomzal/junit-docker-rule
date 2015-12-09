@@ -31,7 +31,7 @@ public class DockerRuleExtraHostTest {
             .build();
 
     @Test
-    public void shouldExposeNginxHttpPort() throws InterruptedException, IOException, DockerException {
+    public void shouldDefineExtraHost() throws InterruptedException, IOException, DockerException {
 
         DockerClient dockerClient = testee.getDockerClient();
         dockerClient.waitContainer(testee.getContainerId());

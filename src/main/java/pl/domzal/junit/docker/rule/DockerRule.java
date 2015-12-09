@@ -63,6 +63,7 @@ public class DockerRule extends ExternalResource {
         ContainerConfig containerConfig = ContainerConfig.builder()//
                 .hostConfig(hostConfig)//
                 .image(imageNameWithTag)//
+                .env(builder.env())//
                 .networkDisabled(false)//
                 .cmd(builder.cmd()).build();
 

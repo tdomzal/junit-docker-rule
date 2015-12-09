@@ -21,9 +21,8 @@ public class ExampleExposeContainerPortTest {
             .imageName("nginx")//
             .build();
 
-
     @Test
-    public void shouldExposeNginxHttpPort() throws InterruptedException, IOException {
+    public void shouldExposePort() throws InterruptedException, IOException {
         String nginxHome = "http://"+testee.getDockerHost()+":"+testee.getExposedContainerPort("80")+"/";
         log.info("homepage: {}", nginxHome);
         assertTrue(AssertHtml.pageContainsString(nginxHome, "Welcome to nginx!"));

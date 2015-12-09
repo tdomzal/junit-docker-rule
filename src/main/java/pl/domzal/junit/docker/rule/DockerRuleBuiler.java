@@ -2,6 +2,7 @@ package pl.domzal.junit.docker.rule;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -9,7 +10,8 @@ import org.apache.commons.lang.StringUtils;
 public class DockerRuleBuiler {
 
     private String imageName;
-    private List<String> binds = new ArrayList<>();;
+    private List<String> binds = new ArrayList<>();
+    private List<String> env = new ArrayList<>();
     private String[] cmd;
     private String[] extraHosts;
     private String waitForMessage;
@@ -124,5 +126,16 @@ public class DockerRuleBuiler {
     }
     public List<String> binds() {
         return binds;
+    }
+
+    /**
+     * Set environment variable in the container.
+     */
+    public DockerRuleBuiler env(String envName, String envValue) {
+        env.add(String.format("%s=%s", envName, envValue));
+        return this;
+    }
+    public List<String> env() {
+        return Collections.unmodifiableList(env);
     }
 }

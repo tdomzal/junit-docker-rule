@@ -1,4 +1,4 @@
-package pl.domzal.junit.docker.rule.examples;
+package pl.domzal.junit.docker.rule;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
@@ -10,22 +10,21 @@ import org.junit.Test;
 
 import com.spotify.docker.client.DockerException;
 
-import pl.domzal.junit.docker.rule.DockerRule;
-
-public class ExampleAddExtraHostTest {
+public class DockerRuleEnvTest {
 
     @Rule
     public DockerRule testee = DockerRule.builder()//
             .imageName("busybox")//
-            .extraHosts("extrahost:1.2.3.4")
-            .cmd("sh", "-c", "cat /etc/hosts | grep extrahost")//
+            .env("EXTRA_OPT", "EXTRA_OPT_VALUE")
+            .cmd("sh", "-c", "echo $EXTRA_OPT")//
             .build();
 
     @Test
-    public void shouldAddExtraHost() throws InterruptedException, IOException, DockerException {
+    public void shouldPassEnvVariables() throws InterruptedException, IOException, DockerException {
         testee.waitForExit();
         String output = testee.getLog();
-        assertThat(output, containsString("1.2.3.4"));
+        assertThat(output, containsString("EXTRA_OPT_VALUE"));
     }
+
 
 }
