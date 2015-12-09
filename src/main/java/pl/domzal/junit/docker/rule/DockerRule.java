@@ -138,7 +138,7 @@ public class DockerRule extends ExternalResource {
         new WaitForUnit(TimeUnit.SECONDS, 30, new WaitForCondition(){
             @Override
             public boolean isConditionMet() {
-                return fullLogContent().contains(waitForMessage);
+                return getLog().contains(waitForMessage);
             }
             @Override
             public String timeoutMessage() {
@@ -201,11 +201,18 @@ public class DockerRule extends ExternalResource {
         log.info("{} exposed ports: {}", container.id(), networkSettings.ports());
     }
 
+    /**
+     * Stop and wait till given string will show in container output.
+     *
+     * @param searchString String to wait for in container output.
+     * @param waitTime Wait time.
+     * @throws TimeoutException On wait timeout.
+     */
     public void waitFor(final String searchString, int waitTime) throws TimeoutException, InterruptedException {
         new WaitForUnit(TimeUnit.SECONDS, waitTime, TimeUnit.SECONDS, 1, new WaitForCondition() {
             @Override
             public boolean isConditionMet() {
-                return StringUtils.contains(fullLogContent(), searchString);
+                return StringUtils.contains(getLog(), searchString);
             }
 
             @Override
@@ -215,7 +222,7 @@ public class DockerRule extends ExternalResource {
 
             @Override
             public String timeoutMessage() {
-                return String.format("container log: \n%s", fullLogContent());
+                return String.format("container log: \n%s", getLog());
             }
 
         }) //
@@ -224,7 +231,21 @@ public class DockerRule extends ExternalResource {
         .startWaiting();
     }
 
-    String fullLogContent() {
+    /**
+     * Wait for container exit. Please note this is blocking call.
+     */
+    public void waitForExit() throws InterruptedException {
+        try {
+            dockerClient.waitContainer(container.id());
+        } catch (DockerException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    /**
+     * Container log.
+     */
+    String getLog() {
         try (LogStream stream = dockerClient.logs(container.id(), LogsParam.stdout(), LogsParam.stderr());) {
             String fullLog = stream.readFully();
             if (log.isTraceEnabled()) {
@@ -237,10 +258,16 @@ public class DockerRule extends ExternalResource {
 
     }
 
+    /**
+     * Id of container.
+     */
     String getContainerId() {
         return container.id();
     }
 
+    /**
+     * {@link DockerClient} for direct container manipulation.
+     */
     DockerClient getDockerClient() {
         return dockerClient;
     }

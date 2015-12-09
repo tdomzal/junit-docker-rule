@@ -39,7 +39,7 @@ public class DockerRuleWaitForLogMessageTest {
     public void shouldWaitForMessage() throws InterruptedException, TimeoutException {
         int MAX_WAIT = 10;
         testee.waitFor("03", MAX_WAIT);
-        String logContent = testee.fullLogContent();
+        String logContent = testee.getLog();
         assertTrue("log does not contain message we are waiting for", logContent.contains("03"));
     }
 
