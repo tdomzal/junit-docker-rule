@@ -72,6 +72,8 @@ public class DockerRule extends ExternalResource {
     protected void before() throws Throwable {
         super.before();
 
+        log.info("------------ before");
+
         HostConfig hostConfig = HostConfig.builder()//
                 .publishAllPorts(true)//
                 .binds(builder.binds())//
@@ -144,6 +146,7 @@ public class DockerRule extends ExternalResource {
     @Override
     protected void after() {
         super.after();
+        log.info("------------ after");
         try {
             ContainerState state = dockerClient.inspectContainer(container.id()).state();
             log.debug("container state: {}", state);
@@ -154,6 +157,7 @@ public class DockerRule extends ExternalResource {
             if (!builder.keepContainer()) {
                 dockerClient.removeContainer(container.id(), true);
                 log.info("{} deleted", container.id());
+                container = null;
             }
         } catch (DockerException e) {
             throw new IllegalStateException(e);
@@ -252,10 +256,10 @@ public class DockerRule extends ExternalResource {
     }
 
     /**
-     * Id of container.
+     * Id of container (null if it is not yet been created or has been stopped).
      */
-    String getContainerId() {
-        return container.id();
+    public String getContainerId() {
+        return (container!=null ? container.id() : null);
     }
 
     /**
