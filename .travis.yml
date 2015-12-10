@@ -3,10 +3,10 @@ language: java
 services:
   - docker
 
-os:
-  - linux
-  - osx
-
-matrix:
-  allow_failures:
-    - os: osx
+#os:
+#  - linux
+#  - osx
+#
+#matrix:
+#  allow_failures:
+#    - os: osx
