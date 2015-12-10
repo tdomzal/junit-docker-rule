@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +22,12 @@ public class DockerRuleImagePullTest {
 
     private static Logger log = LoggerFactory.getLogger(DockerRule.class);
 
-    @ClassRule
-    public static DockerRule helperRule = DockerRule.builder()//
+    @Rule
+    public DockerRule helperRule = DockerRule.builder()//
             .imageName("busybox")//
             .build();
 
-    private static DockerClient helperClient = helperRule.getDockerClient();
+    private DockerClient helperClient = helperRule.getDockerClient();
 
     @Test(expected = ImagePullException.class)
     public void shouldFailOnNonExistingImage() {
@@ -35,13 +35,17 @@ public class DockerRuleImagePullTest {
     }
 
     @Test
-    public void shouldPullImage() throws DockerException, InterruptedException {
+    public void shouldPullImage() throws Throwable {
         removeContainers(helperClient, "hello-world:latest");
         removeImage(helperClient, "hello-world:latest");
 
         DockerRule testee = DockerRule.builder().imageName("hello-world:latest").build();
-        helperClient.removeContainer(testee.getContainerId());
-        assertTrue(imageAvaliable(helperClient, "hello-world:latest"));
+        testee.before();
+        try {
+            assertTrue(imageAvaliable(helperClient, "hello-world:latest"));
+        } finally {
+            testee.after();
+        }
     }
 
     private void removeImage(DockerClient dockerClient, String imageName) throws DockerException, InterruptedException {

@@ -46,41 +46,20 @@ public class DockerRule extends ExternalResource {
     private ContainerCreation container;
 
     private final DockerRuleBuiler builder;
+    private final String imageNameWithTag;
     private Map<String, List<PortBinding>> containerPorts;
 
     public DockerRule(DockerRuleBuiler builder) {
-
         this.builder = builder;
-
-        String imageNameWithTag = imageNameWithTag(builder.imageName());
-
-        HostConfig hostConfig = HostConfig.builder()//
-                .publishAllPorts(true)//
-                .binds(builder.binds())
-                .extraHosts(builder.extraHosts())//
-                .build();
-
-        ContainerConfig containerConfig = ContainerConfig.builder()//
-                .hostConfig(hostConfig)//
-                .image(imageNameWithTag)//
-                .env(builder.env())//
-                .networkDisabled(false)//
-                .cmd(builder.cmd()).build();
-
+        this.imageNameWithTag = imageNameWithTag(builder.imageName());
         try {
-
             dockerClient = DefaultDockerClient.fromEnv().build();
-
             if (builder.imageAlwaysPull() || ! imageAvaliable(dockerClient, imageNameWithTag)) {
                 dockerClient.pull(imageNameWithTag);
             }
-
-            container = dockerClient.createContainer(containerConfig);
-
-            log.info("container {} started, id {}", imageNameWithTag, container.id());
         } catch (ImageNotFoundException e) {
             throw new ImagePullException(String.format("Image '%s' not found", imageNameWithTag), e);
-        } catch (DockerException | InterruptedException | DockerCertificateException e) {
+        } catch (DockerCertificateException | DockerException | InterruptedException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -92,15 +71,37 @@ public class DockerRule extends ExternalResource {
     @Override
     protected void before() throws Throwable {
         super.before();
-        dockerClient.startContainer(container.id());
-        log.debug("{} started", container.id());
-        ContainerInfo inspectContainer = dockerClient.inspectContainer(container.id());
-        log.debug("{} inspect", container.id());
-        containerPorts = inspectContainer.networkSettings().ports();
-        if (builder.waitForMessage()!=null) {
-            waitForMessage();
+
+        HostConfig hostConfig = HostConfig.builder()//
+                .publishAllPorts(true)//
+                .binds(builder.binds())//
+                .extraHosts(builder.extraHosts())//
+                .build();
+
+        ContainerConfig containerConfig = ContainerConfig.builder()//
+                .hostConfig(hostConfig)//
+                .image(imageNameWithTag)//
+                .env(builder.env())//
+                .networkDisabled(false)//
+                .cmd(builder.cmd()).build();
+
+        try {
+            this.container = dockerClient.createContainer(containerConfig);
+            log.info("container {} created, id {}", imageNameWithTag, container.id());
+
+            dockerClient.startContainer(container.id());
+            log.debug("{} started", container.id());
+
+            ContainerInfo inspectContainer = dockerClient.inspectContainer(container.id());
+            containerPorts = inspectContainer.networkSettings().ports();
+            if (builder.waitForMessage()!=null) {
+                waitForMessage();
+            }
+            logMappings(dockerClient);
+
+        } catch (DockerException | InterruptedException e) {
+            throw new IllegalStateException(e);
         }
-        logMappings(dockerClient);
     }
 
     private boolean imageAvaliable(DockerClient dockerClient, String imageName) throws DockerException, InterruptedException {
