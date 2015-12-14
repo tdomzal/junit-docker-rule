@@ -1,10 +1,12 @@
 package pl.domzal.junit.docker.rule;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.junit.Rule;
@@ -49,6 +51,8 @@ public class DockerRule extends ExternalResource {
     private final String imageNameWithTag;
     private Map<String, List<PortBinding>> containerPorts;
 
+    private DockerLogs dockerLogs;
+
     public DockerRule(DockerRuleBuiler builder) {
         this.builder = builder;
         this.imageNameWithTag = imageNameWithTag(builder.imageName());
@@ -89,6 +93,8 @@ public class DockerRule extends ExternalResource {
             dockerClient.startContainer(container.id());
             log.debug("{} started", container.id());
 
+            attachLogs(dockerClient, container.id());
+
             ContainerInfo inspectContainer = dockerClient.inspectContainer(container.id());
             containerPorts = inspectContainer.networkSettings().ports();
             if (builder.waitForMessage()!=null) {
@@ -99,6 +105,17 @@ public class DockerRule extends ExternalResource {
         } catch (DockerException | InterruptedException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private void attachLogs(DockerClient dockerClient, String containerId) throws IOException, InterruptedException {
+        dockerLogs = new DockerLogs(dockerClient, containerId);
+        if (builder.stdoutWriter()!=null) {
+            dockerLogs.setStdoutWriter(builder.stdoutWriter());
+        }
+        if (builder.stderrWriter()!=null) {
+            dockerLogs.setStderrWriter(builder.stderrWriter());
+        }
+        dockerLogs.start();
     }
 
     private boolean imageAvaliable(DockerClient dockerClient, String imageName) throws DockerException, InterruptedException {
@@ -142,6 +159,7 @@ public class DockerRule extends ExternalResource {
     protected void after() {
         log.debug("after {}", container.id());
         try {
+            IOUtils.closeQuietly(dockerLogs);
             ContainerState state = dockerClient.inspectContainer(container.id()).state();
             log.debug("{} state {}", container.id(), state);
             if (state.running()) {

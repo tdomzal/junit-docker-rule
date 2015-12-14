@@ -1,6 +1,7 @@
 package pl.domzal.junit.docker.rule;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,6 +21,8 @@ public class DockerRuleBuiler {
     private int waitForMessageSeconds = WAIT_FOR_DEFAULT_SECONDS;
     private boolean keepContainer = false;
     private boolean imageAlwaysPull = false;
+    private PrintStream stdoutWriter;
+    private PrintStream stderrWriter;
 
     DockerRuleBuiler(){}
 
@@ -157,4 +160,27 @@ public class DockerRuleBuiler {
     public List<String> env() {
         return Collections.unmodifiableList(env);
     }
+
+    /**
+     * Redefine {@link PrintStream} STDOUT goes to.
+     */
+    public DockerRuleBuiler stdoutWriter(PrintStream stdoutWriter) {
+        this.stdoutWriter = stdoutWriter;
+        return this;
+    }
+    public PrintStream stdoutWriter() {
+        return stdoutWriter;
+    }
+
+    /**
+     * Redefine {@link PrintStream} STDERR goes to.
+     */
+    public DockerRuleBuiler stderrWriter(PrintStream stderrWriter) {
+        this.stderrWriter = stderrWriter;
+        return this;
+    }
+    public PrintStream stderrWriter() {
+        return stderrWriter;
+    }
+
 }
