@@ -39,13 +39,8 @@ public class DockerRuleImagePullTest {
         removeContainers(helperClient, "hello-world:latest");
         removeImage(helperClient, "hello-world:latest");
 
-        DockerRule testee = DockerRule.builder().imageName("hello-world:latest").build();
-        testee.before();
-        try {
-            assertTrue(imageAvaliable(helperClient, "hello-world:latest"));
-        } finally {
-            testee.after();
-        }
+        DockerRule.builder().imageName("hello-world:latest").build();
+        assertTrue(imageAvaliable(helperClient, "hello-world:latest"));
     }
 
     private void removeImage(DockerClient dockerClient, String imageName) throws DockerException, InterruptedException {

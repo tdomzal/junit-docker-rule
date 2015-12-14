@@ -70,25 +70,20 @@ public class DockerRule extends ExternalResource {
 
     @Override
     protected void before() throws Throwable {
-        super.before();
-
-        log.info("------------ before");
-
         HostConfig hostConfig = HostConfig.builder()//
                 .publishAllPorts(true)//
                 .binds(builder.binds())//
                 .extraHosts(builder.extraHosts())//
                 .build();
-
         ContainerConfig containerConfig = ContainerConfig.builder()//
                 .hostConfig(hostConfig)//
                 .image(imageNameWithTag)//
                 .env(builder.env())//
                 .networkDisabled(false)//
                 .cmd(builder.cmd()).build();
-
         try {
             this.container = dockerClient.createContainer(containerConfig);
+            log.debug("rule before {}", container.id());
             log.info("container {} created, id {}", imageNameWithTag, container.id());
 
             dockerClient.startContainer(container.id());
@@ -145,11 +140,10 @@ public class DockerRule extends ExternalResource {
 
     @Override
     protected void after() {
-        super.after();
-        log.info("------------ after");
+        log.debug("after {}", container.id());
         try {
             ContainerState state = dockerClient.inspectContainer(container.id()).state();
-            log.debug("container state: {}", state);
+            log.debug("{} state {}", container.id(), state);
             if (state.running()) {
                 dockerClient.stopContainer(container.id(), STOP_TIMEOUT);
                 log.info("{} stopped", container.id());
