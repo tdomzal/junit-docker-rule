@@ -130,7 +130,7 @@ public class DockerRule extends ExternalResource {
     private void waitForMessage() throws TimeoutException, InterruptedException {
         final String waitForMessage = builder.waitForMessage();
         log.info("{} waiting for log message '{}'", container.id(), waitForMessage);
-        new WaitForUnit(TimeUnit.SECONDS, 30, new WaitForCondition(){
+        new WaitForUnit(TimeUnit.SECONDS, builder.waitForMessageSeconds(), new WaitForCondition(){
             @Override
             public boolean isConditionMet() {
                 return getLog().contains(waitForMessage);

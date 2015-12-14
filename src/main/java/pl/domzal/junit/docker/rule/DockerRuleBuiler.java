@@ -9,12 +9,15 @@ import org.apache.commons.lang.StringUtils;
 
 public class DockerRuleBuiler {
 
+    private static final int WAIT_FOR_DEFAULT_SECONDS = 30;
+
     private String imageName;
     private List<String> binds = new ArrayList<>();
     private List<String> env = new ArrayList<>();
     private String[] cmd;
     private String[] extraHosts;
     private String waitForMessage;
+    private int waitForMessageSeconds = WAIT_FOR_DEFAULT_SECONDS;
     private boolean keepContainer = false;
     private boolean imageAlwaysPull = false;
 
@@ -67,13 +70,29 @@ public class DockerRuleBuiler {
 
     /**
      * Make rule to wait for specified text in log on container start.
+     *
+     * @param waitForMessage Message to wait for.
      */
     public DockerRuleBuiler waitForMessage(String waitForMessage) {
         this.waitForMessage = waitForMessage;
         return this;
     }
+    /**
+     * Make rule to wait for specified text in log on container start.
+     *
+     * @param waitForMessage Message to wait for.
+     * @param waitSeconds Number of seconds to wait. Rule startup will fail on timeout.
+     */
+    public DockerRuleBuiler waitForMessage(String waitForMessage, int waitSeconds) {
+        this.waitForMessage = waitForMessage;
+        this.waitForMessageSeconds = waitSeconds;
+        return this;
+    }
     public String waitForMessage() {
         return waitForMessage;
+    }
+    public int waitForMessageSeconds() {
+        return waitForMessageSeconds;
     }
 
     /**
