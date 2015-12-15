@@ -159,7 +159,7 @@ public class DockerRule extends ExternalResource {
     protected void after() {
         log.debug("after {}", container.id());
         try {
-            IOUtils.closeQuietly(dockerLogs);
+            dockerLogs.close();
             ContainerState state = dockerClient.inspectContainer(container.id()).state();
             log.debug("{} state {}", container.id(), state);
             if (state.running()) {

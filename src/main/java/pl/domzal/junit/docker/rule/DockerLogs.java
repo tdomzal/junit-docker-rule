@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerClient.LogsParam;
+import com.spotify.docker.client.LogStream;
 
 class DockerLogs implements Closeable {
 
@@ -68,9 +69,9 @@ class DockerLogs implements Closeable {
         executor.submit(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                dockerClient//
-                        .logs(containerId, LogsParam.stdout(), LogsParam.stderr(), LogsParam.follow())//
-                        .attach(stdoutPipeOutputStream, stderrPipeOutputStream);
+                LogStream logs = dockerClient.logs(containerId, LogsParam.stdout(), LogsParam.stderr(), LogsParam.follow());
+                logs.attach(stdoutPipeOutputStream, stderrPipeOutputStream);
+                logs.close();
                 return null;
             }
         });
