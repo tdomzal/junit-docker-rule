@@ -18,10 +18,15 @@ public class ExampleWaitForLogMessageTest {
             .build();
 
     @Test
-    public void shouldReadMountFromJavaFile() throws Throwable {
+    public void shouldWaitForLogMessage() throws Throwable {
+        String log = testee.getLog();
+        assertThat(log, containsString("02"));
+    }
+
+    @Test
+    public void shouldStopWaitingWhenLogMessageFound() throws Throwable {
         String log = testee.getLog();
         assertThat(log, not(containsString("05")));
-        testee.waitFor("05", 10);
     }
 
 }
