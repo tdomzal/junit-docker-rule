@@ -13,5 +13,5 @@ public interface DockerRuleMountBuilderTo {
      *
      * @param toPath Container target path
      */
-    DockerRuleBuiler to(String path);
+    DockerRuleBuiler to(String toPath);
 }
