@@ -11,7 +11,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.spotify.docker.client.messages.PortBinding;
 
-public class DockerRuleBuiler {
+public class DockerRuleBuilder {
 
     private static final int WAIT_FOR_DEFAULT_SECONDS = 30;
 
@@ -29,7 +29,7 @@ public class DockerRuleBuiler {
     private PrintStream stdoutWriter;
     private PrintStream stderrWriter;
 
-    DockerRuleBuiler(){}
+    DockerRuleBuilder(){}
 
     public DockerRule build() {
         return new DockerRule(this);
@@ -42,7 +42,7 @@ public class DockerRuleBuiler {
     /**
      * Command to execute on container.
      */
-    public DockerRuleBuiler cmd(String... cmd) {
+    public DockerRuleBuilder cmd(String... cmd) {
         this.cmd = cmd;
         return this;
     }
@@ -53,7 +53,7 @@ public class DockerRuleBuiler {
     /**
      * Image name to be used (required).
      */
-    public DockerRuleBuiler imageName(String imageName) {
+    public DockerRuleBuilder imageName(String imageName) {
         this.imageName = imageName;
         return this;
     }
@@ -68,7 +68,7 @@ public class DockerRuleBuiler {
      * Add extra host definitions into containers <code>/etc/hosts</code>.
      * @param extraHosts List of host matching format "hostname:address" (like desribed for 'docker run --add-host').
      */
-    public DockerRuleBuiler extraHosts(String... extraHosts) {
+    public DockerRuleBuilder extraHosts(String... extraHosts) {
         this.extraHosts = extraHosts;
         return this;
     }
@@ -81,7 +81,7 @@ public class DockerRuleBuiler {
      *
      * @param waitForMessage Message to wait for.
      */
-    public DockerRuleBuiler waitForMessage(String waitForMessage) {
+    public DockerRuleBuilder waitForMessage(String waitForMessage) {
         this.waitForMessage = waitForMessage;
         return this;
     }
@@ -91,7 +91,7 @@ public class DockerRuleBuiler {
      * @param waitForMessage Message to wait for.
      * @param waitSeconds Number of seconds to wait. Rule startup will fail on timeout.
      */
-    public DockerRuleBuiler waitForMessage(String waitForMessage, int waitSeconds) {
+    public DockerRuleBuilder waitForMessage(String waitForMessage, int waitSeconds) {
         this.waitForMessage = waitForMessage;
         this.waitForMessageSeconds = waitSeconds;
         return this;
@@ -106,7 +106,7 @@ public class DockerRuleBuiler {
     /**
      * Keep stopped container after test.
      */
-    public DockerRuleBuiler keepContainer(boolean keepContainer) {
+    public DockerRuleBuilder keepContainer(boolean keepContainer) {
         this.keepContainer = keepContainer;
         return this;
     }
@@ -117,7 +117,7 @@ public class DockerRuleBuiler {
     /**
      * Force image pull even when image is already present.
      */
-    public DockerRuleBuiler imageAlwaysPull(boolean alwaysPull) {
+    public DockerRuleBuilder imageAlwaysPull(boolean alwaysPull) {
         this.imageAlwaysPull = alwaysPull;
         return this;
     }
@@ -147,7 +147,7 @@ public class DockerRuleBuiler {
         String hostDirUnixPath = DockerRuleMountBuilder.toUnixStylePath(hostDir.getAbsolutePath());
         return new DockerRuleMountBuilder(this, hostDirUnixPath);
     }
-    DockerRuleBuiler addBind(String bindString) {
+    DockerRuleBuilder addBind(String bindString) {
         binds.add(bindString);
         return this;
     }
@@ -158,7 +158,7 @@ public class DockerRuleBuiler {
     /**
      * Set environment variable in the container.
      */
-    public DockerRuleBuiler env(String envName, String envValue) {
+    public DockerRuleBuilder env(String envName, String envValue) {
         env.add(String.format("%s=%s", envName, envValue));
         return this;
     }
@@ -176,7 +176,7 @@ public class DockerRuleBuiler {
      * @param hostPort Host port internal port will be mapped to.
      * @param containerPort Container port to map to host.
      */
-    public DockerRuleBuiler expose(String hostPort, String containerPort) {
+    public DockerRuleBuilder expose(String hostPort, String containerPort) {
         publishAllPorts = false;
         exposeBuilder.expose(hostPort, containerPort);
         return this;
@@ -188,7 +188,7 @@ public class DockerRuleBuiler {
     /**
      * Redefine {@link PrintStream} STDOUT goes to.
      */
-    public DockerRuleBuiler stdoutWriter(PrintStream stdoutWriter) {
+    public DockerRuleBuilder stdoutWriter(PrintStream stdoutWriter) {
         this.stdoutWriter = stdoutWriter;
         return this;
     }
@@ -199,7 +199,7 @@ public class DockerRuleBuiler {
     /**
      * Redefine {@link PrintStream} STDERR goes to.
      */
-    public DockerRuleBuiler stderrWriter(PrintStream stderrWriter) {
+    public DockerRuleBuilder stderrWriter(PrintStream stderrWriter) {
         this.stderrWriter = stderrWriter;
         return this;
     }
@@ -215,7 +215,7 @@ public class DockerRuleBuiler {
      *
      * @param publishAllPorts true if you want all container ports to be published by default.
      */
-    public DockerRuleBuiler publishAllPorts(boolean publishAllPorts) {
+    public DockerRuleBuilder publishAllPorts(boolean publishAllPorts) {
         this.publishAllPorts = publishAllPorts;
         return this;
     }

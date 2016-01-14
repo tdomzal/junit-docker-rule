@@ -46,13 +46,13 @@ public class DockerRule extends ExternalResource {
     private final DockerClient dockerClient;
     private ContainerCreation container;
 
-    private final DockerRuleBuiler builder;
+    private final DockerRuleBuilder builder;
     private final String imageNameWithTag;
     private Map<String, List<PortBinding>> containerPorts;
 
     private DockerLogs dockerLogs;
 
-    public DockerRule(DockerRuleBuiler builder) {
+    public DockerRule(DockerRuleBuilder builder) {
         this.builder = builder;
         this.imageNameWithTag = imageNameWithTag(builder.imageName());
         try {
@@ -67,8 +67,8 @@ public class DockerRule extends ExternalResource {
         }
     }
 
-    public static DockerRuleBuiler builder() {
-        return new DockerRuleBuiler();
+    public static DockerRuleBuilder builder() {
+        return new DockerRuleBuilder();
     }
 
     @Override

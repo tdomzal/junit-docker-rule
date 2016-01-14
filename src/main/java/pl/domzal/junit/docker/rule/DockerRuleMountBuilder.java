@@ -13,24 +13,24 @@ class DockerRuleMountBuilder implements DockerRuleMountBuilderTo {
     private static final String WIN_HOME_WIN_STYLE = "C:\\Users";
     private static final String WIN_HOME_UNIX_STYLE = "/c/Users";
 
-    private DockerRuleBuiler parentBuilder;
+    private DockerRuleBuilder parentBuilder;
 
     private String from;
     private String to;
     private String mode;
 
-    DockerRuleMountBuilder(DockerRuleBuiler parentBuilder, String fromPath) throws InvalidVolumeFrom {
+    DockerRuleMountBuilder(DockerRuleBuilder parentBuilder, String fromPath) throws InvalidVolumeFrom {
         this.parentBuilder = parentBuilder;
         this.from = assertValidMountFrom(fromPath);
     }
 
-    public DockerRuleBuiler to(String toPath, String mode) {
+    public DockerRuleBuilder to(String toPath, String mode) {
         this.to = toPath;
         this.mode = mode;
         return parentBuilder.addBind(toString());
     }
 
-    public DockerRuleBuiler to(String toPath) {
+    public DockerRuleBuilder to(String toPath) {
         this.to = toPath;
         return parentBuilder.addBind(toString());
     }
