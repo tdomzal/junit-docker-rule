@@ -46,7 +46,7 @@ public class DockerRuleBuiler {
         this.cmd = cmd;
         return this;
     }
-    public String[] cmd() {
+    String[] cmd() {
         return nullToEmpty(cmd);
     }
 
@@ -57,7 +57,7 @@ public class DockerRuleBuiler {
         this.imageName = imageName;
         return this;
     }
-    public String imageName() {
+    String imageName() {
         if (StringUtils.isEmpty(imageName)) {
             throw new IllegalStateException("imageName cannot be empty");
         }
@@ -72,7 +72,7 @@ public class DockerRuleBuiler {
         this.extraHosts = extraHosts;
         return this;
     }
-    public String[] extraHosts() {
+    String[] extraHosts() {
         return nullToEmpty(extraHosts);
     }
 
@@ -96,10 +96,10 @@ public class DockerRuleBuiler {
         this.waitForMessageSeconds = waitSeconds;
         return this;
     }
-    public String waitForMessage() {
+    String waitForMessage() {
         return waitForMessage;
     }
-    public int waitForMessageSeconds() {
+    int waitForMessageSeconds() {
         return waitForMessageSeconds;
     }
 
@@ -110,7 +110,7 @@ public class DockerRuleBuiler {
         this.keepContainer = keepContainer;
         return this;
     }
-    public boolean keepContainer() {
+    boolean keepContainer() {
         return keepContainer;
     }
 
@@ -121,7 +121,7 @@ public class DockerRuleBuiler {
         this.imageAlwaysPull = alwaysPull;
         return this;
     }
-    public boolean imageAlwaysPull() {
+    boolean imageAlwaysPull() {
         return imageAlwaysPull;
     }
 
@@ -151,7 +151,7 @@ public class DockerRuleBuiler {
         binds.add(bindString);
         return this;
     }
-    public List<String> binds() {
+    List<String> binds() {
         return binds;
     }
 
@@ -162,7 +162,7 @@ public class DockerRuleBuiler {
         env.add(String.format("%s=%s", envName, envValue));
         return this;
     }
-    public List<String> env() {
+    List<String> env() {
         return Collections.unmodifiableList(env);
     }
 
@@ -181,7 +181,7 @@ public class DockerRuleBuiler {
         exposeBuilder.expose(hostPort, containerPort);
         return this;
     }
-    public Map<String, List<PortBinding>> exposePortBindings() {
+    Map<String, List<PortBinding>> exposePortBindings() {
         return Collections.unmodifiableMap(exposeBuilder.build());
     }
 
@@ -192,7 +192,7 @@ public class DockerRuleBuiler {
         this.stdoutWriter = stdoutWriter;
         return this;
     }
-    public PrintStream stdoutWriter() {
+    PrintStream stdoutWriter() {
         return stdoutWriter;
     }
 
@@ -203,7 +203,7 @@ public class DockerRuleBuiler {
         this.stderrWriter = stderrWriter;
         return this;
     }
-    public PrintStream stderrWriter() {
+    PrintStream stderrWriter() {
         return stderrWriter;
     }
 
@@ -219,7 +219,7 @@ public class DockerRuleBuiler {
         this.publishAllPorts = publishAllPorts;
         return this;
     }
-    public boolean publishAllPorts() {
+    boolean publishAllPorts() {
         return publishAllPorts;
     }
 
