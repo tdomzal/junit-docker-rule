@@ -29,7 +29,6 @@ public class DockerRuleExposeContainerPortDynamicTest {
 
     @Test
     public void shouldExposeDynamicPortHttpPort() throws InterruptedException, IOException {
-        Thread.sleep(1000);
         assertTrue(AssertHtml.pageContainsString(nginxHome, "Welcome to nginx!"));
     }
 
