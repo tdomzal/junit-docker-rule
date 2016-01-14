@@ -74,7 +74,8 @@ public class DockerRule extends ExternalResource {
     @Override
     protected void before() throws Throwable {
         HostConfig hostConfig = HostConfig.builder()//
-                .publishAllPorts(true)//
+                .publishAllPorts(builder.publishAllPorts())//
+                .portBindings(builder.exposePortBindings())//
                 .binds(builder.binds())//
                 .extraHosts(builder.extraHosts())//
                 .build();

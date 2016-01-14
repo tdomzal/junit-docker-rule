@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 import pl.domzal.junit.docker.rule.AssertHtml;
 import pl.domzal.junit.docker.rule.DockerRule;
 
-public class ExampleExposeContainerPortTest {
+public class ExampleExposeContainerPortDynamicTest {
 
-    private static Logger log = LoggerFactory.getLogger(ExampleExposeContainerPortTest.class);
+    private static Logger log = LoggerFactory.getLogger(ExampleExposeContainerPortDynamicTest.class);
 
     @ClassRule
     public static DockerRule testee = DockerRule.builder()//
@@ -22,7 +22,7 @@ public class ExampleExposeContainerPortTest {
             .build();
 
     @Test
-    public void shouldExposePort() throws InterruptedException, IOException {
+    public void shouldExposeAllPorts() throws InterruptedException, IOException {
         String nginxHome = "http://"+testee.getDockerHost()+":"+testee.getExposedContainerPort("80")+"/";
         log.info("homepage: {}", nginxHome);
         assertTrue(AssertHtml.pageContainsString(nginxHome, "Welcome to nginx!"));

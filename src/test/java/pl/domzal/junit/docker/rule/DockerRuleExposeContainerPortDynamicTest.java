@@ -10,11 +10,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pl.domzal.junit.docker.rule.DockerRule;
+public class DockerRuleExposeContainerPortDynamicTest {
 
-public class DockerRuleExposePortTest {
-
-    private static Logger log = LoggerFactory.getLogger(DockerRuleExposePortTest.class);
+    private static Logger log = LoggerFactory.getLogger(DockerRuleExposeContainerPortDynamicTest.class);
 
     @ClassRule
     public static DockerRule testee = DockerRule.builder()//
@@ -30,10 +28,9 @@ public class DockerRuleExposePortTest {
     }
 
     @Test
-    public void shouldExposeNginxHttpPort() throws InterruptedException, IOException {
+    public void shouldExposeDynamicPortHttpPort() throws InterruptedException, IOException {
         Thread.sleep(1000);
         assertTrue(AssertHtml.pageContainsString(nginxHome, "Welcome to nginx!"));
     }
-
 
 }

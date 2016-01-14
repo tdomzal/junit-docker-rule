@@ -5,8 +5,11 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+
+import com.spotify.docker.client.messages.PortBinding;
 
 public class DockerRuleBuiler {
 
@@ -15,6 +18,8 @@ public class DockerRuleBuiler {
     private String imageName;
     private List<String> binds = new ArrayList<>();
     private List<String> env = new ArrayList<>();
+    private ExposePortBindingBuilder exposeBuilder = ExposePortBindingBuilder.builder();
+    private boolean publishAllPorts = true;
     private String[] cmd;
     private String[] extraHosts;
     private String waitForMessage;
@@ -162,6 +167,25 @@ public class DockerRuleBuiler {
     }
 
     /**
+     * Expose container port to specified host port. By default
+     * all container port are exposed to randomly assigned free
+     * host ports. <b>Using manual expose disables this so user must
+     * expose all required ports by hand</b>.
+     * TODO automatic exposure is disabled after single manual exposure
+     *
+     * @param hostPort Host port internal port will be mapped to.
+     * @param containerPort Container port to map to host.
+     */
+    public DockerRuleBuiler expose(String hostPort, String containerPort) {
+        publishAllPorts = false;
+        exposeBuilder.expose(hostPort, containerPort);
+        return this;
+    }
+    public Map<String, List<PortBinding>> exposePortBindings() {
+        return Collections.unmodifiableMap(exposeBuilder.build());
+    }
+
+    /**
      * Redefine {@link PrintStream} STDOUT goes to.
      */
     public DockerRuleBuiler stdoutWriter(PrintStream stdoutWriter) {
@@ -181,6 +205,22 @@ public class DockerRuleBuiler {
     }
     public PrintStream stderrWriter() {
         return stderrWriter;
+    }
+
+    /**
+     * Enable / disable publishing all container ports to dynamically
+     * allocated host ports. Publishing is enabled by default.
+     * Dynamic port container ports was mapped to can be read after start
+     * with {@link DockerRule#getExposedContainerPort(String)}.
+     *
+     * @param publishAllPorts true if you want all container ports to be published by default.
+     */
+    public DockerRuleBuiler publishAllPorts(boolean publishAllPorts) {
+        this.publishAllPorts = publishAllPorts;
+        return this;
+    }
+    public boolean publishAllPorts() {
+        return publishAllPorts;
     }
 
 }
