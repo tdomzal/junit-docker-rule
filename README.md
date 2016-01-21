@@ -22,7 +22,7 @@ You can just type...
     }
 	...
 
-... and tadaaa! contiainer is started just before your test case (and destroyed after).
+... and tadaaa! container is started just before your test case (and destroyed after).
 
 It was created as side product and I'll be more than happy if you'll find it useful ! 
 
@@ -47,7 +47,9 @@ Also - just type `DockerRule.builder().` .. and try code assist in your favorite
 
 ### 1. Make it available for your projects ###
 
-It is not (yet) publicly available in maven central so you must build it yourself. Assuming you have apache maven installed it's just:
+It is not (yet) publicly available in maven central so you must build it yourself. 
+
+Assuming you have apache maven installed it's just:
 
 	git clone https://github.com/tdomzal/junit-docker-rule.git
 	cd junit-docker-rule
