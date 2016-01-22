@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Level;
 import org.junit.Rule;
 import org.junit.rules.ExternalResource;
 import org.slf4j.Logger;
@@ -30,8 +29,7 @@ import com.spotify.docker.client.messages.Image;
 import com.spotify.docker.client.messages.NetworkSettings;
 import com.spotify.docker.client.messages.PortBinding;
 
-import pl.domzal.junit.wait.WaitForUnit;
-import pl.domzal.junit.wait.WaitForUnit.WaitForCondition;
+import pl.domzal.junit.docker.rule.WaitForUnit.WaitForCondition;
 
 /**
  * Simple docker container junit {@link Rule}.
@@ -235,8 +233,6 @@ public class DockerRule extends ExternalResource {
             }
 
         }) //
-        .setLogLevelBeginEnd(Level.DEBUG) //
-        .setLogLevelProgress(Level.TRACE) //
         .startWaiting();
     }
 

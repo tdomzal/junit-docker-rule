@@ -1,31 +1,28 @@
-package pl.domzal.junit.wait;
+package pl.domzal.junit.docker.rule;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Wait for condition ({@link WaitForCondition}) for time specified in {@link java.util.concurrent.TimeUnit}s.
  */
-public class WaitForUnit {
+class WaitForUnit {
 
     /**
      * Tick time between wait for condition check [ms].
      */
     public static final int DEFAULT_TICK_TIME_MS = 50;
 
-    private static Logger log = Logger.getLogger(WaitForUnit.class);
+    private static Logger log = LoggerFactory.getLogger(WaitForUnit.class);
 
     private final long waitMs;
     private final long tickMs;
     private final long deadlineTime;
     private final long startTime;
     private final WaitForCondition doneWaitingCondition;
-
-    private Level logLevelProgress = Level.TRACE;
-    private Level logLevelBeginEnd = Level.TRACE;
 
     /**
      * @param timeUnit Wait time unit
@@ -61,33 +58,17 @@ public class WaitForUnit {
         this.doneWaitingCondition = condition;
     }
 
-    public WaitForUnit setLogLevelBeginEnd(Level logLevel) {
-        this.logLevelBeginEnd = logLevel;
-        return this;
-    }
-
-    public WaitForUnit setLogLevelProgress(Level logLevel) {
-        this.logLevelProgress = logLevel;
-        return this;
-    }
-
     public void startWaiting() throws TimeoutException, InterruptedException {
         String conditionDescription = doneWaitingCondition.tickMessage();
-        if (log.isEnabledFor(logLevelBeginEnd)) {
-            log.log(logLevelBeginEnd, conditionDescription+" - started ("+waitMs+"ms)");
-        }
+        log.debug("{} - started ({}ms)", conditionDescription, waitMs);
         while (true) {
             long currentTime = System.currentTimeMillis();
             conditionDescription = doneWaitingCondition.tickMessage();
             if (doneWaitingCondition.isConditionMet()) {
-                if (log.isEnabledFor(logLevelBeginEnd)) {
-                    log.log(logLevelBeginEnd, conditionDescription+" - condition met in "+(currentTime-startTime)+" ms");
-                }
+                log.debug("{} - condition met in {} ms", conditionDescription, (currentTime - startTime));
                 return;
             } else {
-                if (log.isEnabledFor(logLevelProgress)) {
-                    log.log(logLevelProgress, conditionDescription+" - waiting...");
-                }
+                log.trace("{} - waiting...", conditionDescription);
             }
             TimeUnit.MILLISECONDS.sleep(tickMs);
             currentTime = System.currentTimeMillis();
@@ -98,7 +79,7 @@ public class WaitForUnit {
     private void assertTimeNotExceeded(String waitForConditionDescription, long currentTime) throws TimeoutException {
         if (currentTime > deadlineTime) {
             String timeoutTick = doneWaitingCondition.timeoutMessage();
-            log.warn(String.format("wait failed with %s", timeoutTick));
+            log.warn("wait failed with {}", timeoutTick);
             String errorMessage = "Condition ["+waitForConditionDescription+"] was not met for [" + (currentTime-startTime) + "/"+waitMs+"]ms, "+timeoutTick;
             // error visible in console
             log.error(errorMessage);
