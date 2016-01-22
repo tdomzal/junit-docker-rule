@@ -41,21 +41,31 @@ You can:
 
 Most of them are shown in [examples](src/test/java/pl/domzal/junit/docker/rule/examples/).
 
-Also - just type `DockerRule.builder().` .. and try code assist in your favorite IDE (Alt-Enter in IDEA, Ctrl-Space in Eclipse). 
+Also - just type `DockerRule.builder().` .. and try code assist in your favorite IDE (Alt-Enter in IDEA, Ctrl-Space in Eclipse) to see all possible options. 
 
 ## What do I need to use it ? ##
 
-### 1. Make it available for your projects ###
+### 1. Docker (of course) ###
 
-It is not (yet) publicly available in maven central so you must build it yourself. 
+Docker installed and configured - which in general means you must have docker variables (DOCKER\_HOST, DOCKER\_MACHINE\_NAME, ...) available in runtime. Preferred way to set them is via [docker-machine](https://docs.docker.com/machine/) command.
+
+### 2. Make library available for your maven projects ###
+
+Library it is not (yet) publicly available in maven central so you must build it yourself. 
 
 Assuming you have apache maven installed it's just:
 
 	git clone https://github.com/tdomzal/junit-docker-rule.git
 	cd junit-docker-rule
+	mvn install -DskipTests
+
+or, if you want to build with tests - substitute last command with:
+
 	mvn install
 
-### 2. Declare in you pom.xml ###
+Of course **test cases will run only if you have working docker environment**. 
+
+### 3. Declare in you pom.xml ###
 
     <dependency>
         <groupId>pl.domzal</groupId>
@@ -64,7 +74,7 @@ Assuming you have apache maven installed it's just:
 		<scope>test</scope>
     </dependency>
 
-### 3. Use ###
+### 4. Use ###
 
 	import pl.domzal.junit.docker.rule.DockerRule;
 
@@ -83,6 +93,8 @@ Assuming you have apache maven installed it's just:
 
 ## What else should I know for now ? ##
 
-- Please note this is work in progress (but all features are verified by tests)
+- It uses java [docker client from Spotify](https://github.com/spotify/docker-client)
+- Build and tested with docker 1.9
+- This is work in progress (but all features are verified by tests)
 - It's snapshot version so it's quite possible API may slightly change
 - Stable version it's on his way to maven central..
