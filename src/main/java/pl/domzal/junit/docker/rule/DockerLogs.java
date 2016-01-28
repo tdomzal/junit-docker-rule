@@ -56,7 +56,7 @@ class DockerLogs implements Closeable {
 
     public void start() throws IOException, InterruptedException {
 
-        String shortId = StringUtils.left(containerId, SHORT_ID_LEN);
+        final String shortId = StringUtils.left(containerId, SHORT_ID_LEN);
 
         final PipedInputStream stdoutInputStream = new PipedInputStream();
         final PipedInputStream stderrInputStream = new PipedInputStream();
@@ -69,9 +69,11 @@ class DockerLogs implements Closeable {
         executor.submit(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
+                log.trace("{} attaching to logs", shortId);
                 LogStream logs = dockerClient.logs(containerId, LogsParam.stdout(), LogsParam.stderr(), LogsParam.follow());
                 logs.attach(stdoutPipeOutputStream, stderrPipeOutputStream);
                 logs.close();
+                log.trace("{} dettached from logs", shortId);
                 return null;
             }
         });
@@ -101,11 +103,15 @@ class DockerLogs implements Closeable {
 
         @Override
         public void run() {
+            log.trace("{} printer thread started", prefix);
             try (Scanner scanner = new Scanner(inputStream)) {
                 while (scanner.hasNextLine()) {
-                    output.println(prefix + scanner.nextLine());
+                    String line = scanner.nextLine();
+                    log.trace("{} line: {}", prefix, line);
+                    output.println(prefix + line);
                 }
             }
+            log.trace("{} printer thread terminated", prefix);
         }
     }
 
