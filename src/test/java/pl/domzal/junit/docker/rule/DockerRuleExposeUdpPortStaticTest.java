@@ -3,7 +3,7 @@ package pl.domzal.junit.docker.rule;
 import org.junit.Rule;
 import org.junit.Test;
 
-public class DockerRuleExposeContainerUdpPortStaticTest {
+public class DockerRuleExposeUdpPortStaticTest {
 
     @Rule
     public DockerRule testee = DockerRule.builder()//

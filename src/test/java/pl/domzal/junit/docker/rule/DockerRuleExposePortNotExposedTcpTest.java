@@ -3,7 +3,7 @@ package pl.domzal.junit.docker.rule;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-public class DockerRuleExposeContainerPortNotExposedTcpTest {
+public class DockerRuleExposePortNotExposedTcpTest {
 
     @ClassRule
     public static DockerRule testee = DockerRule.builder()//

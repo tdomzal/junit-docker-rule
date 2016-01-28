@@ -10,26 +10,25 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DockerRuleExposeContainerPortStaticTest {
+public class DockerRuleExposePortExposeAllTest {
 
-    private static Logger log = LoggerFactory.getLogger(DockerRuleExposeContainerPortStaticTest.class);
+    private static Logger log = LoggerFactory.getLogger(DockerRuleExposePortExposeAllTest.class);
 
     @ClassRule
     public static DockerRule testee = DockerRule.builder()//
             .imageName("nginx")//
-            .expose("8123", "80")//
             .build();
 
     private String nginxHome;
 
     @Before
     public void setupHomepage() {
-        nginxHome = "http://"+testee.getDockerHost()+":8123/";
+        nginxHome = "http://"+testee.getDockerHost()+":"+testee.getExposedContainerPort("80")+"/";
         log.info("homepage: {}", nginxHome);
     }
 
     @Test
-    public void shouldExposeSpecifiedPort() throws InterruptedException, IOException {
+    public void shouldExposeDynamicPortHttpPort() throws InterruptedException, IOException {
         assertTrue(AssertHtml.pageContainsString(nginxHome, "Welcome to nginx!"));
     }
 

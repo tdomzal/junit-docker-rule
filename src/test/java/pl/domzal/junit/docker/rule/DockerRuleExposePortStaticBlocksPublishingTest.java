@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-public class DockerRuleExposeContainerPortStaticBlocksPublishingTest {
+public class DockerRuleExposePortStaticBlocksPublishingTest {
 
     @ClassRule
     public static DockerRule testee = DockerRule.builder()//
