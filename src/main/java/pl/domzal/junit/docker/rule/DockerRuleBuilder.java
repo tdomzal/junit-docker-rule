@@ -20,6 +20,7 @@ public class DockerRuleBuilder {
     private List<String> env = new ArrayList<>();
     private ExposePortBindingBuilder exposeBuilder = ExposePortBindingBuilder.builder();
     private boolean publishAllPorts = true;
+    private String[] entrypoint;
     private String[] cmd;
     private String[] extraHosts;
     private String waitForMessage;
@@ -37,6 +38,17 @@ public class DockerRuleBuilder {
 
     private static String[] nullToEmpty(String[] value) {
         return value==null ? new String[0] : value;
+    }
+
+    /**
+     * (Re)define entrypoint on container.
+     */
+    public DockerRuleBuilder entrypoint(String... entrypoint) {
+        this.entrypoint = entrypoint;
+        return this;
+    }
+    String[] entrypoint() {
+        return nullToEmpty(entrypoint);
     }
 
     /**

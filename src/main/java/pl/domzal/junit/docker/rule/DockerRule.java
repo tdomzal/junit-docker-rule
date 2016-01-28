@@ -82,6 +82,7 @@ public class DockerRule extends ExternalResource {
                 .image(imageNameWithTag)//
                 .env(builder.env())//
                 .networkDisabled(false)//
+                .entrypoint(builder.entrypoint())
                 .cmd(builder.cmd()).build();
         try {
             this.container = dockerClient.createContainer(containerConfig);
