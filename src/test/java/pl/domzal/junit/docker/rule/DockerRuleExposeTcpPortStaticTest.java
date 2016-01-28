@@ -3,6 +3,7 @@ package pl.domzal.junit.docker.rule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +11,7 @@ import com.spotify.docker.client.DockerException;
 import com.spotify.docker.client.messages.ContainerInfo;
 import com.spotify.docker.client.messages.NetworkSettings;
 
+@Category(test.category.Unstable.class)
 public class DockerRuleExposeTcpPortStaticTest {
 
     private static final Logger log = LoggerFactory.getLogger(DockerRuleExposeTcpPortStaticTest.class);

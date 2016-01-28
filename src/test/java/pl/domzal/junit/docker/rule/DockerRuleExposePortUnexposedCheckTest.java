@@ -4,7 +4,9 @@ import java.io.IOException;
 
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(test.category.Stable.class)
 public class DockerRuleExposePortUnexposedCheckTest {
 
     @ClassRule

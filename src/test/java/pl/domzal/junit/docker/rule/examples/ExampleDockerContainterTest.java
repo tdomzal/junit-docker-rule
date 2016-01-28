@@ -4,12 +4,14 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import pl.domzal.junit.docker.rule.DockerRule;
 
 /**
  * Start and stop container from test case (use {@link DockerRule} to build container but use it manually).
  */
+@Category(test.category.Stable.class)
 public class ExampleDockerContainterTest {
 
     @Test

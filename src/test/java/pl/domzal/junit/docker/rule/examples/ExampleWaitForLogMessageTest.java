@@ -5,12 +5,14 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import pl.domzal.junit.docker.rule.DockerRule;
 
 /**
  * Is it possible to wait for specified message appear in container log before starting test case.
  */
+@Category(test.category.Stable.class)
 public class ExampleWaitForLogMessageTest {
 
     @Rule

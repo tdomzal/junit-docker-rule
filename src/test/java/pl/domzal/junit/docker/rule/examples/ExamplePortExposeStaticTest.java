@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +16,7 @@ import pl.domzal.junit.docker.rule.DockerRule;
 /**
  * Is it possible to expose port manually.
  */
+@Category(test.category.Stable.class)
 public class ExamplePortExposeStaticTest {
 
     private static Logger log = LoggerFactory.getLogger(ExamplePortExposeStaticTest.class);

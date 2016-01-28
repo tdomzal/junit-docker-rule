@@ -2,7 +2,9 @@ package pl.domzal.junit.docker.rule;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(test.category.Stable.class)
 public class DockerRuleExposeUdpPortStaticTest {
 
     @Rule

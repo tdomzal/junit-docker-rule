@@ -7,9 +7,11 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Category(test.category.Stable.class)
 public class DockerRuleExposePortStaticTest {
 
     private static Logger log = LoggerFactory.getLogger(DockerRuleExposePortStaticTest.class);

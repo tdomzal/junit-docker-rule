@@ -8,6 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.rules.TemporaryFolder;
 
 import pl.domzal.junit.docker.rule.DockerRule;
@@ -17,6 +18,7 @@ import pl.domzal.junit.docker.rule.DockerRule;
  * But please note that in boot2docker environment it is only possible to mount
  * folder when it is subfolder of user homedir.
  */
+@Category(test.category.Stable.class)
 public class ExampleVolumeMountTest {
 
     @ClassRule

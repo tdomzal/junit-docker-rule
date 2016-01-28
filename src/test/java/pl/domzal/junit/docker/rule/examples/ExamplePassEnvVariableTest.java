@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.spotify.docker.client.DockerException;
 
@@ -15,6 +16,7 @@ import pl.domzal.junit.docker.rule.DockerRule;
 /**
  * Pass environment variable to container.
  */
+@Category(test.category.Stable.class)
 public class ExamplePassEnvVariableTest {
 
     @Rule

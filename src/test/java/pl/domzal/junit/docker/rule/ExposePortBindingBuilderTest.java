@@ -7,9 +7,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.spotify.docker.client.messages.PortBinding;
 
+@Category(test.category.Stable.class)
 public class ExposePortBindingBuilderTest {
 
     private static String BIND_ALL = ExposePortBindingBuilder.BIND_ALL;

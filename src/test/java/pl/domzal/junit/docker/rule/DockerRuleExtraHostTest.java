@@ -8,6 +8,7 @@ import java.io.IOException;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +17,7 @@ import com.spotify.docker.client.DockerClient.LogsParam;
 import com.spotify.docker.client.DockerException;
 import com.spotify.docker.client.LogStream;
 
+@Category(test.category.Stable.class)
 public class DockerRuleExtraHostTest {
 
     private static Logger log = LoggerFactory.getLogger(DockerRuleExtraHostTest.class);

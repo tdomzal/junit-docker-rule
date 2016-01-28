@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +18,7 @@ import com.spotify.docker.client.DockerClient.LogsParam;
 import com.spotify.docker.client.DockerException;
 import com.spotify.docker.client.LogStream;
 
+@Category(test.category.Stable.class)
 public class DockerRuleWaitForTest {
 
     private static Logger log = LoggerFactory.getLogger(DockerRuleWaitForTest.class);

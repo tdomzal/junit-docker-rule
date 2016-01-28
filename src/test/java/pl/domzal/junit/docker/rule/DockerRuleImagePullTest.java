@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +19,7 @@ import com.spotify.docker.client.messages.Container;
 import com.spotify.docker.client.messages.ContainerInfo;
 import com.spotify.docker.client.messages.Image;
 
+@Category(test.category.Stable.class)
 public class DockerRuleImagePullTest {
 
     private static Logger log = LoggerFactory.getLogger(DockerRuleImagePullTest.class);

@@ -8,7 +8,9 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(test.category.Stable.class)
 public class DockerRuleLogsTest {
 
     private final ByteArrayOutputStream out = new ByteArrayOutputStream();
