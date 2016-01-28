@@ -81,7 +81,7 @@ Of course **test cases will run only if you have working docker environment**.
 	public class MyTestCase {
 		...
 		@Rule
-		public static DockerRule testee = DockerRule.builder()
+		public DockerRule testee = DockerRule.builder()
             .imageName("nginx")
             // ... other build options (try code assist from your IDE to explore available options)
             .build();
