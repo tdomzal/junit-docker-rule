@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -193,8 +194,11 @@ public class DockerRuleBuilder {
         exposeBuilder.expose(hostPort, containerPort);
         return this;
     }
-    Map<String, List<PortBinding>> exposePortBindings() {
-        return Collections.unmodifiableMap(exposeBuilder.build());
+    Map<String, List<PortBinding>> hostPortBindings() {
+        return Collections.unmodifiableMap(exposeBuilder.hostBindings());
+    }
+    Set<String> containerExposedPorts() {
+        return exposeBuilder.containerExposedPorts();
     }
 
     /**

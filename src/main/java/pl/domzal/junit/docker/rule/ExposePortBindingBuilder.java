@@ -41,8 +41,12 @@ class ExposePortBindingBuilder {
         return this;
     }
 
-    public Map<String, List<PortBinding>> build() {
+    Map<String, List<PortBinding>> hostBindings() {
         return bindings;
+    }
+
+    Set<String> containerExposedPorts() {
+        return bindings.keySet();
     }
 
     private void assertIsNumber(String portToCheck) {

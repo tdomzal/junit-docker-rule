@@ -19,7 +19,7 @@ public class ExposePortBindingBuilderTest {
     public void shouldExposeSingleFixedPort() throws Exception {
         //when
         builder.expose("8080", "80");
-        Map<String, List<PortBinding>> build = builder.build();
+        Map<String, List<PortBinding>> build = builder.hostBindings();
 
         //then
         assertEquals(1, build.size());
@@ -34,7 +34,7 @@ public class ExposePortBindingBuilderTest {
     public void shouldExposeTwoDifferentPorts() {
         //when
         builder.expose("8181", "80").expose("7171", "70");
-        Map<String, List<PortBinding>> build = builder.build();
+        Map<String, List<PortBinding>> build = builder.hostBindings();
 
         //then
         assertEquals(2, build.size());
@@ -54,7 +54,7 @@ public class ExposePortBindingBuilderTest {
     public void shouldMergeSameContainerPort() {
         //when
         builder.expose("8181", "80").expose("7171", "80");
-        Map<String, List<PortBinding>> build = builder.build();
+        Map<String, List<PortBinding>> build = builder.hostBindings();
 
         //then
         assertEquals(1, build.size());

@@ -73,7 +73,7 @@ public class DockerRule extends ExternalResource {
     protected void before() throws Throwable {
         HostConfig hostConfig = HostConfig.builder()//
                 .publishAllPorts(builder.publishAllPorts())//
-                .portBindings(builder.exposePortBindings())//
+                .portBindings(builder.hostPortBindings())//
                 .binds(builder.binds())//
                 .extraHosts(builder.extraHosts())//
                 .build();
@@ -82,6 +82,7 @@ public class DockerRule extends ExternalResource {
                 .image(imageNameWithTag)//
                 .env(builder.env())//
                 .networkDisabled(false)//
+                .exposedPorts(builder.containerExposedPorts())
                 .entrypoint(builder.entrypoint())
                 .cmd(builder.cmd()).build();
         try {
