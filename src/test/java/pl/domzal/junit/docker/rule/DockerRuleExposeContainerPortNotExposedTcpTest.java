@@ -17,8 +17,7 @@ public class DockerRuleExposeContainerPortNotExposedTcpTest {
     public void shouldExposeSpecifiedPort() throws Throwable {
         DockerRule sender = DockerRule.builder()//
                 .imageName("alpine")//
-                .extraHosts("serv:"+testee.getDockerHost())
-                .cmd("sh", "-c", "echo 12345 | nc serv 4444; echo done")//
+                .cmd("sh", "-c", "echo 12345 | nc "+testee.getDockerHost()+" 4444; echo done")//
                 .waitForMessage("done")
                 .build();
         sender.before();
