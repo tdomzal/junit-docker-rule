@@ -18,6 +18,7 @@ import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerClient.ListImagesParam;
 import com.spotify.docker.client.DockerClient.LogsParam;
 import com.spotify.docker.client.DockerException;
+import com.spotify.docker.client.DockerRequestException;
 import com.spotify.docker.client.ImageNotFoundException;
 import com.spotify.docker.client.LogStream;
 import com.spotify.docker.client.messages.ContainerConfig;
@@ -102,6 +103,8 @@ public class DockerRule extends ExternalResource {
             }
             logMappings(dockerClient);
 
+        } catch (DockerRequestException e) {
+            throw new IllegalStateException(e.message(), e);
         } catch (DockerException | InterruptedException e) {
             throw new IllegalStateException(e);
         }
