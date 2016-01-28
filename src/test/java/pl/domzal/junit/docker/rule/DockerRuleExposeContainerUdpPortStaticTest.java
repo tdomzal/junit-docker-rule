@@ -1,0 +1,31 @@
+package pl.domzal.junit.docker.rule;
+
+import org.junit.Rule;
+import org.junit.Test;
+
+public class DockerRuleExposeContainerUdpPortStaticTest {
+
+    @Rule
+    public DockerRule testee = DockerRule.builder()//
+            .imageName("alpine")//
+            .expose("4445", "4445/udp")//
+            .cmd("sh", "-c", "echo started; nc -l -u -p 4445")
+            .waitForMessage("started")
+            .build();
+
+    @Test
+    public void shouldExposeSpecifiedUdpPort() throws Throwable {
+        DockerRule sender = DockerRule.builder()//
+                .imageName("alpine")//
+                .extraHosts("serv:"+testee.getDockerHost())
+                .cmd("sh", "-c", "echo 12345 | nc -u serv 4445")//
+                .build();
+        sender.before();
+        try {
+            testee.waitFor("12345", 5);
+        } finally {
+            sender.after();
+        }
+    }
+
+}

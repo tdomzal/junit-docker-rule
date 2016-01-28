@@ -27,10 +27,10 @@ class ExposePortBindingBuilder {
 
     public ExposePortBindingBuilder expose(String hostPort, String containerPort) {
         assertIsNumber(hostPort);
-        assertIsNumber(containerPort);
+        assertValidContainerPort(containerPort);
         assertHostPortNotAssigned(hostPort);
 
-        String containerBind = containerPort+"/tcp";
+        String containerBind = containerBindWithProtocol(containerPort);
         PortBinding hostBind = PortBinding.of(BIND_ALL, hostPort);
         if (bindings.containsKey(containerBind)) {
             bindings.get(containerBind).add(hostBind);
@@ -39,6 +39,17 @@ class ExposePortBindingBuilder {
         }
 
         return this;
+    }
+
+    private String containerBindWithProtocol(String containerPort) {
+        if (isPortWithProtocol(containerPort)) {
+            return containerPort;
+        } else if (StringUtils.isNumeric(containerPort)) {
+            return containerPort + "/tcp";
+        } else {
+            throw new InvalidPortDefinition(containerPort);
+        }
+
     }
 
     Map<String, List<PortBinding>> hostBindings() {
@@ -50,9 +61,27 @@ class ExposePortBindingBuilder {
     }
 
     private void assertIsNumber(String portToCheck) {
-        if ( ! StringUtils.containsOnly(portToCheck, "0123456789") ) {
-            throw new IllegalStateException("port ranges not allowed: "+portToCheck);
+        if ( ! StringUtils.isNumeric(portToCheck) ) {
+            throw new InvalidPortDefinition(portToCheck);
         }
+    }
+
+    private void assertValidContainerPort(String portToCheck) {
+        if (isPortWithProtocol(portToCheck)) {
+            // ok
+        } else if (StringUtils.isNumeric(portToCheck)) {
+            // ok
+        } else {
+            throw new InvalidPortDefinition(portToCheck);
+        }
+    }
+
+    private boolean isPortWithProtocol(String portToCheck) {
+        if (StringUtils.length(portToCheck) > 4 && (StringUtils.endsWith(portToCheck, "/tcp") || StringUtils.endsWith(portToCheck, "/udp"))) {
+            String port = StringUtils.left(portToCheck, portToCheck.length() - 4);
+            return StringUtils.isNumeric(port);
+        }
+        return false;
     }
 
     private void assertHostPortNotAssigned(String hostPort) {
