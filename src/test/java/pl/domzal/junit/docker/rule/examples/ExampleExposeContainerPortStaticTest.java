@@ -20,12 +20,12 @@ public class ExampleExposeContainerPortStaticTest {
     public static DockerRule testee = DockerRule.builder()//
             .imageName("nginx")//
             .publishAllPorts(false)//
-            .expose("8080", "80")
+            .expose("8123", "80")
             .build();
 
     @Test
     public void shouldExposeSpecifiedPort() throws InterruptedException, IOException {
-        String nginxHome = "http://"+testee.getDockerHost()+":8080/";
+        String nginxHome = "http://"+testee.getDockerHost()+":8123/";
         log.info("homepage: {}", nginxHome);
         assertTrue(AssertHtml.pageContainsString(nginxHome, "Welcome to nginx!"));
     }
