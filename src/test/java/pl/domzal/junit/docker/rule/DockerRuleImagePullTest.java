@@ -20,7 +20,7 @@ import com.spotify.docker.client.messages.Image;
 
 public class DockerRuleImagePullTest {
 
-    private static Logger log = LoggerFactory.getLogger(DockerRule.class);
+    private static Logger log = LoggerFactory.getLogger(DockerRuleImagePullTest.class);
 
     @Rule
     public DockerRule helperRule = DockerRule.builder()//
