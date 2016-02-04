@@ -7,8 +7,6 @@ import java.util.concurrent.TimeoutException;
 import org.junit.Rule;
 import org.junit.Test;
 
-import pl.domzal.junit.docker.rule.DockerRule;
-
 public class DockerRuleWaitForLogMessageTest {
 
     @Rule

@@ -10,8 +10,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import pl.domzal.junit.docker.rule.DockerRule;
-
 public class DockerRuleClassRuleInSuperclassTests {
 
     @ClassRule

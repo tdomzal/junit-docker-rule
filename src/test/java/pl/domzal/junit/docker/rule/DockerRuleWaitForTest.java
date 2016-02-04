@@ -14,9 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerClient.LogsParam;
-
-import pl.domzal.junit.docker.rule.DockerRule;
-
 import com.spotify.docker.client.DockerException;
 import com.spotify.docker.client.LogStream;
 
