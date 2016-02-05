@@ -66,6 +66,8 @@ public class DockerRule extends ExternalResource {
         this.imageNameWithTag = imageNameWithTag(builder.imageName());
         try {
             dockerClient = DefaultDockerClient.fromEnv().build();
+            log.debug("server.info: {}", dockerClient.info());
+            log.debug("server.version: {}", dockerClient.version());
             if (builder.imageAlwaysPull() || ! imageAvaliable(dockerClient, imageNameWithTag)) {
                 dockerClient.pull(imageNameWithTag);
             }
