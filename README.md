@@ -3,26 +3,42 @@
 
 ## What is it ? ##
 
-Simple [JUnit Rule](https://github.com/junit-team/junit/wiki/Rules) starting [docker](https://www.docker.com/) container right from your test case.
+Simple [JUnit Rule](https://github.com/junit-team/junit/wiki/Rules) starting [docker](https://www.docker.com/) container right for your test case:
 
-You can just type...
+    package org.example;
 
-    ...
-	@Rule
-    public static DockerRule testee = DockerRule.builder()
-            .imageName("nginx")
-            .publishAllPorts(false)
-            .expose("8080", "80")
-            .build();
+    import static org.hamcrest.CoreMatchers.containsString;
+    import static org.junit.Assert.assertThat;
 
-    @Test
-    public void shouldExposeSpecifiedPort() throws InterruptedException, IOException {
-        String nginxHome = "http://"+testee.getDockerHost()+":8080/";
-        assertTrue(AssertHtml.pageContainsString(nginxHome, "Welcome to nginx!"));
+    import java.io.IOException;
+    import org.apache.http.client.fluent.Request;
+    import org.junit.Rule;
+    import org.junit.Test;
+    import pl.domzal.junit.docker.rule.DockerRule;
+
+    public class HomepageExampleTest {
+
+        @Rule
+        public static DockerRule container = DockerRule.builder() //
+                .imageName("nginx") //
+                .build();
+
+        @Test
+        public void shouldExposePorts() throws InterruptedException, IOException {
+
+            // url container homepage will be exposed under
+            String homepage = "http://"+container.getDockerHost()+":"+container.getExposedContainerPort("80")+"/";
+
+            // lest use fluent apache http client to simply retrieve homepage content
+            String pageContent = Request.Get(homepage).connectTimeout(1000).socketTimeout(1000).execute().returnContent().asString();
+
+            // make sure this is indeed nginx welcome page
+            assertThat(pageContent, containsString("Welcome to nginx!"));
+        }
+
     }
-	...
 
-... and tadaaa! container is started just before your test case (and destroyed after).
+Container is started just before your test case and destroyed after.
 
 It was created as side product and I'll be more than happy if you'll find it useful ! 
 
@@ -30,16 +46,17 @@ It was created as side product and I'll be more than happy if you'll find it use
 
 You can:
 
+- use it as JUnit @Rule or @ClassRule
 - specify image name/tag
 - pass environment variables
 - publish all exposed port (to dynamically allocated host ports)
-- publish specified container ports to specified host ports (no port ranges support yet)
-- mount host directory as a data volume (with some restrictions works also under boot2docker!)
+- publish specified container ports to specified host ports (tcp or udp, no port ranges support yet)
+- mount host directory as a data volume (also works under boot2docker with restriction that directory must be under user homedir)
 - specify extra /etc/hosts entries
-- access container stderr and stdout (by default they are passed to java System.err and System.out)
+- access container stderr and stdout (passed to java System.err and System.out by default)
 - wait to specific message occuring in container output 
 
-Most of them are shown in [examples](src/test/java/pl/domzal/junit/docker/rule/examples/).
+See usage [examples](src/test/java/pl/domzal/junit/docker/rule/examples/) in test cases.
 
 Also - just type `DockerRule.builder().` .. and try code assist in your favorite IDE (Alt-Enter in IDEA, Ctrl-Space in Eclipse) to see all possible options. 
 
