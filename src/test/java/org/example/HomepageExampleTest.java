@@ -14,7 +14,7 @@ import pl.domzal.junit.docker.rule.DockerRule;
 public class HomepageExampleTest {
 
     @Rule
-    public static DockerRule container = DockerRule.builder() //
+    public DockerRule container = DockerRule.builder() //
             .imageName("nginx") //
             .build();
 

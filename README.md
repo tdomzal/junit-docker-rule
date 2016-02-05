@@ -19,7 +19,7 @@ Simple [JUnit Rule](https://github.com/junit-team/junit/wiki/Rules) starting [do
     public class HomepageExampleTest {
 
         @Rule
-        public static DockerRule container = DockerRule.builder() //
+        public DockerRule container = DockerRule.builder() //
                 .imageName("nginx") //
                 .build();
 
