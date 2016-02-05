@@ -17,7 +17,7 @@ public class DockerRuleExposeUdpPortStaticTest {
     public void shouldExposeSpecifiedUdpPort() throws Throwable {
         DockerRule sender = DockerRule.builder()//
                 .imageName("alpine")//
-                .extraHosts("serv:"+testee.getDockerHost())
+                .extraHosts("serv:"+testee.getDockerContainerGateway())
                 .cmd("sh", "-c", "echo 12345 | nc -u serv 4445")//
                 .build();
         sender.before();

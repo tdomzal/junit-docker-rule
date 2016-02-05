@@ -55,9 +55,12 @@ public class DockerRule extends ExternalResource {
 
     private final DockerRuleBuilder builder;
     private final String imageNameWithTag;
+    private String containerIp;
+    private String containerGateway;
     private Map<String, List<PortBinding>> containerPorts;
 
     private DockerLogs dockerLogs;
+
 
     DockerRule(DockerRuleBuilder builder) {
         this.builder = builder;
@@ -112,12 +115,14 @@ public class DockerRule extends ExternalResource {
 
             attachLogs(dockerClient, container.id());
 
-            ContainerInfo inspectContainer = dockerClient.inspectContainer(container.id());
-            containerPorts = inspectContainer.networkSettings().ports();
+            ContainerInfo containerInfo = dockerClient.inspectContainer(container.id());
+            containerIp = containerInfo.networkSettings().ipAddress();
+            containerPorts = containerInfo.networkSettings().ports();
+            containerGateway = containerInfo.networkSettings().gateway();
             if (builder.waitForMessage()!=null) {
                 waitForMessage();
             }
-            logExposedPorts(dockerClient);
+            logNetworkSettings();
 
         } catch (DockerRequestException e) {
             throw new IllegalStateException(e.message(), e);
@@ -203,10 +208,22 @@ public class DockerRule extends ExternalResource {
     }
 
     /**
-     * Address of docker host.
+     * Address of docker host. <b>Please note this is address of docker host as seen by docker client library
+     * so it may not be valid docker host address in different contexts</b>.
+     * <br/>
+     * For example, if tests are run in unix-like environment with docker host on the same machine,
+     * it will contain 'localhost' and will not point to docker host from inside container.
+     * In such cases one should use {@link #getDockerContainerGateway()}.
      */
     public final String getDockerHost() {
         return dockerClient.getHost();
+    }
+
+    /**
+     * Address of docker container gateway.
+     */
+    public final String getDockerContainerGateway() {
+        return containerGateway;
     }
 
     /**
@@ -231,10 +248,8 @@ public class DockerRule extends ExternalResource {
         return list.get(0).hostPort();
     }
 
-    private void logExposedPorts(DockerClient dockerClient) throws DockerException, InterruptedException {
-        ContainerInfo inspectContainer = dockerClient.inspectContainer(container.id());
-        NetworkSettings networkSettings = inspectContainer.networkSettings();
-        log.info("{} exposed ports: {}", container.id(), networkSettings.ports());
+    private void logNetworkSettings() {
+        log.info("{} docker host: {}, ip: {}, gateway: {}, exposed ports: {}", container.id(), dockerClient.getHost(), containerIp, containerGateway, containerPorts);
     }
 
     /**
@@ -266,7 +281,7 @@ public class DockerRule extends ExternalResource {
     }
 
     /**
-     * Wait for container exit. Please note this is blocking call.
+     * Block until container exit.
      */
     public void waitForExit() throws InterruptedException {
         try {
