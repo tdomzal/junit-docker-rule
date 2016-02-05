@@ -24,7 +24,7 @@ public class HomepageExampleTest {
         // url container homepage will be exposed under
         String homepage = "http://"+container.getDockerHost()+":"+container.getExposedContainerPort("80")+"/";
 
-        // lest use fluent apache http client to simply retrieve homepage content
+        // use fluent apache http client to retrieve homepage content
         String pageContent = Request.Get(homepage).connectTimeout(1000).socketTimeout(1000).execute().returnContent().asString();
 
         // make sure this is indeed nginx welcome page

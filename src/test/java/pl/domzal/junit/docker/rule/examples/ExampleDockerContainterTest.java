@@ -8,7 +8,7 @@ import org.junit.Test;
 import pl.domzal.junit.docker.rule.DockerRule;
 
 /**
- * Start and stop container manually (not as junit rule).
+ * Start and stop container from test case (use {@link DockerRule} to build container but use it manually).
  */
 public class ExampleDockerContainterTest {
 

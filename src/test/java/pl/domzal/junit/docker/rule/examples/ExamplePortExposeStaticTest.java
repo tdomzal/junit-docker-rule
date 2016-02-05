@@ -12,14 +12,17 @@ import org.slf4j.LoggerFactory;
 import pl.domzal.junit.docker.rule.AssertHtml;
 import pl.domzal.junit.docker.rule.DockerRule;
 
-public class ExampleExposeContainerPortStaticTest {
+/**
+ * Is it possible to expose port manually.
+ */
+public class ExamplePortExposeStaticTest {
 
-    private static Logger log = LoggerFactory.getLogger(ExampleExposeContainerPortStaticTest.class);
+    private static Logger log = LoggerFactory.getLogger(ExamplePortExposeStaticTest.class);
 
     @ClassRule
-    public static DockerRule testee = DockerRule.builder()//
-            .imageName("nginx")//
-            .publishAllPorts(false)//
+    public static DockerRule testee = DockerRule.builder() //
+            .imageName("nginx") //
+            .publishAllPorts(false) // publishAllPorts is disabled when expose(...) is used but we make it explicit here
             .expose("8123", "80")
             .build();
 

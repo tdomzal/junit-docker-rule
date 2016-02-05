@@ -12,6 +12,9 @@ import com.spotify.docker.client.DockerException;
 
 import pl.domzal.junit.docker.rule.DockerRule;
 
+/**
+ * Pass environment variable to container.
+ */
 public class ExamplePassEnvVariableTest {
 
     @Rule

@@ -8,6 +8,9 @@ import org.junit.Test;
 
 import pl.domzal.junit.docker.rule.DockerRule;
 
+/**
+ * Is it possible to wait for specified message appear in container log before starting test case.
+ */
 public class ExampleWaitForLogMessageTest {
 
     @Rule
@@ -21,11 +24,6 @@ public class ExampleWaitForLogMessageTest {
     public void shouldWaitForLogMessage() throws Throwable {
         String log = testee.getLog();
         assertThat(log, containsString("02"));
-    }
-
-    @Test
-    public void shouldStopWaitingWhenLogMessageFound() throws Throwable {
-        String log = testee.getLog();
         assertThat(log, not(containsString("05")));
     }
 

@@ -12,9 +12,12 @@ import org.slf4j.LoggerFactory;
 import pl.domzal.junit.docker.rule.AssertHtml;
 import pl.domzal.junit.docker.rule.DockerRule;
 
-public class ExampleExposeContainerPortDynamicTest {
+/**
+ * Port 80 specified in Nginx Dockerfile is exposed to dynamically selected port on docker host.
+ */
+public class ExamplePortExposeAllTest {
 
-    private static Logger log = LoggerFactory.getLogger(ExampleExposeContainerPortDynamicTest.class);
+    private static Logger log = LoggerFactory.getLogger(ExamplePortExposeAllTest.class);
 
     @ClassRule
     public static DockerRule testee = DockerRule.builder()//

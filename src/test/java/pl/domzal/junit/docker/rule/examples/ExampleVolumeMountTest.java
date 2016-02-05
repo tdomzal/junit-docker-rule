@@ -12,6 +12,11 @@ import org.junit.rules.TemporaryFolder;
 
 import pl.domzal.junit.docker.rule.DockerRule;
 
+/**
+ * Is it possible to mount specified local folder as container volume. <br/>
+ * But please note that in boot2docker environment it is only possible to mount
+ * folder when it is subfolder of user homedir.
+ */
 public class ExampleVolumeMountTest {
 
     @ClassRule

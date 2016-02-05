@@ -184,7 +184,6 @@ public class DockerRuleBuilder {
      * all container port are exposed to randomly assigned free
      * host ports. <b>Using manual expose disables this so user must
      * expose all required ports by hand</b>.
-     * TODO automatic exposure is disabled after single manual exposure
      *
      * @param hostPort Host port internal port will be mapped to.
      * @param containerPort Container port to map to host.

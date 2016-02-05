@@ -12,6 +12,9 @@ import com.spotify.docker.client.DockerException;
 
 import pl.domzal.junit.docker.rule.DockerRule;
 
+/**
+ * Add extra host entry to container <code>/etc/hosts</code>.
+ */
 public class ExampleAddExtraHostTest {
 
     @Rule
