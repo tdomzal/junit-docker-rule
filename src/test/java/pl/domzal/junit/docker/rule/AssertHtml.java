@@ -13,7 +13,7 @@ public class AssertHtml {
 
     public static boolean pageContainsString(String remotePageUrl, String containsString) {
         try {
-            Content content = Request.Get(remotePageUrl).execute().returnContent();
+            Content content = Request.Get(remotePageUrl).connectTimeout(1000).socketTimeout(1000).execute().returnContent();
             String pageContent = content.asString();
             log.debug("\n"+pageContent);
             return pageContent.contains(containsString);
