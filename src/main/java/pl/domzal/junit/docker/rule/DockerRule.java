@@ -33,7 +33,15 @@ import com.spotify.docker.client.messages.PortBinding;
 import pl.domzal.junit.docker.rule.WaitForUnit.WaitForCondition;
 
 /**
- * Simple docker container junit {@link Rule}.
+ * Simple docker container junit {@link Rule}.<br/>
+ * Instances should be created via builder:
+ * <pre>
+ *  &#064;Rule
+ *  DockerRule container = DockerRule.builder()
+ *      . //configuration directives
+ *      .build();
+ * </pre>
+ * <br/>
  * Inspired by and loosely based on osheeshel/DockerContainerRule - see {@link https://gist.github.com/mosheeshel/c427b43c36b256731a0b}.
  */
 public class DockerRule extends ExternalResource {
@@ -51,7 +59,7 @@ public class DockerRule extends ExternalResource {
 
     private DockerLogs dockerLogs;
 
-    public DockerRule(DockerRuleBuilder builder) {
+    DockerRule(DockerRuleBuilder builder) {
         this.builder = builder;
         this.imageNameWithTag = imageNameWithTag(builder.imageName());
         try {
@@ -66,12 +74,20 @@ public class DockerRule extends ExternalResource {
         }
     }
 
+    /**
+     * Builder to specify parameters and produce {@link DockerRule} instance.
+     */
     public static DockerRuleBuilder builder() {
         return new DockerRuleBuilder();
     }
 
+    /**
+     * Create and start container.<br/>
+     * This is {@link ExternalResource#before()} made available as public - it may be helpful in scenarios
+     * when you want to use {@link DockerRule} and operate it manually.
+     */
     @Override
-    protected void before() throws Throwable {
+    public final void before() throws Throwable {
         HostConfig hostConfig = HostConfig.builder()//
                 .publishAllPorts(builder.publishAllPorts())//
                 .portBindings(builder.hostPortBindings())//
@@ -101,7 +117,7 @@ public class DockerRule extends ExternalResource {
             if (builder.waitForMessage()!=null) {
                 waitForMessage();
             }
-            logMappings(dockerClient);
+            logExposedPorts(dockerClient);
 
         } catch (DockerRequestException e) {
             throw new IllegalStateException(e.message(), e);
@@ -158,8 +174,13 @@ public class DockerRule extends ExternalResource {
         log.debug("{} message '{}' found", container.id(), waitForMessage);
     }
 
+    /**
+     * Stop and remove container.<br/>
+     * This is {@link ExternalResource#before()} made available as public - it may be helpful in scenarios
+     * when you want to use {@link DockerRule} and operate it manually.
+     */
     @Override
-    protected void after() {
+    public final void after() {
         log.debug("after {}", container.id());
         try {
             dockerLogs.close();
@@ -181,6 +202,9 @@ public class DockerRule extends ExternalResource {
         }
     }
 
+    /**
+     * Address of docker host.
+     */
     public final String getDockerHost() {
         return dockerClient.getHost();
     }
@@ -207,7 +231,7 @@ public class DockerRule extends ExternalResource {
         return list.get(0).hostPort();
     }
 
-    private void logMappings(DockerClient dockerClient) throws DockerException, InterruptedException {
+    private void logExposedPorts(DockerClient dockerClient) throws DockerException, InterruptedException {
         ContainerInfo inspectContainer = dockerClient.inspectContainer(container.id());
         NetworkSettings networkSettings = inspectContainer.networkSettings();
         log.info("{} exposed ports: {}", container.id(), networkSettings.ports());
