@@ -221,6 +221,13 @@ public class DockerRule extends ExternalResource {
     }
 
     /**
+     * Address of docker container.
+     */
+    public final String getDockerContainerIp() {
+        return containerIp;
+    }
+
+    /**
      * Address of docker container gateway.
      */
     public final String getDockerContainerGateway() {

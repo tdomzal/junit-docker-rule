@@ -27,10 +27,12 @@ public class DockerRuleExposeTcpPortStaticTest {
 
     @Test
     public void shouldExposeSpecifiedPort() throws Throwable {
+        String testeeIp = testee.getDockerContainerIp();
+        log.debug("server.ip: {}", testeeIp);
         DockerRule sender = DockerRule.builder() //
                 .imageName("alpine") //
-                .extraHosts("serv:"+testee.getDockerContainerGateway())
-                .cmd("sh", "-c", "echo 12345 | nc serv 4444; echo done") //
+                .extraHosts("serv:"+testeeIp)
+                .cmd("sh", "-c", "ping -w 3 $(ip route | grep default | cut -d ' ' -f 3) | echo 12345 | nc serv 4444; echo done") //
                 .waitForMessage("done") //
                 .build();
         sender.before();
