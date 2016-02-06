@@ -7,8 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.spotify.docker.client.DockerException;
-import com.spotify.docker.client.messages.ContainerInfo;
-import com.spotify.docker.client.messages.NetworkSettings;
 
 public class DockerRuleExposeTcpPortStaticTest {
 
@@ -24,10 +22,7 @@ public class DockerRuleExposeTcpPortStaticTest {
 
     @Before
     public void logNetworkConfig() throws DockerException, InterruptedException {
-        ContainerInfo containerInfo = testee.getDockerClient().inspectContainer(testee.getContainerId());
-        NetworkSettings networkSettings = containerInfo.networkSettings();
-        //networkSettings.
-        log.debug("containerInfo.network: {}", networkSettings);
+        log.debug("server.network: {}", testee.getDockerClient().inspectContainer(testee.getContainerId()).networkSettings());
     }
 
     @Test
@@ -40,6 +35,7 @@ public class DockerRuleExposeTcpPortStaticTest {
                 .build();
         sender.before();
         try {
+            log.debug("sender.network: {}", sender.getDockerClient().inspectContainer(sender.getContainerId()).networkSettings());
             testee.waitFor("12345", 5);
         } finally {
             sender.after();
