@@ -19,14 +19,14 @@ public class DockerRuleExposePortStaticTest {
     @ClassRule
     public static DockerRule testee = DockerRule.builder()//
             .imageName("nginx")//
-            .expose("8123", "80")//
+            .expose("8124", "80")//
             .build();
 
     private String nginxHome;
 
     @Before
     public void setupHomepage() {
-        nginxHome = "http://"+testee.getDockerHost()+":8123/";
+        nginxHome = "http://"+testee.getDockerHost()+":8124/";
         log.info("homepage: {}", nginxHome);
     }
 

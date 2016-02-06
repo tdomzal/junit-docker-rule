@@ -12,7 +12,7 @@ public class DockerRuleExposePortUnexposedCheckTest {
     @ClassRule
     public static DockerRule testee = DockerRule.builder()//
             .imageName("nginx")//
-            .expose("8123", "81")//
+            .expose("8125", "81")//
             .build();
 
     @Test(expected = IllegalStateException.class)
