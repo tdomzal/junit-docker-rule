@@ -29,6 +29,7 @@ public class DockerRuleExposeTcpPortStaticTest {
     public void shouldExposeSpecifiedPortToGateway() throws Throwable {
         String gatewayIp = testee.getDockerContainerGateway();
         log.debug("gateway.ip: {}", gatewayIp);
+        Thread.sleep(3000);
         DockerRule sender = DockerRule.builder() //
                 .imageName("alpine") //
                 .extraHosts("serv:"+gatewayIp)
