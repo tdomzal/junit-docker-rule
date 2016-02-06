@@ -30,7 +30,7 @@ Simple [JUnit Rule](https://github.com/junit-team/junit/wiki/Rules) starting [do
             // url container homepage will be exposed under
             String homepage = "http://"+container.getDockerHost()+":"+container.getExposedContainerPort("80")+"/";
 
-            // lest use fluent apache http client to simply retrieve homepage content
+            // use fluent apache http client to retrieve homepage content
             String pageContent = Request.Get(homepage).connectTimeout(1000).socketTimeout(1000).execute().returnContent().asString();
 
             // make sure this is indeed nginx welcome page
@@ -50,12 +50,12 @@ You can:
 - use it as JUnit @Rule or @ClassRule
 - specify image name/tag
 - pass environment variables
-- publish all exposed port (to dynamically allocated host ports)
+- publish all exposed port to dynamically allocated host ports
 - publish specified container ports to specified host ports (tcp or udp, no port ranges support yet)
-- mount host directory as a data volume (also works under boot2docker with restriction that directory must be under user homedir)
+- mount host directory as a data volume (also works for dirs from workstation to boot2docker container with restriction that dir must be under user homedir)
 - specify extra /etc/hosts entries
-- access container stderr and stdout (passed to java System.err and System.out by default)
-- wait to specific message occuring in container output 
+- access container stderr and stdout (forwarded to java System.err and System.out by default)
+- wait for message in container output 
 
 See usage [examples](src/test/java/pl/domzal/junit/docker/rule/examples/) in test cases.
 
