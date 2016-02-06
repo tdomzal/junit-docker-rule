@@ -56,7 +56,7 @@ class DockerLogs implements Closeable {
 
     public void start() throws IOException, InterruptedException {
 
-        final String shortId = StringUtils.left(containerId, SHORT_ID_LEN);
+        final String containerShortId = StringUtils.left(containerId, SHORT_ID_LEN);
 
         final PipedInputStream stdoutInputStream = new PipedInputStream();
         final PipedInputStream stderrInputStream = new PipedInputStream();
@@ -64,16 +64,16 @@ class DockerLogs implements Closeable {
         final PipedOutputStream stdoutPipeOutputStream = new PipedOutputStream(stdoutInputStream);
         final PipedOutputStream stderrPipeOutputStream = new PipedOutputStream(stderrInputStream);
 
-        executor.submit(new IsPrinter(shortId+"-stdout> ", stdoutInputStream, stdoutWriter));
-        executor.submit(new IsPrinter(shortId+"-stderr> ", stderrInputStream, stderrWriter));
+        executor.submit(new IsPrinter(containerShortId+"-stdout> ", stdoutInputStream, stdoutWriter));
+        executor.submit(new IsPrinter(containerShortId+"-stderr> ", stderrInputStream, stderrWriter));
         executor.submit(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                log.trace("{} attaching to logs", shortId);
+                log.trace("{} attaching to logs", containerShortId);
                 LogStream logs = dockerClient.logs(containerId, LogsParam.stdout(), LogsParam.stderr(), LogsParam.follow());
                 logs.attach(stdoutPipeOutputStream, stderrPipeOutputStream);
                 logs.close();
-                log.trace("{} dettached from logs", shortId);
+                log.trace("{} dettached from logs", containerShortId);
                 return null;
             }
         });

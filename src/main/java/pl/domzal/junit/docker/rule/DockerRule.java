@@ -48,18 +48,19 @@ public class DockerRule extends ExternalResource {
     private static Logger log = LoggerFactory.getLogger(DockerRule.class);
 
     private static final int STOP_TIMEOUT = 5;
-
-    private final DockerClient dockerClient;
-    private ContainerCreation container;
+    private static final int SHORT_ID_LEN = 12;
 
     private final DockerRuleBuilder builder;
     private final String imageNameWithTag;
+    private final DockerClient dockerClient;
+
+    private ContainerCreation container;
+    private String containerShortId;
     private String containerIp;
     private String containerGateway;
     private Map<String, List<PortBinding>> containerPorts;
 
     private DockerLogs dockerLogs;
-
 
     DockerRule(DockerRuleBuilder builder) {
         this.builder = builder;
@@ -108,11 +109,12 @@ public class DockerRule extends ExternalResource {
                 .cmd(builder.cmd()).build();
         try {
             this.container = dockerClient.createContainer(containerConfig);
-            log.debug("rule before {}", container.id());
-            log.info("container {} created, id {}", imageNameWithTag, container.id());
+            this.containerShortId = StringUtils.left(container.id(), SHORT_ID_LEN);
+            log.info("container {} created, id {}, short id {}", imageNameWithTag, container.id(), containerShortId);
+            log.debug("rule before {}", containerShortId);
 
             dockerClient.startContainer(container.id());
-            log.debug("{} started", container.id());
+            log.debug("{} started", containerShortId);
 
             attachLogs(dockerClient, container.id());
 
@@ -166,7 +168,7 @@ public class DockerRule extends ExternalResource {
 
     private void waitForMessage() throws TimeoutException, InterruptedException {
         final String waitForMessage = builder.waitForMessage();
-        log.info("{} waiting for log message '{}'", container.id(), waitForMessage);
+        log.info("{} waiting for log message '{}'", containerShortId, waitForMessage);
         new WaitForUnit(TimeUnit.SECONDS, builder.waitForMessageSeconds(), new WaitForCondition(){
             @Override
             public boolean isConditionMet() {
@@ -177,7 +179,7 @@ public class DockerRule extends ExternalResource {
                 return String.format("Timeout waiting for '%s'", waitForMessage);
             }
         }).startWaiting();
-        log.debug("{} message '{}' found", container.id(), waitForMessage);
+        log.debug("{} message '{}' found", containerShortId, waitForMessage);
     }
 
     /**
@@ -187,18 +189,18 @@ public class DockerRule extends ExternalResource {
      */
     @Override
     public final void after() {
-        log.debug("after {}", container.id());
+        log.debug("after {}", containerShortId);
         try {
             dockerLogs.close();
             ContainerState state = dockerClient.inspectContainer(container.id()).state();
-            log.debug("{} state {}", container.id(), state);
+            log.debug("{} state {}", containerShortId, state);
             if (state.running()) {
                 dockerClient.stopContainer(container.id(), STOP_TIMEOUT);
-                log.info("{} stopped", container.id());
+                log.info("{} stopped", containerShortId);
             }
             if (!builder.keepContainer()) {
                 dockerClient.removeContainer(container.id(), true);
-                log.info("{} deleted", container.id());
+                log.info("{} deleted", containerShortId);
                 container = null;
             }
         } catch (DockerException e) {
@@ -250,7 +252,7 @@ public class DockerRule extends ExternalResource {
     }
 
     private void logNetworkSettings() {
-        log.info("{} docker host: {}, ip: {}, gateway: {}, exposed ports: {}", container.id(), dockerClient.getHost(), containerIp, containerGateway, containerPorts);
+        log.info("{} docker host: {}, ip: {}, gateway: {}, exposed ports: {}", containerShortId, dockerClient.getHost(), containerIp, containerGateway, containerPorts);
     }
 
     /**
@@ -299,7 +301,7 @@ public class DockerRule extends ExternalResource {
         try (LogStream stream = dockerClient.logs(container.id(), LogsParam.stdout(), LogsParam.stderr());) {
             String fullLog = stream.readFully();
             if (log.isTraceEnabled()) {
-                log.trace("{} full log: {}", container.id(), StringUtils.replace(fullLog, "\n", "|"));
+                log.trace("{} full log: {}", containerShortId, StringUtils.replace(fullLog, "\n", "|"));
             }
             return fullLog;
         } catch (DockerException | InterruptedException e) {
