@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/tdomzal/junit-docker-rule.svg?branch=master)](https://travis-ci.org/tdomzal/junit-docker-rule)
+[![Dependency Status](https://www.versioneye.com/user/projects/56b649da0a0ff5002c86035a/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56b649da0a0ff5002c86035a)
 # junit-docker-rule #
 
 ## What is it ? ##
