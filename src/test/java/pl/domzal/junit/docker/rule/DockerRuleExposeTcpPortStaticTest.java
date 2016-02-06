@@ -26,7 +26,26 @@ public class DockerRuleExposeTcpPortStaticTest {
     }
 
     @Test
-    public void shouldExposeSpecifiedPort() throws Throwable {
+    public void shouldExposeSpecifiedPortToGateway() throws Throwable {
+        String gatewayIp = testee.getDockerContainerGateway();
+        log.debug("gateway.ip: {}", gatewayIp);
+        DockerRule sender = DockerRule.builder() //
+                .imageName("alpine") //
+                .extraHosts("serv:"+gatewayIp)
+                .cmd("sh", "-c", "ping -w 3 $(ip route | grep default | cut -d ' ' -f 3) | echo 12345 | nc serv 4444; echo done") //
+                .waitForMessage("done") //
+                .build();
+        sender.before();
+        try {
+            log.debug("sender.network: {}", sender.getDockerClient().inspectContainer(sender.getContainerId()).networkSettings());
+            testee.waitFor("12345", 5);
+        } finally {
+            sender.after();
+        }
+    }
+
+    @Test
+    public void shouldConnectDirectly() throws Throwable {
         String testeeIp = testee.getDockerContainerIp();
         log.debug("server.ip: {}", testeeIp);
         DockerRule sender = DockerRule.builder() //
