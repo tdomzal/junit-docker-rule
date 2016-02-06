@@ -40,7 +40,7 @@
             <groupId>com.spotify</groupId>
             <artifactId>docker-client</artifactId>
             <classifier>shaded</classifier>
-            <version>3.3.4</version>
+            <version>3.5.11</version>
         </dependency>
         <!-- test scope -->
         <dependency>
