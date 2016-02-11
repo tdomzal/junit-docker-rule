@@ -230,6 +230,13 @@ public class DockerRule extends ExternalResource {
     }
 
     /**
+     * Address of docker container.
+     */
+    public String getContainerIp() {
+        return containerIp;
+    }
+
+    /**
      * Get host dynamic port given container port was mapped to.
      *
      * @param containerPort Container port. Typically it matches Dockerfile EXPOSE directive.
