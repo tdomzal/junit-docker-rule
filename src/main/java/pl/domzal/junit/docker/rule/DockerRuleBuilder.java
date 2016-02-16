@@ -144,7 +144,7 @@ public class DockerRuleBuilder {
      * only locations inside $HOME can work (/Users or /c/Users respectively).<br/>
      * On Windows it is safer to use {@link #mountFrom(File)} instead.
      *
-     * @param hostPath Directory to be mounted - must be specified Unix style.
+     * @param hostPath Directory or file to be mounted - must be specified Unix style.
      */
     public DockerRuleMountBuilderTo mountFrom(String hostPath) throws InvalidVolumeFrom {
         return new DockerRuleMountBuilder(this, hostPath);
@@ -154,10 +154,13 @@ public class DockerRuleBuilder {
      * Please note that in boot2docker environments (OSX or Windows)
      * only locations inside $HOME can work (/Users or /c/Users respectively).
      *
-     * @param hostDir Directory to be mounted.
+     * @param hostFileOrDir Directory or file to be mounted.
      */
-    public DockerRuleMountBuilderTo mountFrom(File hostDir) throws InvalidVolumeFrom {
-        String hostDirUnixPath = DockerRuleMountBuilder.toUnixStylePath(hostDir.getAbsolutePath());
+    public DockerRuleMountBuilderTo mountFrom(File hostFileOrDir) throws InvalidVolumeFrom {
+        if ( ! hostFileOrDir.exists()) {
+            throw new InvalidVolumeFrom(String.format("mountFrom: %s does not exist", hostFileOrDir.getAbsolutePath()));
+        }
+        String hostDirUnixPath = DockerRuleMountBuilder.toUnixStylePath(hostFileOrDir.getAbsolutePath());
         return new DockerRuleMountBuilder(this, hostDirUnixPath);
     }
     DockerRuleBuilder addBind(String bindString) {

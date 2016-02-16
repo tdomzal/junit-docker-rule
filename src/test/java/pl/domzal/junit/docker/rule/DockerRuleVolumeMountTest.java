@@ -67,6 +67,22 @@ public class DockerRuleVolumeMountTest {
     }
 
     @Test
+    public void shouldFailWhenMountFromDoesNotExist() {
+        try {
+            File nonexistingHostDir = testDir.toPath().resolve("nonexisting").toFile();
+            log.debug("mountFrom: "+nonexistingHostDir.getAbsolutePath());
+            testee = DockerRule.builder()//
+                    .imageName("busybox")//
+                    .mountFrom(nonexistingHostDir).to("/somedir", "ro")//
+                    .build();
+            fail("should fail with "+InvalidVolumeFrom.class.getSimpleName());
+        } catch (InvalidVolumeFrom e) {
+            //expected
+            assertThat(e.getMessage(), containsString("nonexisting"));
+        }
+    }
+
+    @Test
     public void shouldFailWhenMountFromOutsideHomeDirOnWindowsOrOsx() {
         if (SystemUtils.IS_OS_MAC_OSX || SystemUtils.IS_OS_WINDOWS) {
             try {
@@ -74,6 +90,7 @@ public class DockerRuleVolumeMountTest {
                         .imageName("busybox")//
                         .mountFrom("/somehostdir").to("/somedir", "ro")//
                         .build();
+                fail("should fail with "+InvalidVolumeFrom.class.getSimpleName());
             } catch (InvalidVolumeFrom e) {
                 //expected
             }
