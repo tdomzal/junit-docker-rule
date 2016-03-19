@@ -41,7 +41,7 @@ import pl.domzal.junit.docker.rule.WaitForUnit.WaitForCondition;
  *      .build();
  * </pre>
  * <br/>
- * Inspired by and loosely based on osheeshel/DockerContainerRule - see {@link https://gist.github.com/mosheeshel/c427b43c36b256731a0b}.
+ * Inspired by and loosely based on <a href="https://gist.github.com/mosheeshel/c427b43c36b256731a0b">osheeshel/DockerContainerRule</a>.
  */
 public class DockerRule extends ExternalResource {
 
