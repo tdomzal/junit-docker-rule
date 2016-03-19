@@ -101,26 +101,12 @@
     </profiles>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-install-plugin</artifactId>
-                    <version>2.5.2</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>3.0.0</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.19.1</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.2</version>
+            </plugin>
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>3.0.0</version>
@@ -199,33 +185,13 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.3</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                    <docencoding>UTF-8</docencoding>
-                    <failOnError>false</failOnError>
-                    <quiet>true</quiet>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.19.1</version>
                 <configuration>
                     <groups>${testcase.categories}</groups>
-                    <configuration>
-                        <forkCount>1</forkCount>
-                        <reuseForks>true</reuseForks>
-                        <runOrder>balanced</runOrder>
-                    </configuration>
+                    <forkCount>1</forkCount>
+                    <reuseForks>true</reuseForks>
+                    <runOrder>balanced</runOrder>
                 </configuration>
             </plugin>
             <plugin>
@@ -235,8 +201,9 @@
                 <configuration>
                     <encoding>UTF-8</encoding>
                     <docencoding>UTF-8</docencoding>
-                    <aggregate>true</aggregate>
                     <additionalparam>-Xdoclint:none</additionalparam>
+                    <failOnError>false</failOnError>
+                    <quiet>true</quiet>
                 </configuration>
                 <executions>
                     <execution>
@@ -262,5 +229,30 @@
             </plugin>
         </plugins>
     </build>
+
+    <name>junit-docker-rule</name>
+    <description>JUnit Rule starting docker container for junit test case.</description>
+    <url>https://github.com/tdomzal/junit-docker-rule</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>tdomzal</id>
+            <name>Tomasz Domzal</name>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:tdomzal/junit-docker-rule.git</connection>
+        <developerConnection>scm:git:git@github.com:tdomzal/junit-docker-rule.git</developerConnection>
+        <url>https://github.com/tdomzal/junit-docker-rule</url>
+    </scm>
 
 </project>
