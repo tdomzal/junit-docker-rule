@@ -73,13 +73,13 @@ Library it is not (yet) publicly available in maven central so you must build it
 
 Assuming you have apache maven installed it's just:
 
-	git clone https://github.com/tdomzal/junit-docker-rule.git
-	cd junit-docker-rule
-	mvn install -DskipTests
+    git clone https://github.com/tdomzal/junit-docker-rule.git
+    cd junit-docker-rule
+    mvn install -DskipTests
 
 or, if you want to build with tests - substitute last command with:
 
-	mvn install
+    mvn install
 
 Of course **test cases will run only if you have working docker environment**. 
 
@@ -89,25 +89,25 @@ Of course **test cases will run only if you have working docker environment**.
         <groupId>pl.domzal</groupId>
         <artifactId>junit-docker-rule</artifactId>
         <version>0.1-SNAPSHOT</version>
-		<scope>test</scope>
+        <scope>test</scope>
     </dependency>
 
 ### 4. Use ###
 
-	import pl.domzal.junit.docker.rule.DockerRule;
+    import pl.domzal.junit.docker.rule.DockerRule;
 
-	public class MyTestCase {
-		...
-		@Rule
-		public DockerRule testee = DockerRule.builder()
+    public class MyTestCase {
+        ...
+        @Rule
+        public DockerRule testee = DockerRule.builder()
             .imageName("nginx")
             // ... other build options (try code assist from your IDE to explore available options)
             .build();
-		...
-		// your test cases
-
-	}
-	
+        ...
+        // your test cases
+    
+    }
+    
 
 ## What else should I know for now ? ##
 

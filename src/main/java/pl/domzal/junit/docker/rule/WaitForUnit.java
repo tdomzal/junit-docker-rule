@@ -44,7 +44,7 @@ class WaitForUnit {
     }
 
     /**
-     * @param timeUnit Wait time unit
+     * @param waitUnit Wait time unit
      * @param waitTime Wait time (for condition)
      * @param tickUnit Check time interval unit
      * @param tickTime Check time interval

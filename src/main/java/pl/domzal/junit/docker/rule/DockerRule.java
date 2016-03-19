@@ -240,7 +240,7 @@ public class DockerRule extends ExternalResource {
      * Get host dynamic port given container port was mapped to.
      *
      * @param containerPort Container port. Typically it matches Dockerfile EXPOSE directive.
-     * @return Host port conteiner port is exposed on.
+     * @return Host port container port is exposed on.
      */
     public final String getExposedContainerPort(String containerPort) {
         String key = containerPort + "/tcp";
