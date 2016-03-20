@@ -5,7 +5,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>pl.domzal</groupId>
+    <groupId>com.github.tdomzal</groupId>
     <artifactId>junit-docker-rule</artifactId>
     <version>0.1-SNAPSHOT</version>
 
@@ -231,7 +231,7 @@
     </build>
 
     <name>junit-docker-rule</name>
-    <description>JUnit Rule starting docker container for junit test case.</description>
+    <description>JUnit Rule starting docker container in junit test case.</description>
     <url>https://github.com/tdomzal/junit-docker-rule</url>
 
     <licenses>
