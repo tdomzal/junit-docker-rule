@@ -63,36 +63,22 @@ Also - just type `DockerRule.builder().` .. and try code assist in your favorite
 
 ## What do I need to use it ? ##
 
-### 1. Docker (of course) ###
+### 1. Install Docker (of course) ###
 
-Docker installed and configured - which in general means you must have docker variables (DOCKER\_HOST, DOCKER\_MACHINE\_NAME, ...) available in runtime. Preferred way to set them is via [docker-machine](https://docs.docker.com/machine/) command.
+Docker should be installed and configured - which in general means you must have docker variables (DOCKER\_HOST, DOCKER\_MACHINE\_NAME, ...) available in runtime. Preferred way to set them is via [docker-machine](https://docs.docker.com/machine/) command.
 
-### 2. Make library available for your maven projects ###
+### 2. Declare dependency in pom.xml ###
 
-Library it is not (yet) publicly available in maven central so you must build it yourself. 
-
-Assuming you have apache maven installed it's just:
-
-    git clone https://github.com/tdomzal/junit-docker-rule.git
-    cd junit-docker-rule
-    mvn install -DskipTests
-
-or, if you want to build with tests - substitute last command with:
-
-    mvn install
-
-Of course **test cases will run only if you have working docker environment**. 
-
-### 3. Declare in you pom.xml ###
-
+    ...
     <dependency>
-        <groupId>pl.domzal</groupId>
+        <groupId>com.github.tdomzal</groupId>
         <artifactId>junit-docker-rule</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.1</version>
         <scope>test</scope>
     </dependency>
+    ...
 
-### 4. Use ###
+### 3. Use in test case ###
 
     import pl.domzal.junit.docker.rule.DockerRule;
 
@@ -114,5 +100,17 @@ Of course **test cases will run only if you have working docker environment**.
 - It uses java [docker client from Spotify](https://github.com/spotify/docker-client)
 - Build and tested with docker 1.9
 - This is work in progress (but all features are verified by tests)
-- It's snapshot version so it's quite possible API may slightly change
-- Stable version it's on his way to maven central..
+
+## How to build ? ##
+
+Assuming you have apache maven installed it's just:
+
+    git clone https://github.com/tdomzal/junit-docker-rule.git
+    cd junit-docker-rule
+    mvn install -DskipTests
+
+or, if you want to build with tests - substitute last command with:
+
+    mvn install
+
+Of course test cases will run only if you have working docker environment.
