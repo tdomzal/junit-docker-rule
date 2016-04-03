@@ -19,9 +19,9 @@ class DockerRuleMountBuilder implements DockerRuleMountBuilderTo {
     private String to;
     private String mode;
 
-    DockerRuleMountBuilder(DockerRuleBuilder parentBuilder, String fromPath) throws InvalidVolumeFrom {
+    DockerRuleMountBuilder(DockerRuleBuilder parentBuilder, String fromPathUnixStyle) throws InvalidVolumeFrom {
         this.parentBuilder = parentBuilder;
-        this.from = assertValidMountFrom(fromPath);
+        this.from = assertValidMountFrom(SystemUtils.getUserHome().getAbsolutePath(), fromPathUnixStyle, SystemUtils.IS_OS_MAC_OSX, SystemUtils.IS_OS_WINDOWS);
     }
 
     public DockerRuleBuilder to(String toPath, String mode) {
@@ -39,15 +39,15 @@ class DockerRuleMountBuilder implements DockerRuleMountBuilderTo {
         return from+":"+to+(StringUtils.isNotEmpty(mode)?":"+mode:"");
     }
 
-    static String assertValidMountFrom(String mountFrom) throws InvalidVolumeFrom {
-        if (SystemUtils.IS_OS_MAC_OSX && SystemUtils.getUserHome().getAbsolutePath().startsWith(OSX_HOME)) {
+    static String assertValidMountFrom(String userHomedir, String mountFrom, boolean isOsMacOsx, boolean isOsWindows) throws InvalidVolumeFrom {
+        if (isOsMacOsx && userHomedir.startsWith(OSX_HOME)) {
             if (mountFrom.startsWith(OSX_HOME)) {
                 log.debug("mount from - ok for OSX: {}", mountFrom);
                 return mountFrom;
             } else {
                 throw new InvalidVolumeFrom(String.format("Attempt to mount volume from '%s'. Only mount from inside '%s' is supported in OSX", mountFrom, OSX_HOME));
             }
-        } else if (SystemUtils.IS_OS_WINDOWS && SystemUtils.getUserHome().getAbsolutePath().startsWith(WIN_HOME_WIN_STYLE)) {
+        } else if (isOsWindows && userHomedir.startsWith(WIN_HOME_WIN_STYLE)) {
             if (mountFrom.startsWith(WIN_HOME_UNIX_STYLE)) {
                 log.debug("mount from - ok for Windows: {}", mountFrom);
                 return mountFrom;

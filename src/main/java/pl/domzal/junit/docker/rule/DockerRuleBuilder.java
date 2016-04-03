@@ -14,7 +14,7 @@ import com.spotify.docker.client.messages.PortBinding;
 
 public class DockerRuleBuilder {
 
-    private static final int WAIT_FOR_DEFAULT_SECONDS = 30;
+    static final int WAIT_FOR_DEFAULT_SECONDS = 30;
 
     private String imageName;
     private List<String> binds = new ArrayList<>();
@@ -91,6 +91,7 @@ public class DockerRuleBuilder {
 
     /**
      * Make rule to wait for specified text in log on container start.
+     * Rule startup will fail when message will not be found.
      *
      * @param waitForMessage Message to wait for.
      */
@@ -100,9 +101,10 @@ public class DockerRuleBuilder {
     }
     /**
      * Make rule to wait for specified text in log on container start.
+     * Rule startup will fail when message will not be found for specified time.
      *
      * @param waitForMessage Message to wait for.
-     * @param waitSeconds Number of seconds to wait. Rule startup will fail on timeout.
+     * @param waitSeconds Number of seconds to wait.
      */
     public DockerRuleBuilder waitForMessage(String waitForMessage, int waitSeconds) {
         this.waitForMessage = waitForMessage;

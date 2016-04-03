@@ -19,9 +19,9 @@ import com.spotify.docker.client.DockerException;
 import com.spotify.docker.client.LogStream;
 
 @Category(test.category.Stable.class)
-public class DockerRuleWaitForTest {
+public class DockerRuleWaitForMessageTest {
 
-    private static Logger log = LoggerFactory.getLogger(DockerRuleWaitForTest.class);
+    private static Logger log = LoggerFactory.getLogger(DockerRuleWaitForMessageTest.class);
 
     @Rule
     public DockerRule testee = DockerRule.builder()//
