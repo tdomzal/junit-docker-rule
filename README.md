@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/tdomzal/junit-docker-rule.svg?branch=master)](https://travis-ci.org/tdomzal/junit-docker-rule)
-[![codecov.io](https://codecov.io/github/codecov/codecov-ruby/coverage.svg?branch=master)](https://codecov.io/github/codecov/codecov-ruby?branch=master)
+[![codecov.io](https://codecov.io/github/tdomzal/junit-docker-rule/coverage.svg?branch=master)](https://codecov.io/github/tdomzal/junit-docker-rule?branch=master)
 [![Dependency Status](https://www.versioneye.com/user/projects/56b649da0a0ff5002c86035a/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56b649da0a0ff5002c86035a)
 # junit-docker-rule #
 
