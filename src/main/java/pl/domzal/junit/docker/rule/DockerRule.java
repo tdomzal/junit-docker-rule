@@ -97,6 +97,7 @@ public class DockerRule extends ExternalResource {
                 .publishAllPorts(builder.publishAllPorts())//
                 .portBindings(builder.hostPortBindings())//
                 .binds(builder.binds())//
+                .links(builder.links())//
                 .extraHosts(builder.extraHosts())//
                 .build();
         ContainerConfig containerConfig = ContainerConfig.builder()//
@@ -108,7 +109,12 @@ public class DockerRule extends ExternalResource {
                 .entrypoint(builder.entrypoint())
                 .cmd(builder.cmd()).build();
         try {
-            this.container = dockerClient.createContainer(containerConfig);
+            if (StringUtils.isNotBlank(builder.name())) {
+                this.container = dockerClient.createContainer(containerConfig, builder.name());
+            } else {
+                this.container = dockerClient.createContainer(containerConfig);
+            }
+
             this.containerShortId = StringUtils.left(container.id(), SHORT_ID_LEN);
             log.info("container {} created, id {}, short id {}", imageNameWithTag, container.id(), containerShortId);
             log.debug("rule before {}", containerShortId);

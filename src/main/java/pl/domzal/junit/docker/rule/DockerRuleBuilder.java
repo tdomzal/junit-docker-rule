@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.junit.rules.RuleChain;
 
 import com.spotify.docker.client.messages.PortBinding;
 
@@ -17,8 +18,10 @@ public class DockerRuleBuilder {
     static final int WAIT_FOR_DEFAULT_SECONDS = 30;
 
     private String imageName;
+    private String name;
     private List<String> binds = new ArrayList<>();
     private List<String> env = new ArrayList<>();
+    private List<String> links = new ArrayList<>();
     private ExposePortBindingBuilder exposeBuilder = ExposePortBindingBuilder.builder();
     private boolean publishAllPorts = true;
     private String[] entrypoint;
@@ -241,6 +244,49 @@ public class DockerRuleBuilder {
     }
     boolean publishAllPorts() {
         return publishAllPorts;
+    }
+
+    /**
+     * Define (legacy) container link (equaivalent of command-line <code>--link</code> option).
+     * Legacy links works only on docker <code>bridge</code> network.
+     * <p>
+     * Please note that container link points to must be started first
+     * and <b>because of no guarantees of rule execution order in JUnit suggested
+     * solution is to take advantage of JUnit {@link RuleChain}</b>, for example:
+     * <pre>
+     *     DockerRule db = DockerRule.builder()
+     *             .imageName("busybox")
+     *             .name("db")
+     *             ...
+     *
+     *     DockerRule web = DockerRule.builder()
+     *             .imageName("busybox")
+     *             .link("db")
+     *             ...
+     *
+     *     {@literal @}Rule
+     *     public RuleChain containers = RuleChain.outerRule(db).around(web);
+     *
+     * </pre>
+     * @param link Link definition. Allowed forms are "container" or "container:alias".
+     */
+    public DockerRuleBuilder link(String link) {
+        links.add(LinkNameValidator.validatedContainerLink(link));
+        return this;
+    }
+    List<String> links() {
+        return links;
+    }
+
+    /**
+     * Define container name (equaivalent of command-line <code>--name</code> option).
+     */
+    public DockerRuleBuilder name(String name) {
+        this.name = LinkNameValidator.validatedContainerName(name);
+        return this;
+    }
+    String name() {
+        return name;
     }
 
 }
