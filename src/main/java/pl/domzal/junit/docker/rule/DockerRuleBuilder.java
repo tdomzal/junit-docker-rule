@@ -28,6 +28,7 @@ public class DockerRuleBuilder {
     private String[] cmd;
     private String[] extraHosts;
     private String waitForMessage;
+    private List<String> waitForMessageSequence = new ArrayList<>();
     private int waitForMessageSeconds = WAIT_FOR_DEFAULT_SECONDS;
     private boolean keepContainer = false;
     private boolean imageAlwaysPull = false;
@@ -119,6 +120,17 @@ public class DockerRuleBuilder {
     }
     int waitForMessageSeconds() {
         return waitForMessageSeconds;
+    }
+
+    /** Wait for message sequence starting with given message. */
+    public WaitForMessageBuilder waitForMessageSequence(String firstMessage) {
+        return new WaitForMessageBuilder(this, firstMessage);
+    }
+    void waitForMessage(List<String> messageSequence) {
+        this.waitForMessageSequence = messageSequence;
+    }
+    List<String> waitForMessageSequence() {
+        return waitForMessageSequence;
     }
 
     /**

@@ -122,15 +122,14 @@ public class DockerRule extends ExternalResource {
             dockerClient.startContainer(container.id());
             log.debug("{} started", containerShortId);
 
-            attachLogs(dockerClient, container.id());
+            WaitForLogSequence lineListener = new WaitForLogSequence(builder.waitForMessageSequence(), DockerRuleBuilder.WAIT_FOR_DEFAULT_SECONDS);
+            attachLogs(dockerClient, container.id(), lineListener);
 
             ContainerInfo containerInfo = dockerClient.inspectContainer(container.id());
             containerIp = containerInfo.networkSettings().ipAddress();
             containerPorts = containerInfo.networkSettings().ports();
             containerGateway = containerInfo.networkSettings().gateway();
-            if (builder.waitForMessage()!=null) {
-                waitForMessage();
-            }
+            waitForMessages(lineListener);
             logNetworkSettings();
 
         } catch (DockerRequestException e) {
@@ -140,8 +139,17 @@ public class DockerRule extends ExternalResource {
         }
     }
 
-    private void attachLogs(DockerClient dockerClient, String containerId) throws IOException, InterruptedException {
-        dockerLogs = new DockerLogs(dockerClient, containerId);
+    private void waitForMessages(WaitForLogSequence lineListener) throws TimeoutException, InterruptedException {
+        if (!builder.waitForMessageSequence().isEmpty()) {
+            lineListener.waitForSequence();
+        }
+        if (builder.waitForMessage()!=null) {
+            waitForMessage();
+        }
+    }
+
+    private void attachLogs(DockerClient dockerClient, String containerId, DockerLogs.LineListener lineListener) throws IOException, InterruptedException {
+        dockerLogs = new DockerLogs(dockerClient, containerId, lineListener);
         if (builder.stdoutWriter()!=null) {
             dockerLogs.setStdoutWriter(builder.stdoutWriter());
         }

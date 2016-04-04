@@ -22,6 +22,9 @@ import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerClient.LogsParam;
 import com.spotify.docker.client.LogStream;
 
+/**
+ * Docker container log binding feature.
+ */
 class DockerLogs implements Closeable {
 
     private static Logger log = LoggerFactory.getLogger(DockerLogs.class);
@@ -30,6 +33,7 @@ class DockerLogs implements Closeable {
 
     private final DockerClient dockerClient;
     private final String containerId;
+    private final LineListener lineListener;
 
     private PrintStream stdoutWriter = System.out;
     private PrintStream stderrWriter = System.err;
@@ -41,9 +45,10 @@ class DockerLogs implements Closeable {
 
     private final ExecutorService executor = Executors.newFixedThreadPool(3, threadFactory);
 
-    DockerLogs(DockerClient dockerClient, String containerId) {
+    DockerLogs(DockerClient dockerClient, String containerId, LineListener lineListener) {
         this.dockerClient = dockerClient;
         this.containerId = containerId;
+        this.lineListener = lineListener;
     }
 
     public void setStderrWriter(PrintStream stderrWriter) {
@@ -64,8 +69,8 @@ class DockerLogs implements Closeable {
         final PipedOutputStream stdoutPipeOutputStream = new PipedOutputStream(stdoutInputStream);
         final PipedOutputStream stderrPipeOutputStream = new PipedOutputStream(stderrInputStream);
 
-        executor.submit(new IsPrinter(containerShortId+"-stdout> ", stdoutInputStream, stdoutWriter));
-        executor.submit(new IsPrinter(containerShortId+"-stderr> ", stderrInputStream, stderrWriter));
+        executor.submit(new LogPrinter(containerShortId+"-stdout> ", stdoutInputStream, stdoutWriter, lineListener));
+        executor.submit(new LogPrinter(containerShortId+"-stderr> ", stderrInputStream, stderrWriter, lineListener));
         executor.submit(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
@@ -89,26 +94,38 @@ class DockerLogs implements Closeable {
         executor.shutdown();
     }
 
-    class IsPrinter implements Runnable {
+    /**
+     * Something that listens for log lines.
+     */
+    public interface LineListener {
+        void nextLine(String line);
+    }
+
+    static class LogPrinter implements Runnable {
 
         private final String prefix;
-        private final InputStream inputStream;
+        private final InputStream scannedInputStream;
         private final PrintStream output;
+        private final LineListener lineListener;
 
-        IsPrinter(String prefix, InputStream inputStream, PrintStream output) {
+        LogPrinter(String prefix, InputStream scannedInputStream, PrintStream output, LineListener lineListener) {
             this.prefix = prefix;
-            this.inputStream = inputStream;
+            this.scannedInputStream = scannedInputStream;
             this.output = output;
+            this.lineListener = lineListener;
         }
 
         @Override
         public void run() {
             log.trace("{} printer thread started", prefix);
-            try (Scanner scanner = new Scanner(inputStream)) {
+            try (Scanner scanner = new Scanner(scannedInputStream)) {
                 while (scanner.hasNextLine()) {
                     String line = scanner.nextLine();
                     log.trace("{} line: {}", prefix, line);
                     output.println(prefix + line);
+                    if (lineListener != null) {
+                        lineListener.nextLine(line);
+                    }
                 }
             }
             log.trace("{} printer thread terminated", prefix);
