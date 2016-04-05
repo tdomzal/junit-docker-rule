@@ -29,7 +29,7 @@ public class ExampleLinkTest {
             .build();
 
     /**
-     * Recommended method to make linked container are initialized in required order.
+     * Recommended method to make sure linked container are initialized in required order.
      */
     @ClassRule
     public static RuleChain containersChain = RuleChain.outerRule(db).around(web);
