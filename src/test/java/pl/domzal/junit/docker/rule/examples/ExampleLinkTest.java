@@ -11,7 +11,7 @@ import org.junit.rules.RuleChain;
 import pl.domzal.junit.docker.rule.DockerRule;
 
 /**
- * Container linking example. &quot;web&quot; links to &quot;db&quot; and pings it.
+ * Container linking. &quot;web&quot; links to &quot;db&quot; and pings it.
  */
 @Category(test.category.Stable.class)
 public class ExampleLinkTest {
