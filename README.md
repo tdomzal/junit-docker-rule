@@ -51,13 +51,18 @@ You can:
 
 - use it as JUnit @Rule or @ClassRule
 - specify image name/tag
-- pass environment variables
-- publish all exposed port to dynamically allocated host ports
-- publish specified container ports to specified host ports (tcp or udp, no port ranges support yet)
-- mount host directory as a data volume (also works for dirs from workstation to boot2docker container with restriction that dir must be under user homedir)
-- specify extra /etc/hosts entries
-- access container stderr and stdout (forwarded to java System.err and System.out by default)
-- wait for message in container output 
+- specify container name (equivalent of command line `--name`)
+- define links to other containers (`--link`)
+- pass environment variables (`--env` or `-e`)
+- publish all exposed port to dynamically allocated host ports (`--publish-all` or `-P`)
+- publish specified container ports to specified host ports (`-p` - tcp or udp, no port
+  ranges support yet)
+- mount host directory as a data volume (`--volume` or `-v` - also works for workstation
+  dirs to boot2docker container with restriction that dir must be under user homedir)
+- specify extra /etc/hosts entries (`--add-host`)
+- access container stderr and stdout (forwarded to java System.err and System.out by
+  default)
+- wait for message or sequence of messages in container output at container start
 
 See usage [examples](src/test/java/pl/domzal/junit/docker/rule/examples/) in test cases.
 
