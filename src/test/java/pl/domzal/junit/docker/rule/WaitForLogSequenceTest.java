@@ -5,7 +5,9 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(test.category.Stable.class)
 public class WaitForLogSequenceTest {
 
     public static final int TIMEOUT_NOT_USED = 0;

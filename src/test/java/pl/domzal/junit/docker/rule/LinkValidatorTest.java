@@ -1,7 +1,9 @@
 package pl.domzal.junit.docker.rule;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(test.category.Stable.class)
 public class LinkValidatorTest {
 
     @Test(expected = InvalidParameter.class)

@@ -17,8 +17,10 @@ import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.InOrder;
 
+@Category(test.category.Stable.class)
 public class DockerLogsLogPrinterTest {
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();

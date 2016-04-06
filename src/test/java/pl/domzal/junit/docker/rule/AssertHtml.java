@@ -7,9 +7,11 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.fluent.Request;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Category(test.category.Stable.class)
 public class AssertHtml {
 
     private static Logger log = LoggerFactory.getLogger(AssertHtml.class);
