@@ -10,17 +10,18 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.After;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import junit.framework.AssertionFailedError;
 
+@Category(test.category.Stable.class)
 public class WaitForLogSequenceWaitingTest {
 
     private static Logger log = LoggerFactory.getLogger(WaitForLogSequenceWaitingTest.class);
 
-    public static final int WAIT_LOG_TIMEOUT = 1000;
-    public static final int WAIT_FOR_TIMEOUT_TIMEOUT = 3 * WAIT_LOG_TIMEOUT;
+    public static final int WAIT_LOG_TIMEOUT_SEC = 1;
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
@@ -53,7 +54,7 @@ public class WaitForLogSequenceWaitingTest {
 
     @Test(timeout = 10000)
     public void shouldStopAfterWholeSequence() throws Exception {
-        WaitForLogSequence testee = new WaitForLogSequence(Arrays.asList("one", "three"), WAIT_LOG_TIMEOUT);
+        WaitForLogSequence testee = new WaitForLogSequence(Arrays.asList("one", "three"), WAIT_LOG_TIMEOUT_SEC);
         executor.submit(new WaitRunner(testee));
         testee.nextLine("one");
         testee.nextLine("two");
@@ -64,7 +65,7 @@ public class WaitForLogSequenceWaitingTest {
 
     @Test(timeout = 10000)
     public void shouldTimeoutOnPartSequence() throws Exception {
-        WaitForLogSequence testee = new WaitForLogSequence(Arrays.asList("one", "three"), WAIT_LOG_TIMEOUT);
+        WaitForLogSequence testee = new WaitForLogSequence(Arrays.asList("one", "three"), WAIT_LOG_TIMEOUT_SEC);
         executor.submit(new WaitRunner(testee));
         testee.nextLine("one");
         testee.nextLine("two");
@@ -74,7 +75,7 @@ public class WaitForLogSequenceWaitingTest {
 
     @Test(timeout = 10000)
     public void shouldNotWaitOnEmptySequence() throws Exception {
-        WaitForLogSequence testee = new WaitForLogSequence(Arrays.<String>asList(), WAIT_LOG_TIMEOUT);
+        WaitForLogSequence testee = new WaitForLogSequence(Arrays.<String>asList(), WAIT_LOG_TIMEOUT_SEC);
         executor.submit(new WaitRunner(testee));
         waitForDone();
         assertNoExceptionInWorker();
@@ -90,7 +91,7 @@ public class WaitForLogSequenceWaitingTest {
     }
 
     private void waitForTimeout() throws TimeoutException, InterruptedException {
-        new WaitForUnit(TimeUnit.SECONDS, WAIT_FOR_TIMEOUT_TIMEOUT, TimeUnit.SECONDS, 1, new WaitForUnit.WaitForCondition() {
+        new WaitForUnit(TimeUnit.SECONDS, 10, TimeUnit.SECONDS, 1, new WaitForUnit.WaitForCondition() {
             @Override
             public boolean isConditionMet() {
                 return timeoutWaiting.get();
