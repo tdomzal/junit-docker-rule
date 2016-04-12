@@ -101,6 +101,8 @@ Docker should be installed and configured - which in general means you must have
     
     }
     
+## Changelog ##
+see [changelog](doc/changelog.md)
 
 ## What else should I know for now ? ##
 
