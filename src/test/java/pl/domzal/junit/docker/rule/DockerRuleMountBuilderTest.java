@@ -8,6 +8,8 @@ import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import pl.domzal.junit.docker.rule.ex.InvalidVolumeFrom;
+
 @Category(test.category.Stable.class)
 public class DockerRuleMountBuilderTest {
 

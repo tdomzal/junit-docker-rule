@@ -11,6 +11,8 @@ import org.junit.experimental.categories.Category;
 
 import com.spotify.docker.client.messages.PortBinding;
 
+import pl.domzal.junit.docker.rule.ex.InvalidPortDefinition;
+
 @Category(test.category.Stable.class)
 public class ExposePortBindingBuilderTest {
 

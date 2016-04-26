@@ -26,6 +26,8 @@ import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerClient.LogsParam;
 import com.spotify.docker.client.LogStream;
 
+import pl.domzal.junit.docker.rule.ex.InvalidVolumeFrom;
+
 @Category(test.category.Volumes.class)
 public class DockerRuleVolumeMountTest {
 

@@ -39,7 +39,7 @@ public class ExampleVolumeMountTest {
 
     @Test(timeout = 10000)
     public void shouldReadMountFromJavaFile() throws Throwable {
-        testee.waitFor("1234567890", 10);
+        testee.waitForLogMessage("1234567890", 10);
     }
 
 }

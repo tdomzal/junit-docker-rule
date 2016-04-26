@@ -4,11 +4,14 @@
 
 New features:
 
-- ([#23](../../../issues/23)) add container linking,
+- ([#23](../../../issues/23)) add container linking
   ([example](../src/test/java/pl/domzal/junit/docker/rule/examples/ExampleLinkTest.java))
 - ([#24](../../../issues/24)) add possibility to wait for specific sequence of messages
-  (instead single message) in output at container start,
-  ([example](../src/test/java/pl/domzal/junit/docker/rule/examples/ExampleLinkTest.javaExampleWaitForLogMessageSequenceAtStartTest.java))
+  (instead single message) in output at container start
+  ([example](../src/test/java/pl/domzal/junit/docker/rule/examples/ExampleWaitForLogMessageSequenceAtStartTest.java))
+- ([#2](../../../issues/2)) add posibility to wait for http url and tcp socket open on container start
+  (examples: [tcp socket wait](../src/test/java/pl/domzal/junit/docker/rule/examples/ExampleWaitForTcpPortTest.java)
+  and [http wait](../src/test/java/pl/domzal/junit/docker/rule/examples/ExampleWaitForHttpPingTest.java))
 
 ## 0.1 ##
 

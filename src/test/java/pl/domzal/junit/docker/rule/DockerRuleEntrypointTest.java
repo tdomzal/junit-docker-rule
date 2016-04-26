@@ -18,7 +18,7 @@ public class DockerRuleEntrypointTest {
 
     @Test
     public void shouldDefineEntrypoint() throws TimeoutException, InterruptedException {
-        testee.waitFor("12345", 5);
+        testee.waitForLogMessage("12345", 5);
     }
 
 

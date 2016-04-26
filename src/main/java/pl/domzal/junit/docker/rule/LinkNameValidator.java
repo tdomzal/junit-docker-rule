@@ -4,6 +4,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import pl.domzal.junit.docker.rule.ex.InvalidParameter;
+
 class LinkNameValidator {
 
     private static final String VALID_NAME_REGEX = "[a-zA-Z0-9_-]+";

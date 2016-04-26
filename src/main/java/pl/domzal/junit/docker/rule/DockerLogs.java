@@ -22,6 +22,8 @@ import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerClient.LogsParam;
 import com.spotify.docker.client.LogStream;
 
+import pl.domzal.junit.docker.rule.wait.LineListener;
+
 /**
  * Docker container log binding feature.
  */
@@ -92,13 +94,6 @@ class DockerLogs implements Closeable {
             log.warn("interrupted", e);
         }
         executor.shutdown();
-    }
-
-    /**
-     * Something that listens for log lines.
-     */
-    public interface LineListener {
-        void nextLine(String line);
     }
 
     static class LogPrinter implements Runnable {

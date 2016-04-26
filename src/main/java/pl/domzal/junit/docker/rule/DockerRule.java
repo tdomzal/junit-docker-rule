@@ -1,9 +1,9 @@
 package pl.domzal.junit.docker.rule;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,7 +29,13 @@ import com.spotify.docker.client.messages.HostConfig;
 import com.spotify.docker.client.messages.Image;
 import com.spotify.docker.client.messages.PortBinding;
 
-import pl.domzal.junit.docker.rule.WaitForUnit.WaitForCondition;
+import pl.domzal.junit.docker.rule.ex.ImagePullException;
+import pl.domzal.junit.docker.rule.ex.PortNotExposedException;
+import pl.domzal.junit.docker.rule.wait.HttpPingChecker;
+import pl.domzal.junit.docker.rule.wait.LineListener;
+import pl.domzal.junit.docker.rule.wait.LogChecker;
+import pl.domzal.junit.docker.rule.wait.LogSequenceChecker;
+import pl.domzal.junit.docker.rule.wait.TcpPortChecker;
 
 /**
  * Simple docker container junit {@link Rule}.<br/>
@@ -122,14 +128,14 @@ public class DockerRule extends ExternalResource {
             dockerClient.startContainer(container.id());
             log.debug("{} started", containerShortId);
 
-            WaitForLogSequence lineListener = new WaitForLogSequence(builder.waitForMessageSequence(), DockerRuleBuilder.WAIT_FOR_DEFAULT_SECONDS);
+            LogSequenceChecker lineListener = new LogSequenceChecker(builder.waitForMessageSequence());
             attachLogs(dockerClient, container.id(), lineListener);
 
             ContainerInfo containerInfo = dockerClient.inspectContainer(container.id());
             containerIp = containerInfo.networkSettings().ipAddress();
             containerPorts = containerInfo.networkSettings().ports();
             containerGateway = containerInfo.networkSettings().gateway();
-            waitForMessages(lineListener);
+            waitForStartConditions(lineListener);
             logNetworkSettings();
 
         } catch (DockerRequestException e) {
@@ -139,16 +145,47 @@ public class DockerRule extends ExternalResource {
         }
     }
 
-    private void waitForMessages(WaitForLogSequence lineListener) throws TimeoutException, InterruptedException {
+    // TODO refactor out waitFor logic to external class
+    private void waitForStartConditions(LogSequenceChecker lineListener) throws TimeoutException, InterruptedException {
         if (!builder.waitForMessageSequence().isEmpty()) {
-            lineListener.waitForSequence();
+            WaitForContainer.waitForCondition(lineListener, builder.waitForMessageSeconds());
         }
         if (builder.waitForMessage()!=null) {
-            waitForMessage();
+            WaitForContainer.waitForCondition(new LogChecker(this, builder.waitForMessage()), builder.waitForMessageSeconds());
+        }
+        if (!builder.waitForTcpPort().isEmpty()) {
+            List<Integer> internalPorts = builder.waitForTcpPort();
+            List<Integer> externalPorts = new ArrayList<>();
+            for (Integer internalPort : internalPorts) {
+                externalPorts.add(findExternalPort(internalPort));
+            }
+            WaitForContainer.waitForCondition(new TcpPortChecker(getDockerHost(), externalPorts), builder.waitForMessageSeconds());
+        }
+        if (!builder.waitForHttpPing().isEmpty()) {
+            for (Integer internalHttpPort : builder.waitForHttpPing()) {
+                String pingUrl = String.format("http://%s:%s/", getDockerHost(), findExternalPort(internalHttpPort));
+                WaitForContainer.waitForCondition(new HttpPingChecker(pingUrl), builder.waitForMessageSeconds());
+            }
         }
     }
 
-    private void attachLogs(DockerClient dockerClient, String containerId, DockerLogs.LineListener lineListener) throws IOException, InterruptedException {
+    private Integer findExternalPort(Integer internalHttpPort) {
+        String portAndProtocol = ExposePortBindingBuilder.containerBindWithProtocol(Integer.toString(internalHttpPort));
+        if (! (containerPorts.containsKey(portAndProtocol)
+                && containerPorts.get(portAndProtocol)!=null
+                && containerPorts.get(portAndProtocol).size()>0)) {
+            throw new PortNotExposedException(String.format("Port %s is not exposed and cannot be checked (exposed port info: %s)", portAndProtocol, containerPorts));
+        }
+        List<PortBinding> portBindings = containerPorts.get(portAndProtocol);
+        PortBinding portBinding = portBindings.get(0);
+        try {
+            return Integer.parseInt(portBinding.hostPort());
+        } catch (NumberFormatException e) {
+            throw new IllegalStateException("Interal rule problem - unable to parse exposed port number", e);
+        }
+    }
+
+    private void attachLogs(DockerClient dockerClient, String containerId, LineListener lineListener) throws IOException, InterruptedException {
         dockerLogs = new DockerLogs(dockerClient, containerId, lineListener);
         if (builder.stdoutWriter()!=null) {
             dockerLogs.setStdoutWriter(builder.stdoutWriter());
@@ -178,22 +215,6 @@ public class DockerRule extends ExternalResource {
         } else {
             return imageName;
         }
-    }
-
-    private void waitForMessage() throws TimeoutException, InterruptedException {
-        final String waitForMessage = builder.waitForMessage();
-        log.info("{} waiting for log message '{}'", containerShortId, waitForMessage);
-        new WaitForUnit(TimeUnit.SECONDS, builder.waitForMessageSeconds(), new WaitForCondition(){
-            @Override
-            public boolean isConditionMet() {
-                return getLog().contains(waitForMessage);
-            }
-            @Override
-            public String timeoutMessage() {
-                return String.format("Timeout waiting for '%s'", waitForMessage);
-            }
-        }).startWaiting();
-        log.debug("{} message '{}' found", containerShortId, waitForMessage);
     }
 
     /**
@@ -282,26 +303,22 @@ public class DockerRule extends ExternalResource {
      * @param searchString String to wait for in container output.
      * @param waitTime Wait time.
      * @throws TimeoutException On wait timeout.
+     *
+     * @deprecated Use {@link #waitForLogMessage(String, int)} instead.
      */
     public void waitFor(final String searchString, int waitTime) throws TimeoutException, InterruptedException {
-        new WaitForUnit(TimeUnit.SECONDS, waitTime, TimeUnit.SECONDS, 1, new WaitForCondition() {
-            @Override
-            public boolean isConditionMet() {
-                return StringUtils.contains(getLog(), searchString);
-            }
+        waitForLogMessage(searchString, waitTime);
+    }
 
-            @Override
-            public String tickMessage() {
-                return String.format("wait for '%s' in log", searchString);
-            }
-
-            @Override
-            public String timeoutMessage() {
-                return String.format("container log: \n%s", getLog());
-            }
-
-        }) //
-        .startWaiting();
+    /**
+     * Stop and wait till given string will show in container output.
+     *
+     * @param logSearchString String to wait for in container output.
+     * @param waitTime Wait time.
+     * @throws TimeoutException On wait timeout.
+     */
+    public void waitForLogMessage(final String logSearchString, int waitTime) throws TimeoutException, InterruptedException {
+        WaitForContainer.waitForCondition(new LogChecker(this, logSearchString), waitTime);
     }
 
     /**

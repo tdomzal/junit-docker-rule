@@ -19,6 +19,8 @@ import com.spotify.docker.client.messages.Container;
 import com.spotify.docker.client.messages.ContainerInfo;
 import com.spotify.docker.client.messages.Image;
 
+import pl.domzal.junit.docker.rule.ex.ImagePullException;
+
 @Category(test.category.Stable.class)
 public class DockerRuleImagePullTest {
 

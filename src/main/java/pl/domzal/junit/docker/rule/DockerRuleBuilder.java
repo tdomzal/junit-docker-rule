@@ -13,6 +13,8 @@ import org.junit.rules.RuleChain;
 
 import com.spotify.docker.client.messages.PortBinding;
 
+import pl.domzal.junit.docker.rule.ex.InvalidVolumeFrom;
+
 public class DockerRuleBuilder {
 
     static final int WAIT_FOR_DEFAULT_SECONDS = 30;
@@ -27,13 +29,16 @@ public class DockerRuleBuilder {
     private String[] entrypoint;
     private String[] cmd;
     private String[] extraHosts;
-    private String waitForMessage;
-    private List<String> waitForMessageSequence = new ArrayList<>();
-    private int waitForMessageSeconds = WAIT_FOR_DEFAULT_SECONDS;
     private boolean keepContainer = false;
     private boolean imageAlwaysPull = false;
     private PrintStream stdoutWriter;
     private PrintStream stderrWriter;
+
+    private String waitForMessage;
+    private List<String> waitForMessageSequence = new ArrayList<>();
+    private List<Integer> waitForPort = new ArrayList<>();
+    private List<Integer> waitForHttp = new ArrayList<>();
+    private int waitForMessageSeconds = WAIT_FOR_DEFAULT_SECONDS;
 
     DockerRuleBuilder(){}
 
@@ -95,6 +100,8 @@ public class DockerRuleBuilder {
 
     /**
      * Make rule to wait for specified text in log on container start.
+     * Whole log content (from container start) is checked so this condition
+     * will work independent of placement in chain of other wait conditions.
      * Rule startup will fail when message will not be found.
      *
      * @param waitForMessage Message to wait for.
@@ -105,8 +112,7 @@ public class DockerRuleBuilder {
         return this;
     }
     /**
-     * Make rule to wait for specified text in log on container start.
-     * Rule startup will fail when message will not be found for specified time.
+     * Like {@link #waitForMessage(String)} with specified max wait time.
      *
      * @param waitForMessage Message to wait for.
      * @param waitSeconds Number of seconds to wait.
@@ -170,7 +176,7 @@ public class DockerRuleBuilder {
      *
      * @param hostPath Directory or file to be mounted - must be specified Unix style.
      */
-    public DockerRuleMountBuilderTo mountFrom(String hostPath) throws InvalidVolumeFrom {
+    public DockerRuleMountToBuilder mountFrom(String hostPath) throws InvalidVolumeFrom {
         return new DockerRuleMountBuilder(this, hostPath);
     }
     /**
@@ -180,7 +186,7 @@ public class DockerRuleBuilder {
      *
      * @param hostFileOrDir Directory or file to be mounted.
      */
-    public DockerRuleMountBuilderTo mountFrom(File hostFileOrDir) throws InvalidVolumeFrom {
+    public DockerRuleMountToBuilder mountFrom(File hostFileOrDir) throws InvalidVolumeFrom {
         if ( ! hostFileOrDir.exists()) {
             throw new InvalidVolumeFrom(String.format("mountFrom: %s does not exist", hostFileOrDir.getAbsolutePath()));
         }
@@ -308,4 +314,33 @@ public class DockerRuleBuilder {
         return name;
     }
 
+    public DockerRuleBuilder waitForTcpPort(int port) {
+        this.waitForPort.add(port);
+        return this;
+    }
+    List<Integer> waitForTcpPort() {
+        return waitForPort;
+    }
+
+    /**
+     * Wait for http endpoint availability under given <b>internal</b> container port.
+     * Given port MUST be exposed (with {@link #expose(String, String)} or
+     * {@link #publishAllPorts(boolean)}) because must be reachable from the test
+     * code point of view.
+     * <p>
+     * Side note: Internal port is required for convenience - rule will find matching
+     * external port or, report error at startup when given internal port was not exposed.
+     *
+     * @param internalHttpPort Http port to scan for availability. Port is scanned with HTTP HEAD method
+     *                 until response with error code 2xx or 3xx is returned or until timeout.
+     *                 Port MUST be exposed for wait to work and given port number must
+     *                 be internal (as seen on container, not as on host) port number.
+     */
+    public DockerRuleBuilder waitForHttpPing(int internalHttpPort) {
+        waitForHttp.add(new Integer(internalHttpPort));
+        return this;
+    }
+    List<Integer> waitForHttpPing() {
+        return waitForHttp;
+    }
 }

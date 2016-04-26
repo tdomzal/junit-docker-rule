@@ -3,6 +3,8 @@ package pl.domzal.junit.docker.rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import pl.domzal.junit.docker.rule.ex.InvalidParameter;
+
 @Category(test.category.Stable.class)
 public class LinkValidatorTest {
 

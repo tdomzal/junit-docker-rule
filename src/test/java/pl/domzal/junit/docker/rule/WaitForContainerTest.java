@@ -1,6 +1,7 @@
 package pl.domzal.junit.docker.rule;
 
-import java.util.Arrays;
+import static org.mockito.Mockito.*;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -15,11 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import junit.framework.AssertionFailedError;
+import pl.domzal.junit.docker.rule.wait.WaitChecker;
 
 @Category(test.category.Stable.class)
-public class WaitForLogSequenceWaitingTest {
+public class WaitForContainerTest {
 
-    private static Logger log = LoggerFactory.getLogger(WaitForLogSequenceWaitingTest.class);
+    private static Logger log = LoggerFactory.getLogger(WaitForContainerTest.class);
 
     public static final int WAIT_LOG_TIMEOUT_SEC = 4;
 
@@ -31,17 +33,17 @@ public class WaitForLogSequenceWaitingTest {
 
     class WaitRunner implements Runnable {
 
-        private final WaitForLogSequence waitForLogSequence;
+        private final WaitChecker condition;
 
-        WaitRunner(WaitForLogSequence waitForLogSequence) {
-            this.waitForLogSequence = waitForLogSequence;
+        WaitRunner(WaitChecker condition) {
+            this.condition = condition;
         }
 
         @Override
         public void run() {
             log.debug("runner started");
             try {
-                waitForLogSequence.waitForSequence();
+                WaitForContainer.waitForCondition(condition, WAIT_LOG_TIMEOUT_SEC);
                 doneWaiting.set(true);
             } catch (TimeoutException e) {
                 timeoutWaiting.set(true);
@@ -53,32 +55,28 @@ public class WaitForLogSequenceWaitingTest {
     }
 
     @Test(timeout = 20000)
-    public void shouldStopAfterWholeSequence() throws Exception {
-        WaitForLogSequence testee = new WaitForLogSequence(Arrays.asList("one", "three"), WAIT_LOG_TIMEOUT_SEC);
-        executor.submit(new WaitRunner(testee));
-        testee.nextLine("one");
-        testee.nextLine("two");
-        testee.nextLine("three");
+    public void shouldStopWhenConditionMet() throws Exception {
+        WaitChecker condition = mock(WaitChecker.class);
+        when(condition.check()).thenReturn(true);
+        executor.submit(new WaitRunner(condition));
         waitForDone();
         assertNoExceptionInWorker();
     }
 
     @Test(timeout = 10000)
-    public void shouldTimeoutOnPartSequence() throws Exception {
-        WaitForLogSequence testee = new WaitForLogSequence(Arrays.asList("one", "three"), WAIT_LOG_TIMEOUT_SEC);
-        executor.submit(new WaitRunner(testee));
-        testee.nextLine("one");
-        testee.nextLine("two");
+    public void shouldTimeoutWhenConditionNotMet() throws Exception {
+        WaitChecker condition = mock(WaitChecker.class);
+        when(condition.check()).thenReturn(false);
+        executor.submit(new WaitRunner(condition));
         waitForTimeout();
         assertNoExceptionInWorker();
     }
 
-    @Test(timeout = 10000)
-    public void shouldNotWaitOnEmptySequence() throws Exception {
-        WaitForLogSequence testee = new WaitForLogSequence(Arrays.<String>asList(), WAIT_LOG_TIMEOUT_SEC);
-        executor.submit(new WaitRunner(testee));
-        waitForDone();
-        assertNoExceptionInWorker();
+    @Test(timeout = 10000, expected = IllegalStateException.class)
+    public void shouldRethrowException() throws Exception {
+        WaitChecker condition = mock(WaitChecker.class);
+        when(condition.check()).thenThrow(new IllegalStateException("kaboom"));
+        WaitForContainer.waitForCondition(condition, WAIT_LOG_TIMEOUT_SEC);
     }
 
     private void waitForDone() throws TimeoutException, InterruptedException {

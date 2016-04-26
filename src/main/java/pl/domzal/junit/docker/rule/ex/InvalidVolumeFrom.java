@@ -1,4 +1,4 @@
-package pl.domzal.junit.docker.rule;
+package pl.domzal.junit.docker.rule.ex;
 
 /**
  * Docker volume mount from path is invalid in given context.

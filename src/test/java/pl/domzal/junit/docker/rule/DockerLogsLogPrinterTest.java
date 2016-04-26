@@ -20,6 +20,8 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.InOrder;
 
+import pl.domzal.junit.docker.rule.wait.LineListener;
+
 @Category(test.category.Stable.class)
 public class DockerLogsLogPrinterTest {
 
@@ -27,7 +29,7 @@ public class DockerLogsLogPrinterTest {
 
     private PrintWriter containerStdout;
     private ByteArrayOutputStream logOutputStream;
-    DockerLogs.LineListener lineListener = mock(DockerLogs.LineListener.class);
+    LineListener lineListener = mock(LineListener.class);
 
     DockerLogs.LogPrinter testee;
 

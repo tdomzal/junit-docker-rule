@@ -21,7 +21,7 @@ public class DockerRuleWaitForLogMessageTest {
     public void shouldWaitSpecifiedTimelimitWhenNotFound() throws InterruptedException, TimeoutException {
         int MAX_WAIT = 3;
         long start = System.currentTimeMillis();
-        testee.waitFor("11", MAX_WAIT);
+        testee.waitForLogMessage("11", MAX_WAIT);
         long stop = System.currentTimeMillis();
         assertTrue("should wait specified number of seconds", start + (MAX_WAIT * 1000) + 1 > stop);
     }
@@ -30,7 +30,7 @@ public class DockerRuleWaitForLogMessageTest {
     public void shouldNotWaitForContainerExitWhenMessageNotFoundInTimelimit() throws InterruptedException, TimeoutException {
         int MAX_WAIT = 3;
         long start = System.currentTimeMillis();
-        testee.waitFor("11", MAX_WAIT);
+        testee.waitForLogMessage("11", MAX_WAIT);
         long stop = System.currentTimeMillis();
         assertTrue("should not wait for container stop", stop < start + (10 * 1000));
     }
@@ -38,7 +38,7 @@ public class DockerRuleWaitForLogMessageTest {
     @Test
     public void shouldWaitForMessage() throws InterruptedException, TimeoutException {
         int MAX_WAIT = 10;
-        testee.waitFor("03", MAX_WAIT);
+        testee.waitForLogMessage("03", MAX_WAIT);
         String logContent = testee.getLog();
         assertTrue("log does not contain message we are waiting for", logContent.contains("03"));
     }
@@ -47,7 +47,7 @@ public class DockerRuleWaitForLogMessageTest {
     public void shouldNotWaitForContainerExitWhenMessageFound() throws InterruptedException, TimeoutException {
         int MAX_WAIT = 10;
         long start = System.currentTimeMillis();
-        testee.waitFor("03", MAX_WAIT);
+        testee.waitForLogMessage("03", MAX_WAIT);
         long stop = System.currentTimeMillis();
         assertTrue("should not wait for container stop", stop < start + (10 * 1000));
     }

@@ -42,7 +42,7 @@ public class DockerRuleExposeTcpPortStaticTest {
                 .build();
         sender.before();
         try {
-            testee.waitFor("12345", 5);
+            testee.waitForLogMessage("12345", 5);
         } finally {
             sender.after();
         }

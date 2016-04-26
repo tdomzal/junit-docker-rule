@@ -5,7 +5,9 @@ import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class DockerRuleMountBuilder implements DockerRuleMountBuilderTo {
+import pl.domzal.junit.docker.rule.ex.InvalidVolumeFrom;
+
+class DockerRuleMountBuilder implements DockerRuleMountToBuilder {
 
     private static Logger log = LoggerFactory.getLogger(DockerRuleMountBuilder.class);
 

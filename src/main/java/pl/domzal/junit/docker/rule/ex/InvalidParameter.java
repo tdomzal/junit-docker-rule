@@ -1,4 +1,4 @@
-package pl.domzal.junit.docker.rule;
+package pl.domzal.junit.docker.rule.ex;
 
 /**
  * Invalid link definition.
