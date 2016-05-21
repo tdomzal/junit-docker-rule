@@ -3,16 +3,18 @@
 ## 0.2-SNAPSHOT ##
 
 New features:
-- ([#23](issues/23)) add container linking,
-  ([example](src/test/java/pl/domzal/junit/docker/rule/examples/ExampleLinkTest.java))
-- ([#24](issues/24)) add possibility to wait for specific sequence of messages
+
+- ([#23](../issues/23)) add container linking,
+  ([example](../src/test/java/pl/domzal/junit/docker/rule/examples/ExampleLinkTest.java))
+- ([#24](../issues/24)) add possibility to wait for specific sequence of messages
   (instead single message) in output at container start,
-  ([example](src/test/java/pl/domzal/junit/docker/rule/examples/ExampleLinkTest.javaExampleWaitForLogMessageSequenceAtStartTest.java))
+  ([example](../src/test/java/pl/domzal/junit/docker/rule/examples/ExampleLinkTest.javaExampleWaitForLogMessageSequenceAtStartTest.java))
 
 ## 0.1 ##
 
 First stable version.
 Features:
+
 - use it as JUnit @Rule or @ClassRule
 - specify image name/tag
 - specify container name (equivalent of command line `--name`)
