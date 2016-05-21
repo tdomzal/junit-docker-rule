@@ -100,6 +100,7 @@ public class DockerRuleBuilder {
      * @param waitForMessage Message to wait for.
      */
     public DockerRuleBuilder waitForMessage(String waitForMessage) {
+        assertWaitForMessageNotRedefined();
         this.waitForMessage = waitForMessage;
         return this;
     }
@@ -111,9 +112,15 @@ public class DockerRuleBuilder {
      * @param waitSeconds Number of seconds to wait.
      */
     public DockerRuleBuilder waitForMessage(String waitForMessage, int waitSeconds) {
+        assertWaitForMessageNotRedefined();
         this.waitForMessage = waitForMessage;
         this.waitForMessageSeconds = waitSeconds;
         return this;
+    }
+    private void assertWaitForMessageNotRedefined() {
+        if (this.waitForMessage != null) {
+            throw new IllegalStateException(String.format("waitForMessage option may be specified only once (previous wait for message value '%s')", this.waitForMessage));
+        }
     }
     String waitForMessage() {
         return waitForMessage;
