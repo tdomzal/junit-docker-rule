@@ -21,7 +21,7 @@ public class WaitForLogSequenceWaitingTest {
 
     private static Logger log = LoggerFactory.getLogger(WaitForLogSequenceWaitingTest.class);
 
-    public static final int WAIT_LOG_TIMEOUT_SEC = 1;
+    public static final int WAIT_LOG_TIMEOUT_SEC = 4;
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
@@ -52,7 +52,7 @@ public class WaitForLogSequenceWaitingTest {
         }
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 20000)
     public void shouldStopAfterWholeSequence() throws Exception {
         WaitForLogSequence testee = new WaitForLogSequence(Arrays.asList("one", "three"), WAIT_LOG_TIMEOUT_SEC);
         executor.submit(new WaitRunner(testee));
@@ -82,7 +82,7 @@ public class WaitForLogSequenceWaitingTest {
     }
 
     private void waitForDone() throws TimeoutException, InterruptedException {
-        new WaitForUnit(TimeUnit.SECONDS, 1, new WaitForUnit.WaitForCondition() {
+        new WaitForUnit(TimeUnit.SECONDS, 5, new WaitForUnit.WaitForCondition() {
             @Override
             public boolean isConditionMet() {
                 return doneWaiting.get();
