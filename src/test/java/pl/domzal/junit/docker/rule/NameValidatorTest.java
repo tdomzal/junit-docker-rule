@@ -10,27 +10,27 @@ public class NameValidatorTest {
 
     @Test(expected = InvalidParameter.class)
     public void failNull() {
-        LinkNameValidator.validatedContainerName(null);
+        LinkNameValidator.validateContainerName(null);
     }
 
     @Test(expected = InvalidParameter.class)
     public void failEmpty() {
-        LinkNameValidator.validatedContainerName("");
+        LinkNameValidator.validateContainerName("");
     }
 
     @Test(expected = InvalidParameter.class)
     public void failInvalidCharsInName1() {
-        LinkNameValidator.validatedContainerName("host%");
+        LinkNameValidator.validateContainerName("host%");
     }
 
     @Test(expected = InvalidParameter.class)
     public void failInvalidCharsInName2() {
-        LinkNameValidator.validatedContainerName("host:");
+        LinkNameValidator.validateContainerName("host:");
     }
 
     @Test
     public void okValidName() {
-        LinkNameValidator.validatedContainerName("abcDEF_-");
+        LinkNameValidator.validateContainerName("abcDEF_-");
     }
 
 }

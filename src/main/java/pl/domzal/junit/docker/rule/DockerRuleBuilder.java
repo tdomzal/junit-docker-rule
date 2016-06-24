@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.rules.RuleChain;
 
 import com.spotify.docker.client.messages.PortBinding;
@@ -23,7 +24,8 @@ public class DockerRuleBuilder {
     private String name;
     private List<String> binds = new ArrayList<>();
     private List<String> env = new ArrayList<>();
-    private List<String> links = new ArrayList<>();
+    private List<String> staticLinks = new ArrayList<>();
+    private List<Pair<DockerRule,String>> dynamicLinks = new ArrayList<>();
     private ExposePortBindingBuilder exposeBuilder = ExposePortBindingBuilder.builder();
     private boolean publishAllPorts = true;
     private String[] entrypoint;
@@ -272,12 +274,13 @@ public class DockerRuleBuilder {
     }
 
     /**
+     * Static link.
      * Define (legacy) container link (equaivalent of command-line <code>--link</code> option).
+     * Unlike dynamic link (see {@link #link(DockerRule, String)}) requires assigning name to target container.
      * Legacy links works only on docker <code>bridge</code> network.
      * <p>
-     * Please note that container link points to must be started first
-     * and <b>because of no guarantees of rule execution order in JUnit suggested
-     * solution is to take advantage of JUnit {@link RuleChain}</b>, for example:
+     * Target container must be started first and <b>because of no guarantees of rule execution
+     * order in JUnit suggested solution is to take advantage of JUnit {@link RuleChain}</b>, for example:
      * <pre>
      *     DockerRule db = DockerRule.builder()
      *             .imageName("busybox")
@@ -293,21 +296,67 @@ public class DockerRuleBuilder {
      *     public RuleChain containers = RuleChain.outerRule(db).around(web);
      *
      * </pre>
-     * @param link Link definition. Allowed forms are "container" or "container:alias".
+     *
+     * @param link Link definition. Allowed forms are "container" or "container:alias" where
+     *             <ul>
+     *             <li><code>container</code> is target container name</li>
+     *             <li><code>alias</code> alias under which target container will be available in source container</li>
+     *             </ul>
      */
     public DockerRuleBuilder link(String link) {
-        links.add(LinkNameValidator.validatedContainerLink(link));
+        staticLinks.add(LinkNameValidator.validateContainerLink(link));
         return this;
     }
-    List<String> links() {
-        return links;
+    List<String> staticLinks() {
+        return staticLinks;
+    }
+
+    /**
+     * Dynamic link.
+     * Define (legacy) container links (equaivalent of command-line <code>--link "targetContainerId:alias"</code>
+     * where targetContainerId will be substituted after target container start).
+     * Legacy links works only on docker <code>bridge</code> network.
+     * <p>
+     * Unlike static link (see {@link #link(String)}) it does not require assigning name to target container
+     * so it is especially convenient in setups where multiple concurrent test cases
+     * shares single docker server.
+     * <p>
+     * Target container must be started first and <b>because of no guarantees of rule execution
+     * order in JUnit suggested solution is to take advantage of JUnit {@link RuleChain}</b>, for example:
+     * <pre>
+     *     DockerRule db = DockerRule.builder()
+     *             .imageName("busybox")
+     *             ...
+     *
+     *     DockerRule web = DockerRule.builder()
+     *             .imageName("busybox")
+     *             .link(db, "db")
+     *             ...
+     *
+     *     {@literal @}Rule
+     *     public RuleChain containers = RuleChain.outerRule(db).around(web);
+     *
+     * </pre>
+     *
+     * @param targetContainer Container link points to
+     * @param alias Alias assinged to link in current container
+     *
+     */
+    public DockerRuleBuilder link(DockerRule targetContainer, String alias) {
+        LinkNameValidator.validateContainerName(alias);
+        dynamicLinks.add(Pair.of(targetContainer, alias));
+        return this;
+    }
+
+    List<Pair<DockerRule, String>> getDynamicLinks() {
+        return dynamicLinks;
     }
 
     /**
      * Define container name (equaivalent of command-line <code>--name</code> option).
      */
     public DockerRuleBuilder name(String name) {
-        this.name = LinkNameValidator.validatedContainerName(name);
+        this.name = LinkNameValidator.validateContainerName(name);
         return this;
     }
     String name() {

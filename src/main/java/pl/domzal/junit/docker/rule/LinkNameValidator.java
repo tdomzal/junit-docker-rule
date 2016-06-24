@@ -14,7 +14,7 @@ class LinkNameValidator {
     private static Pattern NAME_PATTERN = Pattern.compile(VALID_NAME_REGEX);
     private static Pattern LINK_PATTERN = Pattern.compile(VALID_LINK_DEFINITION_REGEX);
 
-    public static String validatedContainerName(String name) {
+    public static String validateContainerName(String name) {
         if (StringUtils.isBlank(name)) {
             throw new InvalidParameter("Name definition is empty");
         }
@@ -25,7 +25,7 @@ class LinkNameValidator {
         }
     }
 
-    public static String validatedContainerLink(String link) {
+    public static String validateContainerLink(String link) {
         if (StringUtils.isBlank(link)) {
             throw new InvalidParameter("Link definition is empty");
         }

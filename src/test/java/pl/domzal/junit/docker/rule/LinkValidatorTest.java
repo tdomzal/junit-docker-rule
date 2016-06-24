@@ -10,32 +10,32 @@ public class LinkValidatorTest {
 
     @Test(expected = InvalidParameter.class)
     public void failNull() {
-        LinkNameValidator.validatedContainerLink(null);
+        LinkNameValidator.validateContainerLink(null);
     }
 
     @Test(expected = InvalidParameter.class)
     public void failEmpty() {
-        LinkNameValidator.validatedContainerLink("");
+        LinkNameValidator.validateContainerLink("");
     }
 
     @Test(expected = InvalidParameter.class)
     public void failInvalidCharsInName() {
-        LinkNameValidator.validatedContainerLink("host%");
+        LinkNameValidator.validateContainerLink("host%");
     }
 
     @Test
     public void okValidName() {
-        LinkNameValidator.validatedContainerLink("abcDEF_-");
+        LinkNameValidator.validateContainerLink("abcDEF_-");
     }
 
     @Test
     public void okValidNameAndAlias() {
-        LinkNameValidator.validatedContainerLink("db:some_container");
+        LinkNameValidator.validateContainerLink("db:some_container");
     }
 
     @Test(expected = InvalidParameter.class)
     public void failTooManyColons() {
-        LinkNameValidator.validatedContainerLink("db:some_container:other_container");
+        LinkNameValidator.validateContainerLink("db:some_container:other_container");
     }
 
 }

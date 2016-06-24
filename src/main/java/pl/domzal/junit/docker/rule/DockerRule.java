@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Rule;
 import org.junit.rules.ExternalResource;
 import org.slf4j.Logger;
@@ -68,6 +69,8 @@ public class DockerRule extends ExternalResource {
 
     private DockerLogs dockerLogs;
 
+    private boolean isStarted = false;
+
     DockerRule(DockerRuleBuilder builder) {
         this.builder = builder;
         this.imageNameWithTag = imageNameWithTag(builder.imageName());
@@ -103,7 +106,7 @@ public class DockerRule extends ExternalResource {
                 .publishAllPorts(builder.publishAllPorts())//
                 .portBindings(builder.hostPortBindings())//
                 .binds(builder.binds())//
-                .links(builder.links())//
+                .links(links())//
                 .extraHosts(builder.extraHosts())//
                 .build();
         ContainerConfig containerConfig = ContainerConfig.builder()//
@@ -135,14 +138,35 @@ public class DockerRule extends ExternalResource {
             containerIp = containerInfo.networkSettings().ipAddress();
             containerPorts = containerInfo.networkSettings().ports();
             containerGateway = containerInfo.networkSettings().gateway();
+
             waitForStartConditions(lineListener);
             logNetworkSettings();
+
+            isStarted = true;
 
         } catch (DockerRequestException e) {
             throw new IllegalStateException(e.message(), e);
         } catch (DockerException | InterruptedException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private boolean isStarted() {
+        return isStarted;
+    }
+
+    private List<String> links() {
+        List<String> resolvedLinks = new ArrayList<>();
+        resolvedLinks.addAll(builder.staticLinks());
+        for (Pair<DockerRule,String> dynamicLink : builder.getDynamicLinks()) {
+            DockerRule rule = dynamicLink.getKey();
+            String alias = dynamicLink.getValue();
+            if (!rule.isStarted()) {
+                throw new IllegalStateException(String.format("container linked via alias '%s' is not started, make sure rule definitions assures target container will be started first", alias));
+            }
+            resolvedLinks.add(rule.getContainerId() + ":" + alias);
+        }
+        return resolvedLinks;
     }
 
     // TODO refactor out waitFor logic to external class
