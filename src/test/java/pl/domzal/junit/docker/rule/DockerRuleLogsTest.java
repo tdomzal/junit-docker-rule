@@ -23,7 +23,7 @@ public class DockerRuleLogsTest {
     public void shouldWriteStdout() throws Throwable {
         DockerRule testee = DockerRule.builder()//
                 .imageName("busybox")//
-                .cmd("sh", "-c", "echo 01stdout")//
+                .cmd("sh", "-c", "echo 01stdout; sleep 1")//
                 .stdoutWriter(outWriter)
                 .stderrWriter(errWriter)
                 .build();
@@ -41,7 +41,7 @@ public class DockerRuleLogsTest {
     public void shouldWriteStderr() throws Throwable {
         DockerRule testee = DockerRule.builder()//
                 .imageName("busybox")//
-                .cmd("sh", "-c", ">&2 echo 02stderr")//
+                .cmd("sh", "-c", ">&2 echo 02stderr; sleep 1")//
                 .stdoutWriter(outWriter)
                 .stderrWriter(errWriter)
                 .build();
