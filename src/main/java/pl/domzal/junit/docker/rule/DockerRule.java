@@ -148,10 +148,10 @@ public class DockerRule extends ExternalResource {
     // TODO refactor out waitFor logic to external class
     private void waitForStartConditions(LogSequenceChecker lineListener) throws TimeoutException, InterruptedException {
         if (!builder.waitForMessageSequence().isEmpty()) {
-            WaitForContainer.waitForCondition(lineListener, builder.waitForMessageSeconds());
+            WaitForContainer.waitForCondition(lineListener, builder.waitForSeconds());
         }
         if (builder.waitForMessage()!=null) {
-            WaitForContainer.waitForCondition(new LogChecker(this, builder.waitForMessage()), builder.waitForMessageSeconds());
+            WaitForContainer.waitForCondition(new LogChecker(this, builder.waitForMessage()), builder.waitForSeconds());
         }
         if (!builder.waitForTcpPort().isEmpty()) {
             List<Integer> internalPorts = builder.waitForTcpPort();
@@ -159,12 +159,12 @@ public class DockerRule extends ExternalResource {
             for (Integer internalPort : internalPorts) {
                 externalPorts.add(findExternalPort(internalPort));
             }
-            WaitForContainer.waitForCondition(new TcpPortChecker(getDockerHost(), externalPorts), builder.waitForMessageSeconds());
+            WaitForContainer.waitForCondition(new TcpPortChecker(getDockerHost(), externalPorts), builder.waitForSeconds());
         }
         if (!builder.waitForHttpPing().isEmpty()) {
             for (Integer internalHttpPort : builder.waitForHttpPing()) {
                 String pingUrl = String.format("http://%s:%s/", getDockerHost(), findExternalPort(internalHttpPort));
-                WaitForContainer.waitForCondition(new HttpPingChecker(pingUrl), builder.waitForMessageSeconds());
+                WaitForContainer.waitForCondition(new HttpPingChecker(pingUrl), builder.waitForSeconds());
             }
         }
     }

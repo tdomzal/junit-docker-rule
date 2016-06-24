@@ -38,7 +38,7 @@ public class DockerRuleBuilder {
     private List<String> waitForMessageSequence = new ArrayList<>();
     private List<Integer> waitForPort = new ArrayList<>();
     private List<Integer> waitForHttp = new ArrayList<>();
-    private int waitForMessageSeconds = WAIT_FOR_DEFAULT_SECONDS;
+    private int waitForSeconds = WAIT_FOR_DEFAULT_SECONDS;
 
     DockerRuleBuilder(){}
 
@@ -120,7 +120,7 @@ public class DockerRuleBuilder {
     public DockerRuleBuilder waitForMessage(String waitForMessage, int waitSeconds) {
         assertWaitForMessageNotRedefined();
         this.waitForMessage = waitForMessage;
-        this.waitForMessageSeconds = waitSeconds;
+        this.waitForSeconds = waitSeconds;
         return this;
     }
     private void assertWaitForMessageNotRedefined() {
@@ -131,8 +131,8 @@ public class DockerRuleBuilder {
     String waitForMessage() {
         return waitForMessage;
     }
-    int waitForMessageSeconds() {
-        return waitForMessageSeconds;
+    int waitForSeconds() {
+        return waitForSeconds;
     }
 
     /** Wait for message sequence starting with given message. */
@@ -342,5 +342,15 @@ public class DockerRuleBuilder {
     }
     List<Integer> waitForHttpPing() {
         return waitForHttp;
+    }
+
+    /**
+     * Set default timeout for all wait methods.
+     *
+     * @param waitForSeconds
+     */
+    public DockerRuleBuilder waitForTimeout(int waitForSeconds) {
+        this.waitForSeconds = waitForSeconds;
+        return this;
     }
 }
