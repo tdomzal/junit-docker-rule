@@ -4,15 +4,17 @@
 
 New features:
 
-- add static ([#23](../../../issues/23)) and dynamic ([#27](../../../issues/27)) container linking
+- static ([#23](../../../issues/23)) and dynamic ([#27](../../../issues/27)) container linking
   ([static](../src/test/java/pl/domzal/junit/docker/rule/examples/ExampleLinkTest.java) and
   [dynamic](../src/test/java/pl/domzal/junit/docker/rule/examples/ExampleLinkDynamicTest.java) example)
-- ([#24](../../../issues/24)) add possibility to wait for specific sequence of messages
+- ([#24](../../../issues/24)) wait for specific sequence of messages
   (instead single message) in output at container start
   ([example](../src/test/java/pl/domzal/junit/docker/rule/examples/ExampleWaitForLogMessageSequenceAtStartTest.java))
-- ([#2](../../../issues/2)) add posibility to wait for http url and tcp socket open on container start
+- ([#2](../../../issues/2)) wait for http url and tcp socket open on container start
   (examples: [tcp socket wait](../src/test/java/pl/domzal/junit/docker/rule/examples/ExampleWaitForTcpPortTest.java)
   and [http wait](../src/test/java/pl/domzal/junit/docker/rule/examples/ExampleWaitForHttpPingTest.java))
+- ([#29](../../../issues/29)) expose specified container port to random host port
+  ([example](../src/test/java/pl/domzal/junit/docker/rule/examples/ExamplePortExposeDynamicTest.java))
 
 ## 0.1 ##
 

@@ -39,6 +39,24 @@ public class ExposePortBindingBuilderTest {
     }
 
     @Test
+    public void shouldExposeSingleTcpDynamicPort() throws Exception {
+        //when
+        builder.expose("80");
+        Set<String> containerExposedPorts = builder.containerExposedPorts();
+        Map<String, List<PortBinding>> hostBindings = builder.hostBindings();
+
+        //then
+        assertEquals(1, containerExposedPorts.size());
+        assertTrue(containerExposedPorts.contains("80/tcp"));
+        assertEquals(1, hostBindings.size());
+        assertTrue(hostBindings.containsKey("80/tcp"));
+        List<PortBinding> binds80 = hostBindings.get("80/tcp");
+        assertEquals(1, binds80.size());
+        PortBinding portBinding = binds80.get(0);
+        assertEquals(PortBinding.of(BIND_ALL, ""), portBinding);
+    }
+
+    @Test
     public void shouldExposeSingleTcpPortWithProtocolSpecified() throws Exception {
         //when
         builder.expose("8080", "80/tcp");

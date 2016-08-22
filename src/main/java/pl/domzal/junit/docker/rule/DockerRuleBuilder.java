@@ -215,17 +215,33 @@ public class DockerRuleBuilder {
     }
 
     /**
-     * Expose container port to specified host port. By default
-     * all container port are exposed to randomly assigned free
+     * Expose single container port to specified host port.
+     * By default all container port are exposed to randomly assigned free
      * host ports. <b>Using manual expose disables this so user must
      * expose all required ports by hand</b>.
      *
-     * @param hostPort Host port internal port will be mapped to.
+     * @param hostPort External host port, container internal port will be mapped to.
      * @param containerPort Container port to map to host.
      */
     public DockerRuleBuilder expose(String hostPort, String containerPort) {
         publishAllPorts = false;
         exposeBuilder.expose(hostPort, containerPort);
+        return this;
+    }
+    /**
+     * Expose single container port to dynamically allocated host port.
+     * Use {@link DockerRule#getExposedContainerPort(String)} to retrieve host
+     * random port number it was allocated.
+     * <p>
+     * By default all container port are exposed to randomly assigned free
+     * host ports. <b>Using manual expose disables this so user must
+     * expose all required ports by hand</b>.
+     *
+     * @param containerPort Container internal port to expose on random host port.
+     */
+    public DockerRuleBuilder expose(String containerPort) {
+        publishAllPorts = false;
+        exposeBuilder.expose(containerPort);
         return this;
     }
     Map<String, List<PortBinding>> hostPortBindings() {
@@ -413,4 +429,5 @@ public class DockerRuleBuilder {
         this.waitForSeconds = waitForSeconds;
         return this;
     }
+
 }

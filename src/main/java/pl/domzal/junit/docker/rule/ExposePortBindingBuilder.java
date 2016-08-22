@@ -33,16 +33,22 @@ class ExposePortBindingBuilder {
         assertIsNumber(hostPort);
         assertValidContainerPort(containerPort);
         assertHostPortNotAssigned(hostPort);
+        addBinding(containerBindWithProtocol(containerPort), PortBinding.of(BIND_ALL, hostPort));
+        return this;
+    }
 
-        String containerBind = containerBindWithProtocol(containerPort);
-        PortBinding hostBind = PortBinding.of(BIND_ALL, hostPort);
+    public ExposePortBindingBuilder expose(String containerPort) {
+        assertValidContainerPort(containerPort);
+        addBinding(containerBindWithProtocol(containerPort), PortBinding.randomPort(BIND_ALL));
+        return this;
+    }
+
+    private void addBinding(String containerBind, PortBinding hostBind) {
         if (bindings.containsKey(containerBind)) {
             bindings.get(containerBind).add(hostBind);
         } else {
             bindings.put(containerBind, Lists.newArrayList(hostBind));
         }
-
-        return this;
     }
 
     /**
