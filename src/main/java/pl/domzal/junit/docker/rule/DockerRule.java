@@ -254,10 +254,15 @@ public class DockerRule extends ExternalResource {
             ContainerState state = dockerClient.inspectContainer(container.id()).state();
             log.debug("{} state {}", containerShortId, state);
             if (state.running()) {
-                dockerClient.stopContainer(container.id(), STOP_TIMEOUT);
-                log.info("{} stopped", containerShortId);
+                if (builder.stopOptions().contains(StopOption.KILL)) {
+                    dockerClient.killContainer(container.id());
+                    log.info("{} killed", containerShortId);
+                } else {
+                    dockerClient.stopContainer(container.id(), STOP_TIMEOUT);
+                    log.info("{} stopped", containerShortId);
+                }
             }
-            if (!builder.keepContainer()) {
+            if (builder.stopOptions().contains(StopOption.REMOVE)) {
                 dockerClient.removeContainer(container.id(), true);
                 log.info("{} deleted", containerShortId);
                 container = null;

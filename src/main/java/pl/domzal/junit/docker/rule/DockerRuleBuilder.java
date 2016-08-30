@@ -31,7 +31,6 @@ public class DockerRuleBuilder {
     private String[] entrypoint;
     private String[] cmd;
     private String[] extraHosts;
-    private boolean keepContainer = false;
     private boolean imageAlwaysPull = false;
     private PrintStream stdoutWriter;
     private PrintStream stderrWriter;
@@ -41,6 +40,8 @@ public class DockerRuleBuilder {
     private List<Integer> waitForPort = new ArrayList<>();
     private List<Integer> waitForHttp = new ArrayList<>();
     private int waitForSeconds = WAIT_FOR_DEFAULT_SECONDS;
+
+    private StopOption.StopOptionSet stopOptions = new StopOption.StopOptionSet();
 
     DockerRuleBuilder(){}
 
@@ -150,13 +151,15 @@ public class DockerRuleBuilder {
 
     /**
      * Keep stopped container after test.
+     * @deprecated Use {@link #stopOptions(StopOption...)} instead.
      */
     public DockerRuleBuilder keepContainer(boolean keepContainer) {
-        this.keepContainer = keepContainer;
+        if (keepContainer) {
+            this.stopOptions.setOptions(StopOption.KEEP);
+        } else {
+            this.stopOptions.setOptions(StopOption.REMOVE);
+        }
         return this;
-    }
-    boolean keepContainer() {
-        return keepContainer;
     }
 
     /**
@@ -428,6 +431,21 @@ public class DockerRuleBuilder {
     public DockerRuleBuilder waitForTimeout(int waitForSeconds) {
         this.waitForSeconds = waitForSeconds;
         return this;
+    }
+
+    /**
+     * Container stopping behavior. By default container are stopped
+     * ({@link StopOption#STOP}) and removed ({@link StopOption#REMOVE}).
+     * In case multiple opposite options are given <i>last one wins</i>.
+     *
+     * @param stopOptions Selected options.
+     */
+    public DockerRuleBuilder stopOptions(StopOption... stopOptions) {
+        this.stopOptions.setOptions(stopOptions);
+        return this;
+    }
+    StopOption.StopOptionSet stopOptions() {
+        return this.stopOptions;
     }
 
 }
