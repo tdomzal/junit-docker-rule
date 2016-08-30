@@ -27,6 +27,9 @@ public class ExampleLinkDynamicTest {
             .cmd("sh", "-c", "ping -w 1 db")//
             .build();
 
+    /**
+     * Recommended method to make sure linked container are initialized in required order.
+     */
     @ClassRule
     public static RuleChain containers = RuleChain.outerRule(dbRule).around(web);
 
