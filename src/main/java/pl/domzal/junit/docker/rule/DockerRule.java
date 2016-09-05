@@ -116,6 +116,7 @@ public class DockerRule extends ExternalResource {
                 .networkDisabled(false)//
                 .exposedPorts(builder.containerExposedPorts())
                 .entrypoint(builder.entrypoint())
+                .labels(builder.getLabels())
                 .cmd(builder.cmd()).build();
         try {
             if (StringUtils.isNotBlank(builder.name())) {

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,6 +27,7 @@ public class DockerRuleBuilder {
     private List<String> env = new ArrayList<>();
     private List<String> staticLinks = new ArrayList<>();
     private List<Pair<DockerRule,String>> dynamicLinks = new ArrayList<>();
+    private Map<String,String> labels = new HashMap<>();
     private ExposePortBindingBuilder exposeBuilder = ExposePortBindingBuilder.builder();
     private boolean publishAllPorts = true;
     private String[] entrypoint;
@@ -448,4 +450,16 @@ public class DockerRuleBuilder {
         return this.stopOptions;
     }
 
+    /**
+     * Add container label (call multiple times to add more than one).
+     * @param name Label name.
+     * @param value Label value.
+     */
+    public DockerRuleBuilder addLabel(String name, String value) {
+        labels.put(name, value);
+        return this;
+    }
+    Map<String, String> getLabels() {
+        return labels;
+    }
 }
