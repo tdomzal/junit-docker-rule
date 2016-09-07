@@ -225,7 +225,7 @@ public class DockerRule extends ExternalResource {
         String imageNameWithTag = imageNameWithTag(imageName);
         List<Image> listImages = dockerClient.listImages(ListImagesParam.danglingImages(false));
         for (Image image : listImages) {
-            if (image.repoTags().contains(imageNameWithTag)) {
+            if (image.repoTags() != null && image.repoTags().contains(imageNameWithTag)) {
                 log.debug("image '{}' found", imageNameWithTag);
                 return true;
             }
