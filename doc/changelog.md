@@ -16,6 +16,14 @@ New features:
 - ([#29](../../../issues/29)) expose specified container port to random host port
   ([example](../src/test/java/pl/domzal/junit/docker/rule/examples/ExamplePortExposeDynamicTest.java))
 
+## 0.1.1 ##
+
+Released 2016-09-08
+
+Fixes:
+
+-  ([#32](../../../issues/32)) NullPointerException if an image don't have a repoTags
+
 ## 0.1 ##
 
 First stable version.
