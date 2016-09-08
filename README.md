@@ -4,6 +4,9 @@
 [![Dependency Status](https://www.versioneye.com/user/projects/56b649da0a0ff5002c86035a/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56b649da0a0ff5002c86035a)
 # junit-docker-rule #
 
+## Changelog ##
+see [changelog](doc/changelog.md)
+
 ## What is it ? ##
 
 Simple [JUnit Rule](https://github.com/junit-team/junit/wiki/Rules) starting [docker](https://www.docker.com/) container right for your test case:
@@ -101,14 +104,41 @@ Docker should be installed and configured - which in general means you must have
     
     }
     
-## Changelog ##
-see [changelog](doc/changelog.md)
-
 ## What else should I know for now ? ##
 
 - It uses java [docker client from Spotify](https://github.com/spotify/docker-client)
 - Build and tested with docker 1.9
 - This is work in progress (but all features are verified by tests)
+
+## How to use latest (SNAPSHOT) version ##
+
+Change dependency to:
+
+    ...
+    <dependency>
+        <groupId>com.github.tdomzal</groupId>
+        <artifactId>junit-docker-rule</artifactId>
+        <version>0.2-SNAPSHOT</version>
+        <scope>test</scope>
+    </dependency>
+    ...
+
+Add OSS Sonatype snapshot repository to you *pom.xml*:
+
+    <project>
+        ...
+        <repositories>
+            ...
+            <repository>
+                <id>ossrh</id>
+                <releases><enabled>false</enabled></releases>
+                <snapshots><enabled>true</enabled></snapshots>
+                <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            </repository>
+            ...
+        </repositories>
+        ...
+    </project>
 
 ## How to build ? ##
 
