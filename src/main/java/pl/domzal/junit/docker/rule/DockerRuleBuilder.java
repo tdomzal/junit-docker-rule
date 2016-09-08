@@ -390,6 +390,20 @@ public class DockerRuleBuilder {
      * {@link #publishAllPorts(boolean)}) (reachable from the test
      * code point of view).
      * <p>
+     * Side note:
+     * Internal port is required for convenience - rule will find matching external port
+     * or, report error at startup when given internal port was not exposed.
+     * <p>
+     * Side note 2:
+     * <b>TCP port check depends of docker internal port-forwarding feature and docker server setup</b>.
+     * In short: won't work if docker engine forwards port using <i>docker-proxy</i> (aka <i>userland proxy</i>)
+     * - will report port opening almost instantly and NOT wait for underlying port opening.
+     * <p>
+     * Additional <i>userland proxy</i> info:<ul>
+     *     <li><a href="https://docs.docker.com/engine/userguide/networking/default_network/binding/">Docker docs / Bind container ports to the host</a></li>
+     *     <li><a href="https://docs.docker.com/engine/reference/commandline/dockerd/">Docker docs / daemon options</a></li>
+     *     <li><a href="https://github.com/docker/docker/issues/8356">Issue / Make it possible to disable userland proxy</a></li>
+     * </ul>
      *
      * @param internalTcpPorts TCP port (or ports) to scan (internal, MUST be exposed for wait to work).
      */

@@ -12,7 +12,8 @@ New features:
   ([example](../src/test/java/pl/domzal/junit/docker/rule/examples/ExampleWaitForLogMessageSequenceAtStartTest.java))
 - ([#2](../../../issues/2)) wait for http url and tcp socket open on container start
   (examples: [tcp socket wait](../src/test/java/pl/domzal/junit/docker/rule/examples/ExampleWaitForTcpPortTest.java)
-  and [http wait](../src/test/java/pl/domzal/junit/docker/rule/examples/ExampleWaitForHttpPingTest.java))
+  and [http wait](../src/test/java/pl/domzal/junit/docker/rule/examples/ExampleWaitForHttpPingTest.java)).
+  See [notes](tcp_wait_notes.md)
 - ([#29](../../../issues/29)) expose specified container port to random host port
   ([example](../src/test/java/pl/domzal/junit/docker/rule/examples/ExamplePortExposeDynamicTest.java))
 
