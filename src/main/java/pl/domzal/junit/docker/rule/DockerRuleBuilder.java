@@ -390,13 +390,13 @@ public class DockerRuleBuilder {
      * {@link #publishAllPorts(boolean)}) (reachable from the test
      * code point of view).
      * <p>
-     * Side note: Internal port is required for convenience - rule will find matching
-     * external port or, report error at startup when given internal port was not exposed.
      *
-     * @param internalTcpPort TCP port to scan (internal, MUST be exposed for wait to work).
+     * @param internalTcpPorts TCP port (or ports) to scan (internal, MUST be exposed for wait to work).
      */
-    public DockerRuleBuilder waitForTcpPort(int internalTcpPort) {
-        this.waitForPort.add(internalTcpPort);
+    public DockerRuleBuilder waitForTcpPort(int... internalTcpPorts) {
+        for (int internalTcpPort : internalTcpPorts) {
+            this.waitForPort.add(internalTcpPort);
+        }
         return this;
     }
     List<Integer> waitForTcpPort() {
