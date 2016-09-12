@@ -83,7 +83,7 @@ Docker should be installed and configured - which in general means you must have
     <dependency>
         <groupId>com.github.tdomzal</groupId>
         <artifactId>junit-docker-rule</artifactId>
-        <version>0.1.1</version>
+        <version>0.2</version>
         <scope>test</scope>
     </dependency>
     ...
