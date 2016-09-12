@@ -1,6 +1,8 @@
 # changelog #
 
-## 0.2-SNAPSHOT ##
+## 0.2 ##
+
+Released 2016-09-13
 
 New features:
 

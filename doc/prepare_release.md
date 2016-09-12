@@ -15,14 +15,14 @@ Build and deploy
 
 Version numbers
 
-    STABLE_BRANCH=0.1.x
+    BRANCH=0.1.x                # master / 0.r.x
     RELEASE_VER=<release_version>
     NEXT_VER=<next_snapshot_version>
 
 Update / checkout
 
     git fetch
-    git checkout $STABLE_BRANCH
+    git checkout $BRANCH
 
 Deploy release
 
@@ -41,4 +41,4 @@ Prepare for next SNAPSHOT
     mvn versions:set -DgenerateBackupPoms=false -DnewVersion=$NEXT_VER
     git add pom.xml
     git commit -m "[release] prepare for next development iteration"
-    git push origin $STABLE_BRANCH v$RELEASE_VER
+    git push origin $BRANCH v$RELEASE_VER
