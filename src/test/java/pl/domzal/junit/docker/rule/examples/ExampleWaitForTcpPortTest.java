@@ -12,7 +12,8 @@ import pl.domzal.junit.docker.rule.AssertHtml;
 import pl.domzal.junit.docker.rule.DockerRule;
 
 /**
- * Is it possible to wait for specified message appear in container log before starting test case.
+ * Wait for open TCP server port.
+ * Plase read {@link pl.domzal.junit.docker.rule.DockerRuleBuilder#waitForTcpPort(int...)} notes.
  */
 @Category(test.category.Unstable.class)
 public class ExampleWaitForTcpPortTest {
@@ -20,9 +21,10 @@ public class ExampleWaitForTcpPortTest {
     private static Logger log = LoggerFactory.getLogger(ExampleWaitForTcpPortTest.class);
 
     @Rule
-    public DockerRule httpd = DockerRule.builder() //
-            .imageName("nginx")//
-            .publishAllPorts(true) //
+    public DockerRule httpd = DockerRule.builder()
+            .imageName("nginx")
+            .publishAllPorts(true)
+            // port we are waiting for
             .waitForTcpPort(80)
             // delayed httpd start ...
             .cmd("sh", "-c", "echo waiting...; sleep 5; echo starting...; nginx -g 'daemon off;'")

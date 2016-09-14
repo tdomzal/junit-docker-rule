@@ -11,21 +11,23 @@ import org.junit.rules.RuleChain;
 import pl.domzal.junit.docker.rule.DockerRule;
 
 /**
- * Container linking. &quot;web&quot; links to &quot;db&quot; and pings it.
+ * Static container linking. &quot;web&quot; links to &quot;db&quot; and pings it.
  */
 @Category(test.category.Stable.class)
 public class ExampleLinkTest {
 
-    private static DockerRule db = DockerRule.builder()//
-            .imageName("alpine")//
-            .name("db")//
-            .cmd("sh", "-c", "sleep 100")//
+    private static DockerRule db = DockerRule.builder()
+            .imageName("alpine")
+            // container must be named to be target of static link
+            .name("db")
+            .cmd("sh", "-c", "sleep 100")
             .build();
 
-    private static DockerRule web = DockerRule.builder()//
-            .imageName("alpine")//
-            .link("db")//
-            .cmd("sh", "-c", "ping -w 1 db")//
+    private static DockerRule web = DockerRule.builder()
+            .imageName("alpine")
+            // static link point to named container
+            .link("db")
+            .cmd("sh", "-c", "ping -w 1 db")
             .build();
 
     /**

@@ -22,8 +22,8 @@ public class ExamplePortExposeAllTest {
     private static Logger log = LoggerFactory.getLogger(ExamplePortExposeAllTest.class);
 
     @ClassRule
-    public static DockerRule testee = DockerRule.builder()//
-            .imageName("nginx")//
+    public static DockerRule testee = DockerRule.builder()
+            .imageName("nginx")
             .build();
 
     @Test

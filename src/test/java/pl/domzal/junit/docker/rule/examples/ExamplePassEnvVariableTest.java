@@ -20,10 +20,10 @@ import pl.domzal.junit.docker.rule.DockerRule;
 public class ExamplePassEnvVariableTest {
 
     @Rule
-    public DockerRule testee = DockerRule.builder()//
-            .imageName("busybox")//
+    public DockerRule testee = DockerRule.builder()
+            .imageName("busybox")
             .env("EXTRA_OPT", "EXTRA_OPT_VALUE")
-            .cmd("sh", "-c", "echo $EXTRA_OPT")//
+            .cmd("sh", "-c", "echo $EXTRA_OPT")
             .build();
 
     @Test

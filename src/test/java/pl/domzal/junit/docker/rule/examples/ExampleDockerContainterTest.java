@@ -17,15 +17,14 @@ public class ExampleDockerContainterTest {
     @Test
     public void shouldStartAndStopContainerTwice() throws Throwable {
 
-        DockerRule testee = DockerRule.builder() //
-                .imageName("busybox") //
-                .cmd("sh", "-c", "for i in 01 02 started 03 04 05; do (echo $i; sleep 1); done") //
-                .waitForMessage("started") //
+        DockerRule testee = DockerRule.builder()
+                .imageName("busybox")
+                .cmd("sh", "-c", "for i in 01 02 started 03 04 05; do (echo $i; sleep 1); done")
+                .waitForMessage("started")
                 .build();
 
         testee.before();
         try {
-
             String log = testee.getLog();
             assertThat(log, not(containsString("05")));
         } finally {

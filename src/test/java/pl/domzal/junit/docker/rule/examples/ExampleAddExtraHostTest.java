@@ -20,10 +20,10 @@ import pl.domzal.junit.docker.rule.DockerRule;
 public class ExampleAddExtraHostTest {
 
     @Rule
-    public DockerRule testee = DockerRule.builder()//
-            .imageName("busybox")//
+    public DockerRule testee = DockerRule.builder()
+            .imageName("busybox")
             .extraHosts("extrahost:1.2.3.4")
-            .cmd("sh", "-c", "cat /etc/hosts | grep extrahost")//
+            .cmd("sh", "-c", "cat /etc/hosts | grep extrahost")
             .build();
 
     @Test

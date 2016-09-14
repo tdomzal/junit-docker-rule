@@ -22,8 +22,8 @@ public class ExamplePortExposeStaticTest {
     private static Logger log = LoggerFactory.getLogger(ExamplePortExposeStaticTest.class);
 
     @ClassRule
-    public static DockerRule testee = DockerRule.builder() //
-            .imageName("nginx") //
+    public static DockerRule testee = DockerRule.builder()
+            .imageName("nginx")
             .publishAllPorts(false) // publishAllPorts is disabled when expose(...) is used but we make it explicit here
             .expose("8123", "80")
             .build();

@@ -22,9 +22,10 @@ public class ExamplePortExposeDynamicTest {
     private static Logger log = LoggerFactory.getLogger(ExamplePortExposeDynamicTest.class);
 
     @ClassRule
-    public static DockerRule testee = DockerRule.builder() //
-            .imageName("nginx") //
-            .expose("80") // specify only container port to expose to random host port
+    public static DockerRule testee = DockerRule.builder()
+            .imageName("nginx")
+            // specify internal container port to be exposed to randomly assigned host port
+            .expose("80")
             .build();
 
     @Test

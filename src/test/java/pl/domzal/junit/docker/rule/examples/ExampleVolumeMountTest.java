@@ -31,10 +31,11 @@ public class ExampleVolumeMountTest {
     }
 
     @Rule
-    public DockerRule testee = DockerRule.builder()//
-            .imageName("busybox")//
-            .mountFrom(tempFolder.getRoot()).to("/somedir", "ro")//
-            .cmd("sh", "-c", "cat /somedir/somefile")//
+    public DockerRule testee = DockerRule.builder()
+            .imageName("busybox")
+            // mounting requires specifying file and target path
+            .mountFrom(tempFolder.getRoot()).to("/somedir", "ro")
+            .cmd("sh", "-c", "cat /somedir/somefile")
             .build();
 
     @Test(timeout = 10000)

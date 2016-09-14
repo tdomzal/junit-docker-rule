@@ -12,7 +12,7 @@ import pl.domzal.junit.docker.rule.AssertHtml;
 import pl.domzal.junit.docker.rule.DockerRule;
 
 /**
- * Is it possible to wait for specified message appear in container log before starting test case.
+ * Wait for http service to be available.
  */
 @Category(test.category.Stable.class)
 public class ExampleWaitForHttpPingTest {
@@ -20,11 +20,12 @@ public class ExampleWaitForHttpPingTest {
     private static Logger log = LoggerFactory.getLogger(ExampleWaitForHttpPingTest.class);
 
     @Rule
-    public DockerRule httpd = DockerRule.builder() //
-            .imageName("nginx")//
-            .publishAllPorts(true) //
+    public DockerRule httpd = DockerRule.builder()
+            .imageName("nginx")
+            .publishAllPorts(true)
+            // wait until container port 80 will response to HTTP HEAD request
             .waitForHttpPing(80)
-            // delayed httpd start ...
+            // delayed httpd start ... to mimic long starting http server
             .cmd("sh", "-c", "echo waiting...; sleep 5; echo starting...; nginx -g 'daemon off;'")
             .build();
 
