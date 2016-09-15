@@ -9,8 +9,8 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.spotify.docker.client.DockerClient;
-import com.spotify.docker.client.DockerException;
-import com.spotify.docker.client.DockerRequestException;
+import com.spotify.docker.client.exceptions.DockerException;
+import com.spotify.docker.client.exceptions.DockerRequestException;
 import com.spotify.docker.client.messages.Container;
 import com.spotify.docker.client.messages.ContainerInfo;
 
@@ -90,7 +90,7 @@ public class DockerRuleStopOptionsTest {
                 if (containerInfo.state().running()) {
                     dockerClient.killContainer(containerId);
                 }
-                dockerClient.removeContainer(containerId, true);
+                dockerClient.removeContainer(containerId, DockerClient.RemoveContainerParam.removeVolumes());
             }
         } catch (DockerRequestException dockerRequestException) {
             throw new IllegalStateException(dockerRequestException.message(), dockerRequestException);

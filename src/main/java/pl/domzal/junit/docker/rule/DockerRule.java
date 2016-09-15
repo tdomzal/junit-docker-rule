@@ -14,14 +14,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.spotify.docker.client.DefaultDockerClient;
-import com.spotify.docker.client.DockerCertificateException;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerClient.ListImagesParam;
 import com.spotify.docker.client.DockerClient.LogsParam;
-import com.spotify.docker.client.DockerException;
-import com.spotify.docker.client.DockerRequestException;
-import com.spotify.docker.client.ImageNotFoundException;
 import com.spotify.docker.client.LogStream;
+import com.spotify.docker.client.exceptions.DockerCertificateException;
+import com.spotify.docker.client.exceptions.DockerException;
+import com.spotify.docker.client.exceptions.DockerRequestException;
+import com.spotify.docker.client.exceptions.ImageNotFoundException;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.ContainerInfo;
@@ -264,13 +264,11 @@ public class DockerRule extends ExternalResource {
                 }
             }
             if (builder.stopOptions().contains(StopOption.REMOVE)) {
-                dockerClient.removeContainer(container.id(), true);
+                dockerClient.removeContainer(container.id(), DockerClient.RemoveContainerParam.removeVolumes());
                 log.info("{} deleted", containerShortId);
                 container = null;
             }
-        } catch (DockerException e) {
-            throw new IllegalStateException(e);
-        } catch (InterruptedException e) {
+        } catch (DockerException | InterruptedException e) {
             throw new IllegalStateException(e);
         }
     }
