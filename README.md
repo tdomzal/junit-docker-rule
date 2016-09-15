@@ -118,7 +118,7 @@ Change dependency to:
     <dependency>
         <groupId>com.github.tdomzal</groupId>
         <artifactId>junit-docker-rule</artifactId>
-        <version>0.2-SNAPSHOT</version>
+        <version>0.3-SNAPSHOT</version>
         <scope>test</scope>
     </dependency>
     ...
