@@ -314,11 +314,11 @@ public class DockerRule extends ExternalResource {
         if (list.size() == 0) {
             throw new IllegalStateException(String.format("binding list for %s is empty", key));
         }
-
+        String firstExposedPort = list.get(0).hostPort();
         if (list.size() > 1) {
-            throw new IllegalStateException(String.format("binding list for %s is longer than 1", key));
+            log.warn("{} port {} is bound to multiple external ports, returning first one: {}", containerShortId, containerPort, firstExposedPort);
         }
-        return list.get(0).hostPort();
+        return firstExposedPort;
     }
 
     private void logNetworkSettings() {
