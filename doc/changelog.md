@@ -1,5 +1,11 @@
 # changelog #
 
+## 0.3-SNAPSHOT ##
+
+Fixes:
+
+-  ([#33](../../../issues/33)) bug: rule does not allow publishing same internal port twice
+
 ## 0.2 ##
 
 Released 2016-09-13
