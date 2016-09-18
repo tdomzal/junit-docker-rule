@@ -7,10 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link WaitChecker} met when incoming log lines contains specified
+ * {@link StartConditionCheck} met when incoming log lines contains specified
  * message sequence..
  */
-public class LogSequenceChecker implements LineListener, WaitChecker {
+public class LogSequenceChecker implements LineListener, StartConditionCheck {
 
     private static Logger log = LoggerFactory.getLogger(LogSequenceChecker.class);
 

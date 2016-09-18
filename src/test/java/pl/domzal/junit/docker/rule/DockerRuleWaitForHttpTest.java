@@ -19,7 +19,7 @@ public class DockerRuleWaitForHttpTest {
         DockerRule httpd = DockerRule.builder() //
                 .imageName("nginx")//
                 .publishAllPorts(false)
-                .waitForHttpPing(80)
+                .waitFor(WaitFor.httpPing(80))
                 .build();
         try {
             httpd.before();
@@ -32,7 +32,7 @@ public class DockerRuleWaitForHttpTest {
     public void beforeShouldSuccessWhenPublishAllPortsIsTrue() throws Throwable {
         DockerRule httpd = DockerRule.builder() //
                 .imageName("nginx")//
-                .waitForHttpPing(80)
+                .waitFor(WaitFor.httpPing(80))
                 .build();
         try {
             httpd.before();
@@ -46,7 +46,7 @@ public class DockerRuleWaitForHttpTest {
         DockerRule httpd = DockerRule.builder() //
                 .imageName("nginx")//
                 .expose("8124", "80")//
-                .waitForHttpPing(80)
+                .waitFor(WaitFor.httpPing(80))
                 .build();
         try {
             httpd.before();
@@ -83,7 +83,7 @@ public class DockerRuleWaitForHttpTest {
         DockerRule httpd = DockerRule.builder() //
                 .imageName("nginx")//
                 .expose("8124", "80")//
-                .waitForHttpPing(80)
+                .waitFor(WaitFor.httpPing(80))
                 .cmd("sh", "-c", "echo waiting...; sleep 5; echo starting...; nginx -g 'daemon off;'")
                 .build();
 

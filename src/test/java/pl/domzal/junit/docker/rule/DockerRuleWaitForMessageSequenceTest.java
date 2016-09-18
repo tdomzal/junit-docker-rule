@@ -24,9 +24,7 @@ public class DockerRuleWaitForMessageSequenceTest {
     public DockerRule testee = DockerRule.builder()//
             .imageName("busybox")//
             .cmd("sh", "-c", "for i in 01 TICK 02 03 04 05 TICK 06 07 08 09 10; do (echo $i; sleep 1); done")//
-            .waitForMessageSequence("TICK")//
-            .nextMessage("TICK")//
-            .waitDone()//
+            .waitFor(WaitFor.logMessageSequence("TICK", "TICK"))
             .build();
 
     @Test

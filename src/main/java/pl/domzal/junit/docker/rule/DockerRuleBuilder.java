@@ -16,6 +16,7 @@ import org.junit.rules.RuleChain;
 import com.spotify.docker.client.messages.PortBinding;
 
 import pl.domzal.junit.docker.rule.ex.InvalidVolumeFrom;
+import pl.domzal.junit.docker.rule.wait.StartCondition;
 
 public class DockerRuleBuilder {
 
@@ -37,10 +38,7 @@ public class DockerRuleBuilder {
     private PrintStream stdoutWriter;
     private PrintStream stderrWriter;
 
-    private String waitForMessage;
-    private List<String> waitForMessageSequence = new ArrayList<>();
-    private List<Integer> waitForPort = new ArrayList<>();
-    private List<Integer> waitForHttp = new ArrayList<>();
+    private List<StartCondition> waitConditions = new ArrayList<>();
     private int waitForSeconds = WAIT_FOR_DEFAULT_SECONDS;
 
     private StopOption.StopOptionSet stopOptions = new StopOption.StopOptionSet();
@@ -110,10 +108,11 @@ public class DockerRuleBuilder {
      * Rule startup will fail when message will not be found.
      *
      * @param waitForMessage Message to wait for.
+     *
+     * @deprecated Use {@link #waitFor(StartCondition)} with {@link WaitFor#logMessage(String)} as argument.
      */
     public DockerRuleBuilder waitForMessage(String waitForMessage) {
-        assertWaitForMessageNotRedefined();
-        this.waitForMessage = waitForMessage;
+        this.waitConditions.add(WaitFor.logMessage(waitForMessage));
         return this;
     }
     /**
@@ -121,34 +120,26 @@ public class DockerRuleBuilder {
      *
      * @param waitForMessage Message to wait for.
      * @param waitSeconds Number of seconds to wait.
+     *
+     * @deprecated Use two separate calls instead: (1) {@link #waitFor(StartCondition)} with
+     *              {@link WaitFor#logMessage(String)} as argument, (2) {@link #waitForTimeout(int)}.
      */
     public DockerRuleBuilder waitForMessage(String waitForMessage, int waitSeconds) {
-        assertWaitForMessageNotRedefined();
-        this.waitForMessage = waitForMessage;
+        this.waitConditions.add(WaitFor.logMessage(waitForMessage));
         this.waitForSeconds = waitSeconds;
         return this;
-    }
-    private void assertWaitForMessageNotRedefined() {
-        if (this.waitForMessage != null) {
-            throw new IllegalStateException(String.format("waitForMessage option may be specified only once (previous wait for message value '%s')", this.waitForMessage));
-        }
-    }
-    String waitForMessage() {
-        return waitForMessage;
     }
     int waitForSeconds() {
         return waitForSeconds;
     }
 
-    /** Wait for message sequence starting with given message. */
+    /**
+     * Wait for message sequence starting with given message.
+     *
+     * @deprecated Use {@link #waitFor(StartCondition)} with {@link WaitFor#logMessageSequence(String...)} as argument.
+     */
     public WaitForMessageBuilder waitForMessageSequence(String firstMessage) {
         return new WaitForMessageBuilder(this, firstMessage);
-    }
-    void waitForMessage(List<String> messageSequence) {
-        this.waitForMessageSequence = messageSequence;
-    }
-    List<String> waitForMessageSequence() {
-        return waitForMessageSequence;
     }
 
     /**
@@ -385,6 +376,25 @@ public class DockerRuleBuilder {
     }
 
     /**
+     * Make rule to wait for specified condition. Can be used multiple times
+     * and in this case conditions are checked in definiction's order.
+     * <p>
+     * To define custom startup conditions one should supply {@link StartCondition}
+     * instance as method argument. Predefined set of conditions are available
+     * in static methods of {@link WaitFor}.
+     *
+     * @param startCondition Container start condition.
+     *
+     */
+    public DockerRuleBuilder waitFor(StartCondition startCondition) {
+        this.waitConditions.add(startCondition);
+        return this;
+    }
+    List<StartCondition> getWaitFor() {
+        return waitConditions;
+    }
+
+    /**
      * Wait for TCP port listening under given internal container port.
      * Given port MUST be exposed (with {@link #expose(String, String)} or
      * {@link #publishAllPorts(boolean)}) (reachable from the test
@@ -406,15 +416,12 @@ public class DockerRuleBuilder {
      * </ul>
      *
      * @param internalTcpPorts TCP port (or ports) to scan (internal, MUST be exposed for wait to work).
+     *
+     * @deprecated Use {@link #waitFor(StartCondition)} with {@link WaitFor#tcpPort(int...)} as argument.
      */
     public DockerRuleBuilder waitForTcpPort(int... internalTcpPorts) {
-        for (int internalTcpPort : internalTcpPorts) {
-            this.waitForPort.add(internalTcpPort);
-        }
+        this.waitConditions.add(WaitFor.tcpPort(internalTcpPorts));
         return this;
-    }
-    List<Integer> waitForTcpPort() {
-        return waitForPort;
     }
 
     /**
@@ -430,13 +437,12 @@ public class DockerRuleBuilder {
      *                 until response with error code 2xx or 3xx is returned or until timeout.
      *                 Port MUST be exposed for wait to work and given port number must
      *                 be internal (as seen on container, not as on host) port number.
+     *
+     * @deprecated Use {@link #waitFor(StartCondition)} with {@link WaitFor#httpPing(int)} as argument.
      */
     public DockerRuleBuilder waitForHttpPing(int internalHttpPort) {
-        waitForHttp.add(new Integer(internalHttpPort));
+        this.waitConditions.add(WaitFor.httpPing(internalHttpPort));
         return this;
-    }
-    List<Integer> waitForHttpPing() {
-        return waitForHttp;
     }
 
     /**

@@ -12,7 +12,7 @@ public class DockerRuleExposeUdpPortStaticTest {
             .imageName("alpine")//
             .expose("4445", "4445/udp")//
             .cmd("sh", "-c", "echo started; nc -l -u -p 4445")
-            .waitForMessage("started")
+            .waitFor(WaitFor.logMessage("started"))
             .build();
 
     @Test

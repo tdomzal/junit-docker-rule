@@ -5,9 +5,14 @@
 Changes:
 
 - ([#34](../../../issues/34)) Expose underlying Docker API ContainerInfo to rule clients
+- ([#35](../../../issues/35)) Allow defining custom container startup conditions.
+  Conditions are now specified with builder `waitFor(StartCondition condition)` and *old* builder
+  methods (`waitFor...(...)`) are marked as deprecated.
+  See [custom condition example](../src/test/java/pl/domzal/junit/docker/rule/examples/ExampleWaitForCustomTest.java).
+
 Fixes:
 
--  ([#33](../../../issues/33)) bug: rule does not allow publishing same internal port twice
+- ([#33](../../../issues/33)) bug: rule does not allow publishing same internal port twice
 
 ## 0.2 ##
 

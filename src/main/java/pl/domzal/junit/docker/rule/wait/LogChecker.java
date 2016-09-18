@@ -1,12 +1,11 @@
 package pl.domzal.junit.docker.rule.wait;
 
 import pl.domzal.junit.docker.rule.DockerRule;
-import pl.domzal.junit.docker.rule.wait.WaitChecker;
 
 /**
- * {@link WaitChecker} met when container log lines contains specified message.
+ * {@link StartConditionCheck} met when container log lines contains specified message.
  */
-public class LogChecker implements WaitChecker {
+public class LogChecker implements StartConditionCheck {
 
     private final DockerRule rule;
     private final String waitForMessage;

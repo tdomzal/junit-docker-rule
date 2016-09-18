@@ -21,7 +21,7 @@ public class WaitForMessageBuilder {
 
     /** End message sequence and continue with rule config. */
     public DockerRuleBuilder waitDone() {
-        parentBuilder.waitForMessage(messageSequence);
+        parentBuilder.waitFor(WaitFor.logMessageSequence(messageSequence));
         return parentBuilder;
     }
 }

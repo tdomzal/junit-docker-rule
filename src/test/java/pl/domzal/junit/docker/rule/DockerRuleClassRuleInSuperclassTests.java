@@ -18,7 +18,7 @@ public class DockerRuleClassRuleInSuperclassTests {
     public static DockerRule testee = DockerRule.builder()//
             .imageName("busybox")//
             .cmd("sh", "-c", "echo 12345678")//
-            .waitForMessage("12345678")
+            .waitFor(WaitFor.logMessage("12345678"))
             .build();
 
     private static String firstIdNotShared;

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import pl.domzal.junit.docker.rule.AssertHtml;
 import pl.domzal.junit.docker.rule.DockerRule;
+import pl.domzal.junit.docker.rule.WaitFor;
 
 /**
  * Wait for http service to be available.
@@ -24,7 +25,7 @@ public class ExampleWaitForHttpPingTest {
             .imageName("nginx")
             .publishAllPorts(true)
             // wait until container port 80 will response to HTTP HEAD request
-            .waitForHttpPing(80)
+            .waitFor(WaitFor.httpPing(80))
             // delayed httpd start ... to mimic long starting http server
             .cmd("sh", "-c", "echo waiting...; sleep 5; echo starting...; nginx -g 'daemon off;'")
             .build();

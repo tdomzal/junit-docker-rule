@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import junit.framework.AssertionFailedError;
-import pl.domzal.junit.docker.rule.wait.WaitChecker;
+import pl.domzal.junit.docker.rule.wait.StartConditionCheck;
 
 @Category(test.category.Stable.class)
 public class WaitForContainerTest {
@@ -33,9 +33,9 @@ public class WaitForContainerTest {
 
     class WaitRunner implements Runnable {
 
-        private final WaitChecker condition;
+        private final StartConditionCheck condition;
 
-        WaitRunner(WaitChecker condition) {
+        WaitRunner(StartConditionCheck condition) {
             this.condition = condition;
         }
 
@@ -56,7 +56,7 @@ public class WaitForContainerTest {
 
     @Test(timeout = 20000)
     public void shouldStopWhenConditionMet() throws Exception {
-        WaitChecker condition = mock(WaitChecker.class);
+        StartConditionCheck condition = mock(StartConditionCheck.class);
         when(condition.check()).thenReturn(true);
         executor.submit(new WaitRunner(condition));
         waitForDone();
@@ -65,7 +65,7 @@ public class WaitForContainerTest {
 
     @Test(timeout = 10000)
     public void shouldTimeoutWhenConditionNotMet() throws Exception {
-        WaitChecker condition = mock(WaitChecker.class);
+        StartConditionCheck condition = mock(StartConditionCheck.class);
         when(condition.check()).thenReturn(false);
         executor.submit(new WaitRunner(condition));
         waitForTimeout();
@@ -74,7 +74,7 @@ public class WaitForContainerTest {
 
     @Test(timeout = 10000, expected = IllegalStateException.class)
     public void shouldRethrowException() throws Exception {
-        WaitChecker condition = mock(WaitChecker.class);
+        StartConditionCheck condition = mock(StartConditionCheck.class);
         when(condition.check()).thenThrow(new IllegalStateException("kaboom"));
         WaitForContainer.waitForCondition(condition, WAIT_LOG_TIMEOUT_SEC);
     }

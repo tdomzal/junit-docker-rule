@@ -3,7 +3,7 @@ package pl.domzal.junit.docker.rule;
 import java.util.Arrays;
 
 import pl.domzal.junit.docker.rule.ex.WaitTimeoutException;
-import pl.domzal.junit.docker.rule.wait.WaitChecker;
+import pl.domzal.junit.docker.rule.wait.StartConditionCheck;
 
 public class WaitUtil {
 
@@ -15,16 +15,16 @@ public class WaitUtil {
 
     private WaitUtil() {}
 
-    public static long wait(int maxWait, WaitChecker... checkers) throws WaitTimeoutException {
+    public static long wait(int maxWait, StartConditionCheck... checkers) throws WaitTimeoutException {
         return wait(maxWait, Arrays.asList(checkers));
     }
 
-    public static long wait(int maxWait, Iterable<WaitChecker> checkers) throws WaitTimeoutException {
+    public static long wait(int maxWait, Iterable<StartConditionCheck> checkers) throws WaitTimeoutException {
         long max = maxWait > 0 ? maxWait : DEFAULT_MAX_WAIT;
         long now = System.currentTimeMillis();
         try {
             do {
-                for (WaitChecker checker : checkers) {
+                for (StartConditionCheck checker : checkers) {
                     if (checker.check()) {
                         return delta(now);
                     }
@@ -40,8 +40,8 @@ public class WaitUtil {
     }
 
     // Give checkers a possibility to clean up
-    private static void cleanup(Iterable<WaitChecker> checkers) {
-        for (WaitChecker checker : checkers) {
+    private static void cleanup(Iterable<StartConditionCheck> checkers) {
+        for (StartConditionCheck checker : checkers) {
             checker.after();
         }
     }

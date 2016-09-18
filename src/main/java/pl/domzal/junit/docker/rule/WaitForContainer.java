@@ -6,7 +6,7 @@ import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pl.domzal.junit.docker.rule.wait.WaitChecker;
+import pl.domzal.junit.docker.rule.wait.StartConditionCheck;
 
 /**
  * Helper class to block on given {@link WaitForContainer}.
@@ -21,7 +21,7 @@ class WaitForContainer {
      * @param condition Conditions to wait for - all must be met to continue.
      * @param timeoutSeconds Wait timeout.
      */
-    public static void waitForCondition(final WaitChecker condition, int timeoutSeconds) throws TimeoutException {
+    public static void waitForCondition(final StartConditionCheck condition, int timeoutSeconds) throws TimeoutException {
         try {
             log.info("wait for {} started", condition.describe());
             new WaitForUnit(TimeUnit.SECONDS, timeoutSeconds, TimeUnit.SECONDS, 1, new WaitForUnit.WaitForCondition() {

@@ -13,6 +13,7 @@ import org.junit.rules.ExternalResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerClient.ListImagesParam;
@@ -32,11 +33,11 @@ import com.spotify.docker.client.messages.PortBinding;
 
 import pl.domzal.junit.docker.rule.ex.ImagePullException;
 import pl.domzal.junit.docker.rule.ex.PortNotExposedException;
-import pl.domzal.junit.docker.rule.wait.HttpPingChecker;
 import pl.domzal.junit.docker.rule.wait.LineListener;
+import pl.domzal.junit.docker.rule.wait.LineListenerProxy;
 import pl.domzal.junit.docker.rule.wait.LogChecker;
-import pl.domzal.junit.docker.rule.wait.LogSequenceChecker;
-import pl.domzal.junit.docker.rule.wait.TcpPortChecker;
+import pl.domzal.junit.docker.rule.wait.StartConditionCheck;
+import pl.domzal.junit.docker.rule.wait.StartCondition;
 
 /**
  * Simple docker container junit {@link Rule}.<br/>
@@ -134,8 +135,8 @@ public class DockerRule extends ExternalResource {
             dockerClient.startContainer(container.id());
             log.debug("{} started", containerShortId);
 
-            LogSequenceChecker lineListener = new LogSequenceChecker(builder.waitForMessageSequence());
-            attachLogs(dockerClient, container.id(), lineListener);
+            LineListenerProxy proxyLineListener = new LineListenerProxy();
+            attachLogs(dockerClient, container.id(), proxyLineListener);
 
             ContainerInfo containerInfo = dockerClient.inspectContainer(container.id());
             containerIp = containerInfo.networkSettings().ipAddress();
@@ -143,7 +144,7 @@ public class DockerRule extends ExternalResource {
             containerGateway = containerInfo.networkSettings().gateway();
             this.containerInfo = containerInfo;
 
-            waitForStartConditions(lineListener);
+            executeWaitForConditions(proxyLineListener);
             logNetworkSettings();
 
             isStarted = true;
@@ -173,44 +174,47 @@ public class DockerRule extends ExternalResource {
         return resolvedLinks;
     }
 
-    // TODO refactor out waitFor logic to external class
-    private void waitForStartConditions(LogSequenceChecker lineListener) throws TimeoutException, InterruptedException {
-        if (!builder.waitForMessageSequence().isEmpty()) {
-            WaitForContainer.waitForCondition(lineListener, builder.waitForSeconds());
+    private void executeWaitForConditions(LineListenerProxy proxyLineListener) throws TimeoutException {
+        List<StartConditionCheck> conditions = Lists.newArrayList();
+        for (StartCondition conditionBuilder : builder.getWaitFor()) {
+            conditions.add(conditionBuilder.build(this));
         }
-        if (builder.waitForMessage()!=null) {
-            WaitForContainer.waitForCondition(new LogChecker(this, builder.waitForMessage()), builder.waitForSeconds());
+        registerConditionLineListeners(conditions, proxyLineListener);
+        // execute waiting
+        for (StartConditionCheck condition : conditions) {
+            WaitForContainer.waitForCondition(condition, builder.waitForSeconds());
         }
-        if (!builder.waitForTcpPort().isEmpty()) {
-            List<Integer> internalPorts = builder.waitForTcpPort();
-            List<Integer> externalPorts = new ArrayList<>();
-            for (Integer internalPort : internalPorts) {
-                externalPorts.add(findExternalPort(internalPort));
-            }
-            WaitForContainer.waitForCondition(new TcpPortChecker(getDockerHost(), externalPorts), builder.waitForSeconds());
-        }
-        if (!builder.waitForHttpPing().isEmpty()) {
-            for (Integer internalHttpPort : builder.waitForHttpPing()) {
-                String pingUrl = String.format("http://%s:%s/", getDockerHost(), findExternalPort(internalHttpPort));
-                WaitForContainer.waitForCondition(new HttpPingChecker(pingUrl), builder.waitForSeconds());
+    }
+
+    private void registerConditionLineListeners(List<StartConditionCheck> conditions, LineListenerProxy proxyLineListener) {
+        for (StartConditionCheck condition : conditions) {
+            if (condition instanceof LineListener) {
+                proxyLineListener.add((LineListener) condition);
             }
         }
     }
 
-    private Integer findExternalPort(Integer internalHttpPort) {
-        String portAndProtocol = ExposePortBindingBuilder.containerBindWithProtocol(Integer.toString(internalHttpPort));
+    Integer findExternalPort(Integer internalPort) {
+        try {
+            return Integer.parseInt(findExternalPort(Integer.toString(internalPort)));
+        } catch (NumberFormatException e) {
+            throw new IllegalStateException("Internal rule problem - unable to parse exposed port number", e);
+        }
+    }
+
+    private String findExternalPort(String internalPort) {
+        String portAndProtocol = Ports.portWithProtocol(internalPort);
         if (! (containerPorts.containsKey(portAndProtocol)
                 && containerPorts.get(portAndProtocol)!=null
                 && containerPorts.get(portAndProtocol).size()>0)) {
-            throw new PortNotExposedException(String.format("Port %s is not exposed and cannot be checked (exposed port info: %s)", portAndProtocol, containerPorts));
+            throw new PortNotExposedException(String.format("Port %s is not exposed (exposed port info: %s)", portAndProtocol, containerPorts));
         }
         List<PortBinding> portBindings = containerPorts.get(portAndProtocol);
-        PortBinding portBinding = portBindings.get(0);
-        try {
-            return Integer.parseInt(portBinding.hostPort());
-        } catch (NumberFormatException e) {
-            throw new IllegalStateException("Interal rule problem - unable to parse exposed port number", e);
+        String firstExposedPort = portBindings.get(0).hostPort();
+        if (portBindings.size() > 1) {
+            log.warn("{} port {} is bound to multiple external ports, assuming first one: {}", containerShortId, internalPort, firstExposedPort);
         }
+        return firstExposedPort;
     }
 
     private void attachLogs(DockerClient dockerClient, String containerId, LineListener lineListener) throws IOException, InterruptedException {
@@ -306,22 +310,10 @@ public class DockerRule extends ExternalResource {
      * Get host dynamic port given container port was mapped to.
      *
      * @param containerPort Container port. Typically it matches Dockerfile EXPOSE directive.
-     * @return Host port container port is exposed on.
+     * @return Host port container port is published on.
      */
     public final String getExposedContainerPort(String containerPort) {
-        String key = containerPort + "/tcp";
-        List<PortBinding> list = containerPorts.get(key);
-        if (list == null || list.size() == 0) {
-            throw new IllegalStateException(String.format("%s is not exposed", key));
-        }
-        if (list.size() == 0) {
-            throw new IllegalStateException(String.format("binding list for %s is empty", key));
-        }
-        String firstExposedPort = list.get(0).hostPort();
-        if (list.size() > 1) {
-            log.warn("{} port {} is bound to multiple external ports, returning first one: {}", containerShortId, containerPort, firstExposedPort);
-        }
-        return firstExposedPort;
+        return findExternalPort(containerPort);
     }
 
     private void logNetworkSettings() {

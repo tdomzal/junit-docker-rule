@@ -14,7 +14,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 /**
  * Check whether a given URL is available
  */
-public class HttpPingChecker implements WaitChecker {
+public class HttpPingChecker implements StartConditionCheck {
 
     // Default status codes
     public static final int DEFAULT_MIN_STATUS = 200;

@@ -10,10 +10,12 @@ import org.slf4j.LoggerFactory;
 
 import pl.domzal.junit.docker.rule.AssertHtml;
 import pl.domzal.junit.docker.rule.DockerRule;
+import pl.domzal.junit.docker.rule.WaitFor;
 
 /**
  * Wait for open TCP server port.
- * Plase read {@link pl.domzal.junit.docker.rule.DockerRuleBuilder#waitForTcpPort(int...)} notes.
+ * <b>Please note it may not work with default docker daemon settings on many platforms</b>
+ * - see {@link WaitFor#tcpPort(int...)} notes for more info.
  */
 @Category(test.category.Unstable.class)
 public class ExampleWaitForTcpPortTest {
@@ -25,7 +27,7 @@ public class ExampleWaitForTcpPortTest {
             .imageName("nginx")
             .publishAllPorts(true)
             // port we are waiting for
-            .waitForTcpPort(80)
+            .waitFor(WaitFor.tcpPort(80))
             // delayed httpd start ...
             .cmd("sh", "-c", "echo waiting...; sleep 5; echo starting...; nginx -g 'daemon off;'")
             .build();

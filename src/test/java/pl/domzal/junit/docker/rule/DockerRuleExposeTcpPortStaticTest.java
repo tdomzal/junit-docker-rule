@@ -21,7 +21,7 @@ public class DockerRuleExposeTcpPortStaticTest {
             .imageName("alpine") //
             .expose("4444", "4444") //
             .cmd("sh", "-c", "echo started; nc -l -p 4444") //
-            .waitForMessage("started") //
+            .waitFor(WaitFor.logMessage("started")) //
             .build();
 
     @Before
@@ -38,7 +38,7 @@ public class DockerRuleExposeTcpPortStaticTest {
                 .imageName("alpine") //
                 .extraHosts("serv:"+testee.getDockerContainerGateway())
                 .cmd("sh", "-c", "echo 12345 | nc serv 4444; echo done") //
-                .waitForMessage("done") //
+                .waitFor(WaitFor.logMessage("done")) //
                 .build();
         sender.before();
         try {

@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Check whether a given TCP port is available
  */
-public class TcpPortChecker implements WaitChecker {
+public class TcpPortChecker implements StartConditionCheck {
 
     // Timeout for ping
     private static final int TCP_PING_TIMEOUT = 500;
