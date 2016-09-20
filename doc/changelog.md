@@ -2,6 +2,9 @@
 
 ## 0.3-SNAPSHOT ##
 
+Changes:
+
+- ([#34](../../../issues/34)) Expose underlying Docker API ContainerInfo to rule clients
 Fixes:
 
 -  ([#33](../../../issues/33)) bug: rule does not allow publishing same internal port twice
