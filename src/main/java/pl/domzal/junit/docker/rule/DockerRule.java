@@ -66,6 +66,8 @@ public class DockerRule extends ExternalResource {
     private String containerIp;
     private String containerGateway;
     private Map<String, List<PortBinding>> containerPorts;
+    
+    private ContainerInfo containerInfo;
 
     private DockerLogs dockerLogs;
 
@@ -139,6 +141,7 @@ public class DockerRule extends ExternalResource {
             containerIp = containerInfo.networkSettings().ipAddress();
             containerPorts = containerInfo.networkSettings().ports();
             containerGateway = containerInfo.networkSettings().gateway();
+            this.containerInfo = containerInfo;
 
             waitForStartConditions(lineListener);
             logNetworkSettings();
@@ -381,6 +384,15 @@ public class DockerRule extends ExternalResource {
      */
     public String getContainerId() {
         return (container!=null ? container.id() : null);
+    }
+
+    /**
+     * Underlying library @{link ContainerInfo} data structure returned by {@link DockerClient#inspectContainer(String)} at container start.
+     *
+     * @return Started container info or <code>null</code> if container was not yet started.
+     */
+    public ContainerInfo getContainerInfo() {
+        return containerInfo;
     }
 
     /**
