@@ -4,6 +4,7 @@
 
 Changes:
 
+- ([#36](../../../issues/36)) Change docker client dependency to non-shaded
 - ([#34](../../../issues/34)) Expose underlying Docker API ContainerInfo to rule clients
 - ([#35](../../../issues/35)) Allow defining custom container startup conditions.
   Conditions are now specified with builder `waitFor(StartCondition condition)` and *old* builder
