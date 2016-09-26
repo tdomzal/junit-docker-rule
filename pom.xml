@@ -39,7 +39,6 @@
         <dependency>
             <groupId>com.spotify</groupId>
             <artifactId>docker-client</artifactId>
-            <classifier>shaded</classifier>
             <version>5.0.2</version>
         </dependency>
         <!-- test scope -->
