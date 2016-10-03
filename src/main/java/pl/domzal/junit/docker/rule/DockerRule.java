@@ -390,7 +390,7 @@ public class DockerRule extends ExternalResource {
     /**
      * {@link DockerClient} for direct container manipulation.
      */
-    DockerClient getDockerClient() {
+    public DockerClient getDockerClient() {
         return dockerClient;
     }
 
