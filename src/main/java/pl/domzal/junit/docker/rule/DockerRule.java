@@ -105,11 +105,15 @@ public class DockerRule extends ExternalResource {
      */
     @Override
     public final void before() throws Throwable {
-        HostConfig hostConfig = HostConfig.builder()//
+        HostConfig.Builder hostConfigBuilder = HostConfig.builder()
                 .publishAllPorts(builder.publishAllPorts())//
                 .portBindings(builder.hostPortBindings())//
                 .binds(builder.binds())//
-                .links(links())//
+                .links(links());
+        if (builder.restartPolicy() != null) {
+            hostConfigBuilder.restartPolicy(builder.restartPolicy().getRestartPolicy());
+        }
+        HostConfig hostConfig = hostConfigBuilder
                 .extraHosts(builder.extraHosts())//
                 .build();
         ContainerConfig containerConfig = ContainerConfig.builder()//

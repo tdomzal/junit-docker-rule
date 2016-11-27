@@ -43,6 +43,8 @@ public class DockerRuleBuilder {
 
     private StopOption.StopOptionSet stopOptions = new StopOption.StopOptionSet();
 
+    private RestartPolicy restartPolicy;
+
     DockerRuleBuilder(){}
 
     public DockerRule build() {
@@ -481,5 +483,17 @@ public class DockerRuleBuilder {
     }
     Map<String, String> getLabels() {
         return labels;
+    }
+
+    /**
+     * Set container restart policy. If not set - default restart
+     * policy 'no' will be used.
+     */
+    public DockerRuleBuilder restartPolicy(RestartPolicy restartPolicy) {
+        this.restartPolicy = restartPolicy;
+        return this;
+    }
+    RestartPolicy restartPolicy() {
+        return restartPolicy;
     }
 }
