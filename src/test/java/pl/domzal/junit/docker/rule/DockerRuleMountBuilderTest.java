@@ -1,6 +1,6 @@
 package pl.domzal.junit.docker.rule;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.Map;
 
@@ -14,27 +14,32 @@ import pl.domzal.junit.docker.rule.ex.InvalidVolumeFrom;
 public class DockerRuleMountBuilderTest {
 
     @Test
-    public void assertMountShouldAcceptOsxHomePath() throws Exception {
+    public void shouldAcceptValidDockerVolume() throws Exception {
+        DockerRuleMountBuilder.assertValidMountFrom("/Users/someuser", "abcdef", true, false);
+    }
+
+    @Test
+    public void shouldAcceptOsxHomePath() throws Exception {
         DockerRuleMountBuilder.assertValidMountFrom("/Users/someuser", "/Users/someuser/temp", true, false);
     }
 
     @Test(expected = InvalidVolumeFrom.class)
-    public void assertMountShouldFailOnOsxOutsideHomePath() throws Exception {
+    public void shouldFailOnOsxOutsideHomePath() throws Exception {
         DockerRuleMountBuilder.assertValidMountFrom("/Users/someuser", "/tmp", true, false);
     }
 
     @Test
-    public void assertMountShouldAcceptWindowsHomePath() throws Exception {
+    public void shouldAcceptWindowsHomePath() throws Exception {
         DockerRuleMountBuilder.assertValidMountFrom("C:\\Users\\someuser", "/c/Users/someuser/temp", false, true);
     }
 
     @Test(expected = InvalidVolumeFrom.class)
-    public void assertMountShouldFailOnWindowsOutsideHomePath() throws Exception {
+    public void shouldFailOnWindowsOutsideHomePath() throws Exception {
         DockerRuleMountBuilder.assertValidMountFrom("C:\\Users\\someuser", "/c/tmp", false, true);
     }
 
     @Test
-    public void assertMountShouldAcceptWinHomeFoundFromEnv() {
+    public void shouldAcceptWinHomeFoundFromEnv() {
         // sanity check if fetching user home on windows works as expected
         // makes sense only on windows
         if (SystemUtils.IS_OS_WINDOWS) {
@@ -42,6 +47,18 @@ public class DockerRuleMountBuilderTest {
             String windowsHomeUnixStyle = DockerRuleMountBuilder.toUnixStylePath(env.get("HOMEDRIVE") + env.get("HOMEPATH"));
             DockerRuleMountBuilder.assertValidMountFrom(SystemUtils.getUserHome().getAbsolutePath(), windowsHomeUnixStyle, false, true);
         }
+    }
+
+    @Test
+    public void assertValidDockerVolumes() {
+        assertTrue(DockerRuleMountBuilder.isValidDockerVolumeName("a"));
+        assertTrue(DockerRuleMountBuilder.isValidDockerVolumeName("a.-"));
+    }
+
+    @Test
+    public void assertInvalidDockerVolumes() {
+        assertFalse(DockerRuleMountBuilder.isValidDockerVolumeName("a/"));
+        assertFalse(DockerRuleMountBuilder.isValidDockerVolumeName("-"));
     }
 
     @Test

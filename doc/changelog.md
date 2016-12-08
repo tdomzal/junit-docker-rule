@@ -3,7 +3,7 @@
 ## 0.3-SNAPSHOT ##
 
 Changes:
-
+- ([#39](../../../issues/39)) Accept not only file and paths but also volume names in _mountFrom_
 - ([#38](../../../issues/38)) Allow definition of restart policy on container start
 - ([#36](../../../issues/36)) Change docker client dependency to non-shaded
 - ([#34](../../../issues/34)) Expose underlying Docker API ContainerInfo to rule clients

@@ -1,5 +1,7 @@
 package pl.domzal.junit.docker.rule;
 
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
@@ -42,7 +44,10 @@ class DockerRuleMountBuilder implements DockerRuleMountToBuilder {
     }
 
     static String assertValidMountFrom(String userHomedir, String mountFrom, boolean isOsMacOsx, boolean isOsWindows) throws InvalidVolumeFrom {
-        if (isOsMacOsx && userHomedir.startsWith(OSX_HOME)) {
+        if (isValidDockerVolumeName(mountFrom)) {
+            log.debug("mount from docker volume: {}", mountFrom);
+            return mountFrom;
+        } else if (isOsMacOsx && userHomedir.startsWith(OSX_HOME)) {
             if (mountFrom.startsWith(OSX_HOME)) {
                 log.debug("mount from - ok for OSX: {}", mountFrom);
                 return mountFrom;
@@ -64,6 +69,11 @@ class DockerRuleMountBuilder implements DockerRuleMountToBuilder {
             return mountFrom;
         }
 
+    }
+
+    static boolean isValidDockerVolumeName(String mountFrom) {
+        Pattern p = Pattern.compile("[a-zA-Z0-9][a-zA-Z0-9_.-]*");
+        return p.matcher(mountFrom).matches();
     }
 
     /**

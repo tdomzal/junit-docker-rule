@@ -169,15 +169,15 @@ public class DockerRuleBuilder {
     }
 
     /**
-     * Host directory to be mounted into container.<br/>
-     * Please note that in boot2docker environments (OSX or Windows)
+     * Docker volume OR host directory to be mounted into container.<br/>
+     * Please note that in case of host folder and boot2docker environments (OSX or Windows)
      * only locations inside $HOME can work (/Users or /c/Users respectively).<br/>
      * On Windows it is safer to use {@link #mountFrom(File)} instead.
      *
-     * @param hostPath Directory or file to be mounted - must be specified Unix style.
+     * @param volumeOrPath Docker volume OR directory/file to be mounted (must be specified Unix style).
      */
-    public DockerRuleMountToBuilder mountFrom(String hostPath) throws InvalidVolumeFrom {
-        return new DockerRuleMountBuilder(this, hostPath);
+    public DockerRuleMountToBuilder mountFrom(String volumeOrPath) throws InvalidVolumeFrom {
+        return new DockerRuleMountBuilder(this, volumeOrPath);
     }
     /**
      * Host directory to be mounted into container.<br/>
