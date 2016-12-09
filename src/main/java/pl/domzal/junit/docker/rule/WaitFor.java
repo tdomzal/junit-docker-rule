@@ -73,7 +73,7 @@ public class WaitFor {
      * <b>TCP port check depends of docker internal port-forwarding feature and docker server setup</b>.
      * In short: won't work if docker engine forwards port using <i>docker-proxy</i> (aka <i>userland proxy</i>)
      * - will report port opening almost instantly and NOT wait for underlying port opening.
-     * To make things work <b>this is default configuration on some platforms so it is better to not
+     * To make things worst - <b>this is default configuration on some platforms so it is better to not
      * rely on this method at all</b>.
      * <p>
      * Additional <i>userland proxy</i> info:<ul>
