@@ -75,7 +75,7 @@ public class DockerRuleImagePullTest {
     private boolean imageAvaliable(DockerClient dockerClient, String imageNameWithTag) throws DockerException, InterruptedException {
         List<Image> listImages = dockerClient.listImages(ListImagesParam.danglingImages(false));
         for (Image image : listImages) {
-            if (image.repoTags().contains(imageNameWithTag)) {
+            if (image.repoTags() != null && image.repoTags().contains(imageNameWithTag)) {
                 return true;
             }
         }
