@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import pl.domzal.junit.docker.rule.ex.PortNotExposedException;
 
-@Category(test.category.Unstable.class)
+@Category(test.category.TcpPorts.class)
 public class DockerRuleWaitForPortTest {
 
     private static Logger log = LoggerFactory.getLogger(DockerRuleWaitForPortTest.class);

@@ -17,7 +17,7 @@ import pl.domzal.junit.docker.rule.WaitFor;
  * <b>Please note it may not work with default docker daemon settings on many platforms</b>
  * - see {@link WaitFor#tcpPort(int...)} notes for more info.
  */
-@Category(test.category.Unstable.class)
+@Category(test.category.TcpPorts.class)
 public class ExampleWaitForTcpPortTest {
 
     private static Logger log = LoggerFactory.getLogger(ExampleWaitForTcpPortTest.class);
