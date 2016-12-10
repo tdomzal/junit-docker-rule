@@ -1,6 +1,6 @@
 # changelog #
 
-## 0.3-SNAPSHOT ##
+## 0.3 ##
 
 Changes:
 - ([#39](../../../issues/39)) Accept not only file and paths but also volume names in _mountFrom_
