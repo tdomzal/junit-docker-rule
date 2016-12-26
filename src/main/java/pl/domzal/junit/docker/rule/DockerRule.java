@@ -369,7 +369,7 @@ public class DockerRule extends ExternalResource {
                 log.trace("{} full log: {}", containerShortId, StringUtils.replace(fullLog, "\n", "|"));
             }
             return fullLog;
-        } catch (DockerException | InterruptedException e) {
+        } catch (DockerException | InterruptedException | IOException e) {
             throw new IllegalStateException(e);
         }
 

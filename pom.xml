@@ -39,7 +39,7 @@
         <dependency>
             <groupId>com.spotify</groupId>
             <artifactId>docker-client</artifactId>
-            <version>5.0.2</version>
+            <version>6.1.1</version>
         </dependency>
         <!-- test scope -->
         <dependency>

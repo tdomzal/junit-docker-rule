@@ -1,5 +1,10 @@
 # changelog #
 
+## 0.4-SNAPSHOT ##
+
+Changes:
+- Spotify docker client updated to version 6.1.1
+
 ## 0.3 ##
 
 Changes:
