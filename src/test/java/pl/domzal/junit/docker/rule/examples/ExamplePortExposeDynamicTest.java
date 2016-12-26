@@ -23,7 +23,7 @@ public class ExamplePortExposeDynamicTest {
 
     @ClassRule
     public static DockerRule testee = DockerRule.builder()
-            .imageName("nginx")
+            .imageName("nginx:1.10.2")
             // specify internal container port to be exposed to randomly assigned host port
             .expose("80")
             .build();

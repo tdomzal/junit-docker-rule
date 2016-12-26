@@ -74,7 +74,7 @@ public class DockerRuleVolumeMountTest {
             File nonexistingHostDir = testDir.toPath().resolve("nonexisting").toFile();
             log.debug("mountFrom: "+nonexistingHostDir.getAbsolutePath());
             testee = DockerRule.builder()//
-                    .imageName("busybox")//
+                    .imageName("busybox:1.25.1")//
                     .mountFrom(nonexistingHostDir).to("/somedir", "ro")//
                     .build();
             fail("should fail with "+InvalidVolumeFrom.class.getSimpleName());
@@ -89,7 +89,7 @@ public class DockerRuleVolumeMountTest {
         if (SystemUtils.IS_OS_MAC_OSX || SystemUtils.IS_OS_WINDOWS) {
             try {
                 testee = DockerRule.builder()//
-                        .imageName("busybox")//
+                        .imageName("busybox:1.25.1")//
                         .mountFrom("/somehostdir").to("/somedir", "ro")//
                         .build();
                 fail("should fail with "+InvalidVolumeFrom.class.getSimpleName());
@@ -102,7 +102,7 @@ public class DockerRuleVolumeMountTest {
     @Test
     public void shouldReadMountFromUnixStyle() throws Throwable {
         testee = DockerRule.builder()//
-                .imageName("busybox")//
+                .imageName("busybox:1.25.1")//
                 .mountFrom(testDirPath).to("/somedir", "ro")//
                 .cmd("sh", "-c", "cat /somedir/"+testFilename)//
                 .build();
@@ -120,7 +120,7 @@ public class DockerRuleVolumeMountTest {
     @Test
     public void shouldReadMountFromJavaFile() throws Throwable {
         testee = DockerRule.builder()//
-                .imageName("busybox")//
+                .imageName("busybox:1.25.1")//
                 .mountFrom(testDir).to("/somedir", "ro")//
                 .cmd("sh", "-c", "cat /somedir/"+testFilename)//
                 .build();
@@ -138,7 +138,7 @@ public class DockerRuleVolumeMountTest {
     @Test
     public void shouldWriteRwMountedFile() throws Throwable {
         testee = DockerRule.builder()//
-                .imageName("busybox")//
+                .imageName("busybox:1.25.1")//
                 .mountFrom(testDirPath).to("/somedir")//
                 .cmd("sh", "-c", "echo "+testFileContentChanged+" > /somedir/"+testFilename)//
                 .build();
@@ -159,7 +159,7 @@ public class DockerRuleVolumeMountTest {
     @Test
     public void shouldNotWriteRoMountedFile() throws Throwable {
         testee = DockerRule.builder()//
-                .imageName("busybox")//
+                .imageName("busybox:1.25.1")//
                 .mountFrom(testDirPath).to("/somedir", "ro")//
                 .cmd("sh", "-c", "echo "+testFileContentChanged+" > /somedir/"+testFilename)//
                 .build();

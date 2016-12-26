@@ -18,7 +18,7 @@ public class DockerRuleExposePortStaticTest {
 
     @ClassRule
     public static DockerRule testee = DockerRule.builder()//
-            .imageName("nginx")//
+            .imageName("nginx:1.10.2")//
             .expose("8124", "80")//
             .build();
 

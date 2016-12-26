@@ -25,7 +25,7 @@ public class DockerRuleLabelTest {
     @Test
     public void shouldLabelContainerSingleLabel() throws Throwable {
         DockerRule testee = DockerRule.builder()//
-                .imageName("busybox")//
+                .imageName("busybox:1.25.1")//
                 .cmd("sh", "-c", "echo 01stdout; sleep 100")//
                 .addLabel("label-key", "label-value")
                 .build();

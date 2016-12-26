@@ -17,13 +17,13 @@ public class DockerRuleLinkTest {
     private static String DB_NAME = StringUtils.right(UUID.randomUUID().toString(), 8).toUpperCase();
 
     private static DockerRule db = DockerRule.builder()//
-            .imageName("busybox")//
+            .imageName("busybox:1.25.1")//
             .name(DB_NAME)//
             .cmd("sh", "-c", "sleep 30")//
             .build();
 
     private static DockerRule web = DockerRule.builder()//
-            .imageName("busybox")//
+            .imageName("busybox:1.25.1")//
             .name("web")//
             .link(DB_NAME)//
             .cmd("sh", "-c", "env")//

@@ -9,7 +9,7 @@ public class DockerRuleExposeUdpPortStaticTest {
 
     @Rule
     public DockerRule testee = DockerRule.builder()//
-            .imageName("alpine")//
+            .imageName("alpine:3.4")//
             .expose("4445", "4445/udp")//
             .cmd("sh", "-c", "echo started; nc -l -u -p 4445")
             .waitFor(WaitFor.logMessage("started"))
@@ -18,7 +18,7 @@ public class DockerRuleExposeUdpPortStaticTest {
     @Test
     public void shouldExposeSpecifiedUdpPort() throws Throwable {
         DockerRule sender = DockerRule.builder()//
-                .imageName("alpine")//
+                .imageName("alpine:3.4")//
                 .extraHosts("serv:"+testee.getDockerContainerGateway())
                 .cmd("sh", "-c", "echo 12345 | nc -u serv 4445")//
                 .build();

@@ -24,7 +24,7 @@ public class DockerRuleWaitForMessageCustomTimeTest {
     public void shouldWaitForLogMessage() throws Throwable {
 
         DockerRule testee = DockerRule.builder()//
-                .imageName("busybox")//
+                .imageName("busybox:1.25.1")//
                 .cmd("sh", "-c", "for i in 01 02 03 05 06 07 08 09 10; do (echo $i; sleep 1); done")//
                 .waitFor(WaitFor.logMessage("20"))
                 .waitForTimeout(WAIT_FOR_MESSAGE_SHORTER_THAN_DEFAULT)

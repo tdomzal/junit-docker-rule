@@ -11,7 +11,7 @@ public class DockerRuleExposePortUnexposedCheckTest {
 
     @ClassRule
     public static DockerRule testee = DockerRule.builder()//
-            .imageName("nginx")//
+            .imageName("nginx:1.10.2")//
             .expose("8125", "81")//
             .build();
 

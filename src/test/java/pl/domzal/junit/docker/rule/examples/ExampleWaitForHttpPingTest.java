@@ -22,7 +22,7 @@ public class ExampleWaitForHttpPingTest {
 
     @Rule
     public DockerRule httpd = DockerRule.builder()
-            .imageName("nginx")
+            .imageName("nginx:1.10.2")
             .publishAllPorts(true)
             // wait until container port 80 will response to HTTP HEAD request
             .waitFor(WaitFor.httpPing(80))

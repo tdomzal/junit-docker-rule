@@ -28,7 +28,7 @@ public class DockerRuleImagePullTest {
 
     @Rule
     public DockerRule helperRule = DockerRule.builder()//
-            .imageName("busybox")//
+            .imageName("busybox:1.25.1")//
             .build();
 
     private DockerClient helperClient = helperRule.getDockerClient();

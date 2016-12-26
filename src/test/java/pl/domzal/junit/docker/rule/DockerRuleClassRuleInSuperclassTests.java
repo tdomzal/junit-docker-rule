@@ -16,7 +16,7 @@ public class DockerRuleClassRuleInSuperclassTests {
 
     @ClassRule
     public static DockerRule testee = DockerRule.builder()//
-            .imageName("busybox")//
+            .imageName("busybox:1.25.1")//
             .cmd("sh", "-c", "echo 12345678")//
             .waitFor(WaitFor.logMessage("12345678"))
             .build();

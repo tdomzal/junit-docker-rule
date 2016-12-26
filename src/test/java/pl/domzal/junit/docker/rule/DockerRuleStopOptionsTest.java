@@ -21,7 +21,7 @@ public class DockerRuleStopOptionsTest {
     public void shouldKeepContainer() throws Throwable {
 
         DockerRule testee = DockerRule.builder()//
-                .imageName("alpine")//
+                .imageName("alpine:3.4")//
                 .cmd("sh", "-c", "sleep 1")//
                 .stopOptions(StopOption.KEEP)
                 .build();
@@ -41,7 +41,7 @@ public class DockerRuleStopOptionsTest {
     @Test
     public void shouldStopContainer() throws Throwable {
         DockerRule testee = DockerRule.builder()//
-                .imageName("alpine")//
+                .imageName("alpine:3.4")//
                 .cmd("sh", "-c", "trapinfo() { echo STOPPED; exit; }; trap \"trapinfo\" SIGTERM; for i in 01 02 03 04 05 06 07 08 09 10; do (echo $i; sleep 1); done")//
                 .stopOptions(StopOption.KEEP, StopOption.STOP)
                 .build();
@@ -61,7 +61,7 @@ public class DockerRuleStopOptionsTest {
     @Test
     public void shouldKillContainer() throws Throwable {
         DockerRule testee = DockerRule.builder()//
-                .imageName("alpine")//
+                .imageName("alpine:3.4")//
                 .cmd("sh", "-c", "trapinfo() { echo STOPPED; exit; }; trap \"trapinfo\" SIGTERM; for i in 01 02 03 04 05 06 07 08 09 10; do (echo $i; sleep 1); done")//
                 .stopOptions(StopOption.KEEP, StopOption.KILL)
                 .build();

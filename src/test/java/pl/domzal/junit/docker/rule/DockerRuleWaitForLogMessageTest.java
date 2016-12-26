@@ -13,7 +13,7 @@ public class DockerRuleWaitForLogMessageTest {
 
     @Rule
     public DockerRule testee = DockerRule.builder()//
-            .imageName("busybox")//
+            .imageName("busybox:1.25.1")//
             .cmd("sh", "-c", "for i in 01 02 03 04 05 06 07 08 09 10; do (echo $i; sleep 1); done")//
             .build();
 

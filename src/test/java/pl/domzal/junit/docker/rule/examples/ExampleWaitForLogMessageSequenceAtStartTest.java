@@ -26,7 +26,7 @@ public class ExampleWaitForLogMessageSequenceAtStartTest {
 
     @Rule
     public DockerRule testee = DockerRule.builder()//
-            .imageName("alpine")//
+            .imageName("alpine:3.4")//
             .cmd("sh", "-c", "for i in 'this is' 'some starting sequence' 'and now' 'it is' 'finished' 'no need' 'to wait' more; do (echo $i; sleep 1); done")//
             .waitFor(WaitFor.logMessageSequence("some starting sequence", "finished"))
             .build();

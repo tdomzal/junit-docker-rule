@@ -21,7 +21,7 @@ public class ExamplePassEnvVariableTest {
 
     @Rule
     public DockerRule testee = DockerRule.builder()
-            .imageName("busybox")
+            .imageName("busybox:1.25.1")
             .env("EXTRA_OPT", "EXTRA_OPT_VALUE")
             .cmd("sh", "-c", "echo $EXTRA_OPT")
             .build();

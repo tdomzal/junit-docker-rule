@@ -19,7 +19,7 @@ public class ExampleDockerContainterTest {
     public void shouldStartAndStopContainerTwice() throws Throwable {
 
         DockerRule testee = DockerRule.builder()
-                .imageName("busybox")
+                .imageName("busybox:1.25.1")
                 .cmd("sh", "-c", "for i in 01 02 started 03 04 05; do (echo $i; sleep 1); done")
                 .waitFor(WaitFor.logMessage("started"))
                 .build();

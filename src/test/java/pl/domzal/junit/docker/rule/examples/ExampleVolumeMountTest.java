@@ -32,7 +32,7 @@ public class ExampleVolumeMountTest {
 
     @Rule
     public DockerRule testee = DockerRule.builder()
-            .imageName("busybox")
+            .imageName("busybox:1.25.1")
             // mounting requires specifying file and target path
             .mountFrom(tempFolder.getRoot()).to("/somedir", "ro")
             .cmd("sh", "-c", "cat /somedir/somefile")

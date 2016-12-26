@@ -23,7 +23,7 @@ public class ExamplePortExposeAllTest {
 
     @ClassRule
     public static DockerRule testee = DockerRule.builder()
-            .imageName("nginx")
+            .imageName("nginx:1.10.2")
             .build();
 
     @Test

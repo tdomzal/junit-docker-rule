@@ -17,7 +17,7 @@ public class DockerRuleWaitForHttpTest {
     @Test(expected = PortNotExposedException.class)
     public void beforeShouldFailWhenPublishAllPortsIsFalse() throws Throwable {
         DockerRule httpd = DockerRule.builder() //
-                .imageName("nginx")//
+                .imageName("nginx:1.10.2")//
                 .publishAllPorts(false)
                 .waitFor(WaitFor.httpPing(80))
                 .build();
@@ -31,7 +31,7 @@ public class DockerRuleWaitForHttpTest {
     @Test
     public void beforeShouldSuccessWhenPublishAllPortsIsTrue() throws Throwable {
         DockerRule httpd = DockerRule.builder() //
-                .imageName("nginx")//
+                .imageName("nginx:1.10.2")//
                 .waitFor(WaitFor.httpPing(80))
                 .build();
         try {
@@ -44,7 +44,7 @@ public class DockerRuleWaitForHttpTest {
     @Test
     public void beforeShouldSuccessWhenWaitHttpPortIsExposed() throws Throwable {
         DockerRule httpd = DockerRule.builder() //
-                .imageName("nginx")//
+                .imageName("nginx:1.10.2")//
                 .expose("8124", "80")//
                 .waitFor(WaitFor.httpPing(80))
                 .build();
@@ -58,7 +58,7 @@ public class DockerRuleWaitForHttpTest {
     @Test
     public void shouldFailWithoutWaitHttpd() throws Throwable {
         DockerRule httpd = DockerRule.builder() //
-                .imageName("nginx")//
+                .imageName("nginx:1.10.2")//
                 .expose("8124", "80")//
                 .cmd("sh", "-c", "echo waiting...; sleep 5; echo starting...; nginx -g 'daemon off;'")
                 .build();
@@ -81,7 +81,7 @@ public class DockerRuleWaitForHttpTest {
     @Test
     public void shouldWaitForHttpd() throws Throwable {
         DockerRule httpd = DockerRule.builder() //
-                .imageName("nginx")//
+                .imageName("nginx:1.10.2")//
                 .expose("8124", "80")//
                 .waitFor(WaitFor.httpPing(80))
                 .cmd("sh", "-c", "echo waiting...; sleep 5; echo starting...; nginx -g 'daemon off;'")

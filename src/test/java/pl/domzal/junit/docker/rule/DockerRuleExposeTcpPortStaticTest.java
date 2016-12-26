@@ -18,7 +18,7 @@ public class DockerRuleExposeTcpPortStaticTest {
 
     @Rule
     public DockerRule testee = DockerRule.builder() //
-            .imageName("alpine") //
+            .imageName("alpine:3.4") //
             .expose("4444", "4444") //
             .cmd("sh", "-c", "echo started; nc -l -p 4444") //
             .waitFor(WaitFor.logMessage("started")) //
@@ -35,7 +35,7 @@ public class DockerRuleExposeTcpPortStaticTest {
     @Test
     public void shouldExposeSpecifiedPort() throws Throwable {
         DockerRule sender = DockerRule.builder() //
-                .imageName("alpine") //
+                .imageName("alpine:3.4") //
                 .extraHosts("serv:"+testee.getDockerContainerGateway())
                 .cmd("sh", "-c", "echo 12345 | nc serv 4444; echo done") //
                 .waitFor(WaitFor.logMessage("done")) //

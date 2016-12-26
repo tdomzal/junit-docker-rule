@@ -11,7 +11,7 @@ public class DockerRuleEntrypointTest {
 
     @Rule
     public DockerRule testee = DockerRule.builder()//
-            .imageName("busybox")//
+            .imageName("busybox:1.25.1")//
             .extraHosts("extrahost:1.2.3.4")
             .entrypoint("/bin/echo", "12345")
             .build();

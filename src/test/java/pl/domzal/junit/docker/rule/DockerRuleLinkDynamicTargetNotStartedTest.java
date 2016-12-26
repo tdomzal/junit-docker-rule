@@ -9,12 +9,12 @@ public class DockerRuleLinkDynamicTargetNotStartedTest {
     @Test(expected = IllegalStateException.class)
     public void shouldRaiseException() throws Throwable {
         DockerRule db = DockerRule.builder()//
-                .imageName("alpine")//
+                .imageName("alpine:3.4")//
                 .cmd("sh", "-c", "sleep 30")//
                 .build();
 
         DockerRule web = DockerRule.builder()//
-                .imageName("alpine")//
+                .imageName("alpine:3.4")//
                 .link(db, "db")//
                 .cmd("sh", "-c", "ping -w 1 db")//
                 .build();

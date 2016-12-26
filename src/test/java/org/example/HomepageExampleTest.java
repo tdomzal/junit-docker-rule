@@ -15,7 +15,7 @@ public class HomepageExampleTest {
 
     @Rule
     public DockerRule container = DockerRule.builder() //
-            .imageName("nginx") //
+            .imageName("nginx:1.10.2") //
             .build();
 
     @Test

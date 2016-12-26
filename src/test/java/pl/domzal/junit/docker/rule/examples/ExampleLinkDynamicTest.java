@@ -17,12 +17,12 @@ import pl.domzal.junit.docker.rule.DockerRule;
 public class ExampleLinkDynamicTest {
 
     private static DockerRule dbRule = DockerRule.builder()
-            .imageName("alpine")
+            .imageName("alpine:3.4")
             .cmd("sh", "-c", "sleep 30")
             .build();
 
     private static DockerRule web = DockerRule.builder()
-            .imageName("alpine")
+            .imageName("alpine:3.4")
             // dynamic link takes DockerRule instance link points to and link alias
             // (no need to define container name like in static linking)
             .link(dbRule, "db")

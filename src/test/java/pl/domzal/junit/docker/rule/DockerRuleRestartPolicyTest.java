@@ -19,7 +19,7 @@ public class DockerRuleRestartPolicyTest {
 
     @Rule
     public DockerRule testee = DockerRule.builder()
-            .imageName("alpine")
+            .imageName("alpine:3.4")
             .restartPolicy(RestartPolicy.always())
             .cmd("sh", "-c", "sleep 2")
             .build();

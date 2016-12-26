@@ -17,7 +17,7 @@ public class DockerRuleExposePortDynamicMultipleTimesTest {
 
     @ClassRule
     public static DockerRule testee = DockerRule.builder()
-            .imageName("nginx")
+            .imageName("nginx:1.10.2")
             // this is valid docker command:
             //      docker run -d -p "80" -p "80" ...
             .expose("80")

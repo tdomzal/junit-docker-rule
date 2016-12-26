@@ -21,7 +21,7 @@ public class ExampleAddExtraHostTest {
 
     @Rule
     public DockerRule testee = DockerRule.builder()
-            .imageName("busybox")
+            .imageName("busybox:1.25.1")
             .extraHosts("extrahost:1.2.3.4")
             .cmd("sh", "-c", "cat /etc/hosts | grep extrahost")
             .build();
