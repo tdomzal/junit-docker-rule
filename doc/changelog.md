@@ -4,6 +4,7 @@
 
 Changes:
 - Spotify docker client updated to version 6.1.1
+- ([#41](../../../issues/41)) Bugfix: Log message order can be lost
 
 ## 0.3 ##
 

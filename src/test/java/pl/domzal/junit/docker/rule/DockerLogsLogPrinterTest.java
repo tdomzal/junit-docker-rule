@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.InOrder;
 
+import pl.domzal.junit.docker.rule.logs.LogPrinter;
 import pl.domzal.junit.docker.rule.wait.LineListener;
 
 @Category(test.category.Stable.class)
@@ -31,14 +32,14 @@ public class DockerLogsLogPrinterTest {
     private ByteArrayOutputStream logOutputStream;
     LineListener lineListener = mock(LineListener.class);
 
-    DockerLogs.LogPrinter testee;
+    LogPrinter testee;
 
     @Before
     public void setup() throws IOException {
         PipedInputStream containerStdoutIs = new PipedInputStream();
         containerStdout = new PrintWriter(new PipedOutputStream(containerStdoutIs));
         logOutputStream = new ByteArrayOutputStream();
-        testee = new DockerLogs.LogPrinter("prefix", containerStdoutIs, new PrintStream(logOutputStream), lineListener);
+        testee = new LogPrinter("prefix", containerStdoutIs, new PrintStream(logOutputStream), lineListener);
         executor.submit(testee);
     }
 

@@ -2,17 +2,14 @@ package pl.domzal.junit.docker.rule;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.io.PrintStream;
-import java.util.Scanner;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +19,8 @@ import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerClient.LogsParam;
 import com.spotify.docker.client.LogStream;
 
+import pl.domzal.junit.docker.rule.logs.LogPrinter;
+import pl.domzal.junit.docker.rule.logs.LogSplitter;
 import pl.domzal.junit.docker.rule.wait.LineListener;
 
 /**
@@ -31,6 +30,7 @@ class DockerLogs implements Closeable {
 
     private static Logger log = LoggerFactory.getLogger(DockerLogs.class);
 
+    private static final int NO_OF_THREADS = 4;
     private static final int SHORT_ID_LEN = 12;
 
     private final DockerClient dockerClient;
@@ -45,7 +45,7 @@ class DockerLogs implements Closeable {
             .setDaemon(true)//
             .build();
 
-    private final ExecutorService executor = Executors.newFixedThreadPool(3, threadFactory);
+    private final ExecutorService executor = Executors.newFixedThreadPool(NO_OF_THREADS, threadFactory);
 
     DockerLogs(DockerClient dockerClient, String containerId, LineListener lineListener) {
         this.dockerClient = dockerClient;
@@ -53,34 +53,37 @@ class DockerLogs implements Closeable {
         this.lineListener = lineListener;
     }
 
-    public void setStderrWriter(PrintStream stderrWriter) {
+    void setStderrWriter(PrintStream stderrWriter) {
         this.stderrWriter = stderrWriter;
     }
 
-    public void setStdoutWriter(PrintStream stdoutWriter) {
+    void setStdoutWriter(PrintStream stdoutWriter) {
         this.stdoutWriter = stdoutWriter;
     }
 
     public void start() throws IOException, InterruptedException {
-
         final String containerShortId = StringUtils.left(containerId, SHORT_ID_LEN);
-
-        final PipedInputStream stdoutInputStream = new PipedInputStream();
-        final PipedInputStream stderrInputStream = new PipedInputStream();
-
-        final PipedOutputStream stdoutPipeOutputStream = new PipedOutputStream(stdoutInputStream);
-        final PipedOutputStream stderrPipeOutputStream = new PipedOutputStream(stderrInputStream);
-
-        executor.submit(new LogPrinter(containerShortId+"-stdout> ", stdoutInputStream, stdoutWriter, lineListener));
-        executor.submit(new LogPrinter(containerShortId+"-stderr> ", stderrInputStream, stderrWriter, lineListener));
+        final LogSplitter logSplitter = new LogSplitter();
+        if (lineListener != null) {
+            executor.submit(new LogPrinter("", logSplitter.getCombinedInput(), null, lineListener));
+        }
+        if (stdoutWriter != null) {
+            executor.submit(new LogPrinter(containerShortId+"-stdout> ", logSplitter.getStdoutInput(), stdoutWriter, null));
+        }
+        if (stderrWriter != null) {
+            executor.submit(new LogPrinter(containerShortId+"-stderr> ", logSplitter.getStderrInput(), stderrWriter, null));
+        }
         executor.submit(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
                 log.trace("{} attaching to logs", containerShortId);
                 LogStream logs = dockerClient.logs(containerId, LogsParam.stdout(), LogsParam.stderr(), LogsParam.follow());
-                logs.attach(stdoutPipeOutputStream, stderrPipeOutputStream);
-                logs.close();
-                log.trace("{} dettached from logs", containerShortId);
+                try {
+                    logs.attach(logSplitter.getStdoutOutput(), logSplitter.getStderrOutput());
+                } finally {
+                    IOUtils.closeQuietly(logs, logSplitter);
+                    log.trace("{} dettached from logs", containerShortId);
+                }
                 return null;
             }
         });
@@ -94,37 +97,6 @@ class DockerLogs implements Closeable {
             log.warn("interrupted", e);
         }
         executor.shutdown();
-    }
-
-    static class LogPrinter implements Runnable {
-
-        private final String prefix;
-        private final InputStream scannedInputStream;
-        private final PrintStream output;
-        private final LineListener lineListener;
-
-        LogPrinter(String prefix, InputStream scannedInputStream, PrintStream output, LineListener lineListener) {
-            this.prefix = prefix;
-            this.scannedInputStream = scannedInputStream;
-            this.output = output;
-            this.lineListener = lineListener;
-        }
-
-        @Override
-        public void run() {
-            log.trace("{} printer thread started", prefix);
-            try (Scanner scanner = new Scanner(scannedInputStream)) {
-                while (scanner.hasNextLine()) {
-                    String line = scanner.nextLine();
-                    log.trace("{} line: {}", prefix, line);
-                    output.println(prefix + line);
-                    if (lineListener != null) {
-                        lineListener.nextLine(line);
-                    }
-                }
-            }
-            log.trace("{} printer thread terminated", prefix);
-        }
     }
 
 }
