@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Rule;
 import org.junit.rules.ExternalResource;
@@ -152,7 +152,6 @@ public class DockerRule extends ExternalResource {
             logNetworkSettings();
 
             isStarted = true;
-
         } catch (DockerRequestException e) {
             throw new IllegalStateException(e.message(), e);
         } catch (DockerException | InterruptedException e) {
@@ -186,7 +185,7 @@ public class DockerRule extends ExternalResource {
         registerConditionLineListeners(conditions, proxyLineListener);
         // execute waiting
         for (StartConditionCheck condition : conditions) {
-            WaitForContainer.waitForCondition(condition, builder.waitForSeconds());
+            WaitForContainer.waitForCondition(condition, builder.waitForSeconds(), describe());
         }
     }
 
@@ -324,6 +323,15 @@ public class DockerRule extends ExternalResource {
         log.info("{} docker host: {}, ip: {}, gateway: {}, exposed ports: {}", containerShortId, dockerClient.getHost(), containerIp, containerGateway, containerPorts);
     }
 
+    private String describe() {
+        if (StringUtils.isAllBlank(containerShortId, builder.name(), builder.imageName())) {
+            return super.toString();
+        }
+        return (StringUtils.isNotBlank(builder.name()) ? String.format("'%s' ", builder.name()) : "")
+                + (StringUtils.isNotBlank(containerShortId) ? containerShortId + " " : "")
+                + builder.imageName();
+    }
+
     /**
      * Stop and wait till given string will show in container output.
      *
@@ -333,7 +341,7 @@ public class DockerRule extends ExternalResource {
      *
      * @deprecated Use {@link #waitForLogMessage(String, int)} instead.
      */
-    public void waitFor(final String searchString, int waitTime) throws TimeoutException, InterruptedException {
+    public void waitFor(final String searchString, int waitTime) throws TimeoutException {
         waitForLogMessage(searchString, waitTime);
     }
 
@@ -344,8 +352,8 @@ public class DockerRule extends ExternalResource {
      * @param waitTime Wait time.
      * @throws TimeoutException On wait timeout.
      */
-    public void waitForLogMessage(final String logSearchString, int waitTime) throws TimeoutException, InterruptedException {
-        WaitForContainer.waitForCondition(new LogChecker(this, logSearchString), waitTime);
+    public void waitForLogMessage(final String logSearchString, int waitTime) throws TimeoutException {
+        WaitForContainer.waitForCondition(new LogChecker(this, logSearchString), waitTime, describe());
     }
 
     /**

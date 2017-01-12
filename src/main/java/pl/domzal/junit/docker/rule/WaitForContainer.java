@@ -20,8 +20,9 @@ class WaitForContainer {
      *
      * @param condition Conditions to wait for - all must be met to continue.
      * @param timeoutSeconds Wait timeout.
+     * @param containerDescription Container description. For log and exception message usage only.
      */
-    public static void waitForCondition(final StartConditionCheck condition, int timeoutSeconds) throws TimeoutException {
+    static void waitForCondition(final StartConditionCheck condition, int timeoutSeconds, final String containerDescription) throws TimeoutException {
         try {
             log.info("wait for {} started", condition.describe());
             new WaitForUnit(TimeUnit.SECONDS, timeoutSeconds, TimeUnit.SECONDS, 1, new WaitForUnit.WaitForCondition() {
@@ -31,7 +32,7 @@ class WaitForContainer {
                 }
                 @Override
                 public String timeoutMessage() {
-                    return String.format("timeout waiting for %s", condition.describe());
+                    return String.format("timeout waiting for %s in container %s", condition.describe(), containerDescription);
                 }
             }).startWaiting();
             log.info("wait for {} - condition met", condition.describe());

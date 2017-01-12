@@ -43,7 +43,7 @@ public class WaitForContainerTest {
         public void run() {
             log.debug("runner started");
             try {
-                WaitForContainer.waitForCondition(condition, WAIT_LOG_TIMEOUT_SEC);
+                WaitForContainer.waitForCondition(condition, WAIT_LOG_TIMEOUT_SEC, "test container");
                 doneWaiting.set(true);
             } catch (TimeoutException e) {
                 timeoutWaiting.set(true);
@@ -76,7 +76,7 @@ public class WaitForContainerTest {
     public void shouldRethrowException() throws Exception {
         StartConditionCheck condition = mock(StartConditionCheck.class);
         when(condition.check()).thenThrow(new IllegalStateException("kaboom"));
-        WaitForContainer.waitForCondition(condition, WAIT_LOG_TIMEOUT_SEC);
+        WaitForContainer.waitForCondition(condition, WAIT_LOG_TIMEOUT_SEC, "test container");
     }
 
     private void waitForDone() throws TimeoutException, InterruptedException {
