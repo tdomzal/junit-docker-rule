@@ -36,8 +36,8 @@ import pl.domzal.junit.docker.rule.ex.PortNotExposedException;
 import pl.domzal.junit.docker.rule.wait.LineListener;
 import pl.domzal.junit.docker.rule.wait.LineListenerProxy;
 import pl.domzal.junit.docker.rule.wait.LogChecker;
-import pl.domzal.junit.docker.rule.wait.StartConditionCheck;
 import pl.domzal.junit.docker.rule.wait.StartCondition;
+import pl.domzal.junit.docker.rule.wait.StartConditionCheck;
 
 /**
  * Simple docker container junit {@link Rule}.<br/>
@@ -153,7 +153,7 @@ public class DockerRule extends ExternalResource {
 
             isStarted = true;
         } catch (DockerRequestException e) {
-            throw new IllegalStateException(e.message(), e);
+            throw new IllegalStateException(e.getResponseBody(), e);
         } catch (DockerException | InterruptedException e) {
             throw new IllegalStateException(e);
         }
@@ -377,7 +377,7 @@ public class DockerRule extends ExternalResource {
                 log.trace("{} full log: {}", containerShortId, StringUtils.replace(fullLog, "\n", "|"));
             }
             return fullLog;
-        } catch (DockerException | InterruptedException | IOException e) {
+        } catch (DockerException | InterruptedException e) {
             throw new IllegalStateException(e);
         }
 
