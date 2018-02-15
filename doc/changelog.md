@@ -1,12 +1,12 @@
 # changelog #
 
-## 0.4-SNAPSHOT ##
+## 0.4 (2018-02-15) ##
 
 Changes:
-- Spotify docker client updated to version 6.1.1
+- Spotify docker client updated to version 8.9.2
 - ([#41](../../../issues/41)) Bugfix: Log message order can be lost
 
-## 0.3 ##
+## 0.3 (2016-12-09) ##
 
 Changes:
 - ([#39](../../../issues/39)) Accept not only file and paths but also volume names in _mountFrom_
@@ -22,9 +22,7 @@ Fixes:
 
 - ([#33](../../../issues/33)) bug: rule does not allow publishing same internal port twice
 
-## 0.2 ##
-
-Released 2016-09-13
+## 0.2 (2016-09-13) ##
 
 New features:
 
