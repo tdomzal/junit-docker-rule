@@ -1,7 +1,7 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.tdomzal/junit-docker-rule/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.tdomzal/junit-docker-rule/)
 [![Build Status](https://travis-ci.org/tdomzal/junit-docker-rule.svg?branch=master)](https://travis-ci.org/tdomzal/junit-docker-rule)
 [![codecov.io](https://codecov.io/github/tdomzal/junit-docker-rule/coverage.svg?branch=master)](https://codecov.io/github/tdomzal/junit-docker-rule?branch=master)
-[![Dependency Status](https://www.versioneye.com/user/projects/56b649da0a0ff5002c86035a/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56b649da0a0ff5002c86035a)
+
 # junit-docker-rule #
 
 ## Changelog ##
@@ -46,7 +46,7 @@ Simple [JUnit Rule](https://github.com/junit-team/junit/wiki/Rules) starting [do
 
 Container is started just before your test case and destroyed after.
 
-It was created as side product and I'll be more than happy if you'll find it useful ! 
+It was created as side product and I'll be more than happy if you'll find it useful !
 
 ## What docker options it currently supports ? ##
 
@@ -69,7 +69,7 @@ You can:
 
 See usage [examples](src/test/java/pl/domzal/junit/docker/rule/examples/) in test cases.
 
-Also - just type `DockerRule.builder().` .. and try code assist in your favorite IDE (Alt-Enter in IDEA, Ctrl-Space in Eclipse) to see all possible options. 
+Also - just type `DockerRule.builder().` .. and try code assist in your favorite IDE (Alt-Enter in IDEA, Ctrl-Space in Eclipse) to see all possible options.
 
 ## What do I need to use it ? ##
 
@@ -101,9 +101,8 @@ Docker should be installed and configured - which in general means you must have
             .build();
         ...
         // your test cases
-    
     }
-    
+
 ## What else should I know for now ? ##
 
 - It uses java [docker client from Spotify](https://github.com/spotify/docker-client)
