@@ -1,5 +1,10 @@
 # changelog #
 
+## 0.4.1 (2018-06-16) ##
+
+Changes:
+- ([#43](../../../issues/43)) Bugfix: Images using ENTRYPOINT will not start when builder.entrypoint(..) is not set
+
 ## 0.4 (2018-02-15) ##
 
 Changes:

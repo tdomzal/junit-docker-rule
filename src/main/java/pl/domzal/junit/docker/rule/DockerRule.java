@@ -116,15 +116,20 @@ public class DockerRule extends ExternalResource {
         HostConfig hostConfig = hostConfigBuilder
                 .extraHosts(builder.extraHosts())//
                 .build();
-        ContainerConfig containerConfig = ContainerConfig.builder()//
+        ContainerConfig.Builder containerConfigBuilder = ContainerConfig.builder()//
                 .hostConfig(hostConfig)//
                 .image(imageNameWithTag)//
                 .env(builder.env())//
                 .networkDisabled(false)//
                 .exposedPorts(builder.containerExposedPorts())
-                .entrypoint(builder.entrypoint())
-                .labels(builder.getLabels())
-                .cmd(builder.cmd()).build();
+                .labels(builder.getLabels());
+        if (builder.entrypoint().length > 0) {
+            containerConfigBuilder.entrypoint(builder.entrypoint());
+        }
+        if (builder.cmd().length > 0) {
+            containerConfigBuilder.cmd(builder.cmd());
+        }
+        ContainerConfig containerConfig = containerConfigBuilder.build();
         try {
             if (StringUtils.isNotBlank(builder.name())) {
                 this.container = dockerClient.createContainer(containerConfig, builder.name());
