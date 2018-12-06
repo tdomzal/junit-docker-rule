@@ -115,6 +115,7 @@ public class DockerRule extends ExternalResource {
         }
         HostConfig hostConfig = hostConfigBuilder
                 .extraHosts(builder.extraHosts())//
+                .ulimits(builder.getUlimits())
                 .build();
         ContainerConfig.Builder containerConfigBuilder = ContainerConfig.builder()//
                 .hostConfig(hostConfig)//
